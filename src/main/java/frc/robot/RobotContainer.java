@@ -33,6 +33,8 @@ public class RobotContainer {
 
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
+  private final JoystickButton deployIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -40,7 +42,7 @@ public class RobotContainer {
     configureBindings();
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
-    arm.setDefaultCommand(new ArmHold());
+    // arm.setDefaultCommand(new ArmHold());
   }
 
   /**
@@ -54,6 +56,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+    deployIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
   }
 
   /**

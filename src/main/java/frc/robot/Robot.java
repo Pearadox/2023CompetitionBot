@@ -78,11 +78,12 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    RobotContainer.drivetrain.resetAllEncoders();
     RobotContainer.drivetrain.setAllMode(true);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    RobotContainer.drivetrain.resetAllEncoders();
   }
 
   /** This function is called periodically during operator control. */

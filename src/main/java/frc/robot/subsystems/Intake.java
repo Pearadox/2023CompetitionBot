@@ -4,10 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.robot.Constants.IntakeConstants;
@@ -17,8 +22,11 @@ public class Intake extends SubsystemBase {
   private PearadoxSparkMax driver;
   private PearadoxSparkMax pivot;
 
-  private double lastToggledTime;
+  private RelativeEncoder pivotEncoder;
+  private SparkMaxPIDController intakeController;
+
   private boolean deployed = false;
+  private boolean zeroed = false;
 
   private static final Intake intake = new Intake();
 
@@ -28,31 +36,31 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    driver = new PearadoxSparkMax(21, MotorType.kBrushless, IdleMode.kBrake, 40, false);
-    pivot = new PearadoxSparkMax(22, MotorType.kBrushless, IdleMode.kBrake, 40, false);
+    driver = new PearadoxSparkMax(21, MotorType.kBrushless, IdleMode.kBrake, 40, true);
+    pivot = new PearadoxSparkMax(22, MotorType.kBrushless, IdleMode.kBrake, 40, true);
 
-    lastToggledTime = Timer.getFPGATimestamp();
+    pivotEncoder = pivot.getEncoder();
+    intakeController = pivot.getPIDController();
   }
 
   public void intakeIn(){
-    driver.set(0.25);
+    driver.set(0.4);
   }
 
   public void intakeHold(){
     if(deployed){
-      intakeIn();
-      if(Timer.getFPGATimestamp() - lastToggledTime < IntakeConstants.INTAKE_DEPLOY_TIME){
-        pivot.set(0.8);
-      }
-      else{
-        pivot.set(0);
-      }
+      intakeController.setReference(6.0, CANSparkMax.ControlType.kPosition);
+      zeroed = false;
     }
     else{
-      if(Timer.getFPGATimestamp() - lastToggledTime < IntakeConstants.INTAKE_STOW_TIME){
-        pivot.set(-0.8);
+      if(!zeroed && pivot.getOutputCurrent() > 30){
+        zeroed = true;
+        resetPivotEncoder();
       }
-      else{
+      if(!zeroed){
+        pivot.set(-0.1);
+      }
+      if(zeroed){
         pivot.set(0);
       }
     }
@@ -61,16 +69,26 @@ public class Intake extends SubsystemBase {
   public void intakeToggle(){
     if(!deployed){
       deployed = true;
-      lastToggledTime = Timer.getFPGATimestamp();
     }
     else{
       deployed = false;
-      lastToggledTime = Timer.getFPGATimestamp();
     }
+  }
+
+  public void intakeStop(){
+    pivot.set(0);
+  }
+
+  public void resetPivotEncoder(){
+    pivotEncoder.setPosition(0);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
+    SmartDashboard.putBoolean("Deployed", deployed);
+    SmartDashboard.putBoolean("Zeroed", zeroed);
+    SmartDashboard.putNumber("Pivot Current", pivot.getOutputCurrent());
   }
 }
