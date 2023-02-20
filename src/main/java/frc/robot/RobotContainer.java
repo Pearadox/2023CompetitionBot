@@ -15,6 +15,7 @@ import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -38,6 +39,7 @@ public class RobotContainer {
   private final JoystickButton armUp_Y = new JoystickButton(driverController, XboxController.Button.kY.value);
   private final JoystickButton armDown_A = new JoystickButton(driverController, XboxController.Button.kA.value);
   private final JoystickButton armSubs_X = new JoystickButton(driverController, XboxController.Button.kX.value);
+  private final JoystickButton armScore_B = new JoystickButton(driverController, XboxController.Button.kB.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -60,9 +62,12 @@ public class RobotContainer {
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     deployIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
+    RB.whileTrue(new RunCommand(() -> arm.intakeSubs(0.3))).onFalse(new InstantCommand(() -> arm.intakeIn(0.1))
+      .andThen(new InstantCommand(arm::setSubsUpMode, arm)));
     armUp_Y.onTrue(new InstantCommand(arm::armUp, arm));
     armDown_A.onTrue(new InstantCommand(arm::armDown, arm));
-    armSubs_X.onTrue(new InstantCommand(arm::setSubsMode, arm));
+    armSubs_X.onTrue(new InstantCommand(arm::setSubsUpMode, arm));
+    armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn(0.1)));
   }
 
   /**

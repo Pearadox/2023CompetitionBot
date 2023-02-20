@@ -24,7 +24,7 @@ public class Arm extends SubsystemBase {
   private SparkMaxPIDController armController;
 
   private enum ArmMode{
-    kHigh, kMid, kLow, kSubs, kZero
+    kHigh, kMid, kLow, kSubsUp, kSubsDown, kZero
   }
 
   private ArmMode mode = ArmMode.kZero;
@@ -37,7 +37,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    driver = new PearadoxSparkMax(23, MotorType.kBrushless, IdleMode.kBrake, 40, true);
+    driver = new PearadoxSparkMax(23, MotorType.kBrushless, IdleMode.kBrake, 25, true);
     pivot = new PearadoxSparkMax(24, MotorType.kBrushless, IdleMode.kBrake, 40, true);
 
     armEncoder = pivot.getEncoder();
@@ -54,8 +54,11 @@ public class Arm extends SubsystemBase {
     else if(mode == ArmMode.kHigh){
       armController.setReference(ArmConstants.HIGH_MODE_ROT, ControlType.kPosition);
     }
-    else if(mode == ArmMode.kSubs){
-      armController.setReference(ArmConstants.SUBS_MODE_ROT, ControlType.kPosition);
+    else if(mode == ArmMode.kSubsUp){
+      armController.setReference(ArmConstants.SUBS_UP_MODE_ROT, ControlType.kPosition);
+    }
+    else if(mode == ArmMode.kSubsDown){
+      armController.setReference(ArmConstants.SUBS_DOWN_MODE_ROT, ControlType.kPosition);
     }
     else if(mode == ArmMode.kZero){
       armController.setReference(0.0, ControlType.kPosition);
@@ -78,16 +81,29 @@ public class Arm extends SubsystemBase {
     mode = ArmMode.kHigh;
   }
 
-  public void setSubsMode(){
-    mode = ArmMode.kSubs;
+  public void setSubsUpMode(){
+    mode = ArmMode.kSubsUp;
   }
 
-  public void intakeIn(){
-    driver.set(0.3);
+  public void setSubsDownMode(){
+    mode = ArmMode.kSubsDown;
+  }
+
+  public void intakeSubs(double speed){
+    driver.set(speed);
+    setSubsDownMode();
+  }
+
+  public void intakeIn(double speed){
+    driver.set(speed);
   }
 
   public void intakeOut(){
     driver.set(-1.0);
+  }
+
+  public void intakeStop(){
+    driver.set(0);
   }
 
   public void armUp(){
@@ -100,7 +116,10 @@ public class Arm extends SubsystemBase {
     else if(mode == ArmMode.kMid){
       mode = ArmMode.kHigh;
     }
-    else if(mode == ArmMode.kSubs){
+    else if(mode == ArmMode.kSubsUp){
+      mode = ArmMode.kHigh;
+    }
+    else if(mode == ArmMode.kSubsDown){
       mode = ArmMode.kHigh;
     }
   }
@@ -109,7 +128,10 @@ public class Arm extends SubsystemBase {
     if(mode == ArmMode.kHigh){
       mode = ArmMode.kMid;
     }
-    else if(mode == ArmMode.kSubs){
+    else if(mode == ArmMode.kSubsUp){
+      mode = ArmMode.kMid;
+    }
+    else if(mode == ArmMode.kSubsDown){
       mode = ArmMode.kMid;
     }
     else if(mode == ArmMode.kMid){
@@ -133,5 +155,23 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition());
+    if(mode == ArmMode.kZero){
+      SmartDashboard.putString("Arm Mode", "kZero");
+    }
+    else if(mode == ArmMode.kLow){
+      SmartDashboard.putString("Arm Mode", "kLow");
+    }
+    else if(mode == ArmMode.kMid){
+      SmartDashboard.putString("Arm Mode", "kMid");
+    }
+    else if(mode == ArmMode.kHigh){
+      SmartDashboard.putString("Arm Mode", "kHigh");
+    }
+    else if(mode == ArmMode.kSubsUp){
+      SmartDashboard.putString("Arm Mode", "kSubsUp");
+    }
+    else if(mode == ArmMode.kSubsDown){
+      SmartDashboard.putString("Arm Mode", "kSubsDown");
+    }
   }
 }

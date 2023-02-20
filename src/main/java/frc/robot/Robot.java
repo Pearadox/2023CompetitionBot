@@ -50,7 +50,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.drivetrain.setAllMode(false);
-    RobotContainer.arm.setZeroMode();
   }
 
   @Override
