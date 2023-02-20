@@ -50,6 +50,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.drivetrain.setAllMode(false);
+    RobotContainer.arm.setZeroMode();
   }
 
   @Override
@@ -84,6 +85,8 @@ public class Robot extends TimedRobot {
     }
 
     RobotContainer.drivetrain.resetAllEncoders();
+    RobotContainer.intake.configPivotController();
+    RobotContainer.arm.configPivotController();
   }
 
   /** This function is called periodically during operator control. */

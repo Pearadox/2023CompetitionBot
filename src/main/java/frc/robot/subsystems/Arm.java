@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.robot.Constants.ArmConstants;
@@ -17,13 +19,15 @@ public class Arm extends SubsystemBase {
   private PearadoxSparkMax driver;
   private PearadoxSparkMax pivot;
 
+  private RelativeEncoder armEncoder;
+
   private SparkMaxPIDController armController;
 
   private enum ArmMode{
-    kHigh, kMid, kLow, kSubs
+    kHigh, kMid, kLow, kSubs, kZero
   }
 
-  private ArmMode mode = ArmMode.kLow;
+  private ArmMode mode = ArmMode.kZero;
 
   private static final Arm arm = new Arm();
 
@@ -33,9 +37,10 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    driver = new PearadoxSparkMax(23, MotorType.kBrushless, IdleMode.kBrake, 40, false);
-    pivot = new PearadoxSparkMax(24, MotorType.kBrushless, IdleMode.kBrake, 40, false);
+    driver = new PearadoxSparkMax(23, MotorType.kBrushless, IdleMode.kBrake, 40, true);
+    pivot = new PearadoxSparkMax(24, MotorType.kBrushless, IdleMode.kBrake, 40, true);
 
+    armEncoder = pivot.getEncoder();
     armController = pivot.getPIDController();
   }
 
@@ -52,6 +57,13 @@ public class Arm extends SubsystemBase {
     else if(mode == ArmMode.kSubs){
       armController.setReference(ArmConstants.SUBS_MODE_ROT, ControlType.kPosition);
     }
+    else if(mode == ArmMode.kZero){
+      armController.setReference(0.0, ControlType.kPosition);
+    }
+  }
+
+  public void setZeroMode(){
+    mode = ArmMode.kZero;
   }
 
   public void setLowMode(){
@@ -71,15 +83,55 @@ public class Arm extends SubsystemBase {
   }
 
   public void intakeIn(){
-    driver.set(0.5);
+    driver.set(0.3);
   }
 
   public void intakeOut(){
     driver.set(-1.0);
   }
 
+  public void armUp(){
+    if(mode == ArmMode.kZero){
+      mode = ArmMode.kLow;
+    }
+    else if(mode == ArmMode.kLow){
+      mode = ArmMode.kMid;
+    }
+    else if(mode == ArmMode.kMid){
+      mode = ArmMode.kHigh;
+    }
+    else if(mode == ArmMode.kSubs){
+      mode = ArmMode.kHigh;
+    }
+  }
+
+  public void armDown(){
+    if(mode == ArmMode.kHigh){
+      mode = ArmMode.kMid;
+    }
+    else if(mode == ArmMode.kSubs){
+      mode = ArmMode.kMid;
+    }
+    else if(mode == ArmMode.kMid){
+      mode = ArmMode.kLow;
+    }
+    else if(mode == ArmMode.kLow){
+      mode = ArmMode.kZero;
+    }
+  }
+
+  public void configPivotController(){
+    armController.setP(ArmConstants.PIVOT_kP, 0);
+    armController.setI(ArmConstants.PIVOT_kI, 0);
+    armController.setD(ArmConstants.PIVOT_kD, 0);
+    armController.setFF(ArmConstants.PIVOT_kFF, 0);
+    armController.setOutputRange(ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT, 0);
+    pivot.burnFlash();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition());
   }
 }

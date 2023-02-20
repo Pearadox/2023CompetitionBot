@@ -89,18 +89,31 @@ public final class Constants {
     public static final int INTAKE_DRIVER_ID = 21;
     public static final int INTAKE_PIVOT_ID = 22;
 
-    public static final double INTAKE_DEPLOY_TIME = 0.3;
-    public static final double INTAKE_STOW_TIME = 0.5;
+    public static final double PIVOT_kP = 0.15;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+    public static final double PIVOT_kFF = 0.01;
+    public static final double PIVOT_MIN_OUTPUT = -0.25;
+    public static final double PIVOT_MAX_OUTPUT = 0.1;
+
+    public static final double DEPLOYED_ROT = 5.5;
   }
 
   public static final class ArmConstants{
     public static final int ARM_DRIVER_ID = 23;
     public static final int ARM_PIVOT_ID = 24;
 
-    public static final double LOW_MODE_ROT = 0;
-    public static final double MID_MODE_ROT = 0;
-    public static final double HIGH_MODE_ROT = 0;
-    public static final double SUBS_MODE_ROT = 0;
+    public static final double PIVOT_kP = 0.09;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+    public static final double PIVOT_kFF = 0;
+    public static final double PIVOT_MIN_OUTPUT = -0.5;
+    public static final double PIVOT_MAX_OUTPUT = 0.5;
+
+    public static final double LOW_MODE_ROT = 10;
+    public static final double MID_MODE_ROT = 19;
+    public static final double HIGH_MODE_ROT = 23;
+    public static final double SUBS_MODE_ROT = 20;
   }
 
   public static final class ShooterConstants{

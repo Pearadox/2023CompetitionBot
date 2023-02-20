@@ -35,6 +35,9 @@ public class RobotContainer {
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
   private final JoystickButton deployIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+  private final JoystickButton armUp_Y = new JoystickButton(driverController, XboxController.Button.kY.value);
+  private final JoystickButton armDown_A = new JoystickButton(driverController, XboxController.Button.kA.value);
+  private final JoystickButton armSubs_X = new JoystickButton(driverController, XboxController.Button.kX.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -42,7 +45,7 @@ public class RobotContainer {
     configureBindings();
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
-    // arm.setDefaultCommand(new ArmHold());
+    arm.setDefaultCommand(new ArmHold());
   }
 
   /**
@@ -57,6 +60,9 @@ public class RobotContainer {
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     deployIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
+    armUp_Y.onTrue(new InstantCommand(arm::armUp, arm));
+    armDown_A.onTrue(new InstantCommand(arm::armDown, arm));
+    armSubs_X.onTrue(new InstantCommand(arm::setSubsMode, arm));
   }
 
   /**

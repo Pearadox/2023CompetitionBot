@@ -7,11 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
@@ -49,11 +47,11 @@ public class Intake extends SubsystemBase {
 
   public void intakeHold(){
     if(deployed){
-      intakeController.setReference(6.0, CANSparkMax.ControlType.kPosition);
+      intakeController.setReference(IntakeConstants.DEPLOYED_ROT, CANSparkMax.ControlType.kPosition, 0);
       zeroed = false;
     }
     else{
-      if(!zeroed && pivot.getOutputCurrent() > 30){
+      if(!zeroed && pivot.getOutputCurrent() > 38){
         zeroed = true;
         resetPivotEncoder();
       }
@@ -81,6 +79,15 @@ public class Intake extends SubsystemBase {
 
   public void resetPivotEncoder(){
     pivotEncoder.setPosition(0);
+  }
+
+  public void configPivotController(){
+    intakeController.setP(IntakeConstants.PIVOT_kP, 0);
+    intakeController.setI(IntakeConstants.PIVOT_kI, 0);
+    intakeController.setD(IntakeConstants.PIVOT_kD, 0);
+    intakeController.setFF(IntakeConstants.PIVOT_kFF, 0);
+    intakeController.setOutputRange(IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT, 0);
+    pivot.burnFlash();
   }
 
   @Override

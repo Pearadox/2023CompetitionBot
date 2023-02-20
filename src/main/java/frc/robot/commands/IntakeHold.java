@@ -22,7 +22,7 @@ public class IntakeHold extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.intake.intakeHold();
-    RobotContainer.intake.intakeIn();
+    // RobotContainer.intake.intakeIn();
   }
 
   // Called once the command ends or is interrupted.
