@@ -4,13 +4,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class SwerveDrive extends CommandBase {
-  /** Creates a new SwerveDrive. */
-  public SwerveDrive() {
+public class AutoBalance extends CommandBase {
+  /** Creates a new AutoBalance. */
+  public AutoBalance() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.drivetrain);
   }
@@ -22,20 +21,12 @@ public class SwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.drivetrain.swerveDriveRot(
-      -RobotContainer.driverController.getLeftY(), 
-      -RobotContainer.driverController.getLeftX(), 
-      RobotContainer.driverController.getRightX(),
-      -RobotContainer.driverController.getRightY(),
-      !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
-      true);
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    RobotContainer.drivetrain.stopModules();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

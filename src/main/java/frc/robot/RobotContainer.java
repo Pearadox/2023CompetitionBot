@@ -8,10 +8,12 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeHold;
+import frc.robot.commands.ShooterHold;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,6 +33,7 @@ public class RobotContainer {
   public static final Drivetrain drivetrain = Drivetrain.getInstance();
   public static final Intake intake = Intake.getInstance();
   public static final Arm arm = Arm.getInstance();
+  public static final Shooter shooter = Shooter.getInstance();
 
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
@@ -48,6 +51,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
     arm.setDefaultCommand(new ArmHold());
+    // shooter.setDefaultCommand(new ShooterHold());
   }
 
   /**

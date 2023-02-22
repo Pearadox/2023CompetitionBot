@@ -83,6 +83,9 @@ public final class Constants {
         new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2),
         new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2)
     );
+
+    public static final double kS_PERCENT = 0.035;
+    public static final double kP_PERCENT = 0.012;
   }
 
   public static final class IntakeConstants{

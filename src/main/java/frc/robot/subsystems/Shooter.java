@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.lib.util.LerpTable;
@@ -26,11 +27,17 @@ public class Shooter extends SubsystemBase {
 
   private LerpTable shooterLerp;
 
+  private static final Shooter shooter = new Shooter();
+
+  public static Shooter getInstance(){
+    return shooter;
+  }
+
   /** Creates a new Shooter. */
   public Shooter() {
-    topShooter = new PearadoxSparkMax(ShooterConstants.TOP_SHOOTER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, false);
+    topShooter = new PearadoxSparkMax(ShooterConstants.TOP_SHOOTER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, true);
     botShooter = new PearadoxSparkMax(ShooterConstants.BOT_SHOOTER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, false);
-    feeder = new PearadoxSparkMax(ShooterConstants.FEEDER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, false);
+    feeder = new PearadoxSparkMax(ShooterConstants.FEEDER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, true);
 
     topController = topShooter.getPIDController();
     botController = botShooter.getPIDController();
@@ -41,11 +48,16 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shooterHold(){
-
+    topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
+    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4) + 0.2);
+    feeder.set(0.5);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(!SmartDashboard.containsKey("Shooter Speed")){
+      SmartDashboard.putNumber("Shooter Speed", 0.4);
+    }
   }
 }

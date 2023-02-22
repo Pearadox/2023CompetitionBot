@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void intakeIn(){
-    driver.set(0.4);
+    driver.set(0.5);
   }
 
   public void intakeHold(){
@@ -60,6 +60,7 @@ public class Intake extends SubsystemBase {
       }
       if(zeroed){
         pivot.set(0);
+        intakeController.setReference(0, CANSparkMax.ControlType.kPosition, 0);
       }
     }
   }
