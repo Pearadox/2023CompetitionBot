@@ -125,6 +125,82 @@ public class Drivetrain extends SubsystemBase {
 
     setModuleStates(moduleStates);
   }
+
+  public void swerveDriveRot(double frontSpeed, double sideSpeed, double turnX, double turnY, boolean fieldOriented, boolean deadband){
+    if(deadband){
+      frontSpeed = Math.abs(frontSpeed) > 0.1 ? frontSpeed : 0;
+      sideSpeed = Math.abs(sideSpeed) > 0.1 ? sideSpeed : 0;
+      turnX = Math.abs(turnX) > 0.1 ? turnX : 0;
+      turnY = Math.abs(turnY) > 0.1 ? turnY : 0;
+    }
+
+    double error;
+    double targetAngle;
+    double turnSpeed;
+    if(turnX == 0 && turnY == 0){
+      turnSpeed = 0;
+    }
+    else{
+      if(turnX == 0 && turnY > 0){
+        targetAngle = -90.0;
+      }
+      else if(turnX == 0 && turnY < 0){
+        targetAngle = 90.0;
+      }
+      else{
+        targetAngle = Math.atan(turnY/turnX) * (180 / Math.PI);
+      }
+  
+      if(turnX > 0 && turnY > 0){
+        targetAngle -= 180.0;
+      }
+      else if(turnX > 0 && turnY <= 0){
+        targetAngle += 180.0;
+      }
+  
+      if(targetAngle + 180 > 180){
+        targetAngle -= 180.0;
+      }
+      else{
+        targetAngle += 180.0;
+      }
+  
+      error = targetAngle - getHeading();
+  
+      if(error > 180) {
+        error -= 360;
+      }
+      else if(error < -180){
+        error += 360;
+      }
+  
+      turnSpeed = Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error;
+    }
+
+    SmartDashboard.putNumber("X Speed", frontSpeed);
+    SmartDashboard.putNumber("Y Speed", sideSpeed);
+    SmartDashboard.putNumber("Turn Speed", turnSpeed);
+
+    frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.5 : frontSpeed;
+    sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? sideSpeed * 0.5 : sideSpeed;
+    turnSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? turnSpeed * 0.5 : turnSpeed;
+
+    frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
+    sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
+    turnSpeed = turnLimiter.calculate(turnSpeed) * SwerveConstants.TELE_DRIVE_MAX_ANGULAR_SPEED;
+
+    ChassisSpeeds chassisSpeeds;
+    if(fieldOriented){
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(frontSpeed, sideSpeed, turnSpeed, getHeadingRotation2d());
+    }
+    else{
+      chassisSpeeds = new ChassisSpeeds(frontSpeed, sideSpeed, turnSpeed);
+    }
+
+    SwerveModuleState[] moduleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+
+    setModuleStates(moduleStates);
+  }
   
   public Pose2d getPose(){
     return odometry.getPoseMeters();
@@ -166,6 +242,14 @@ public class Drivetrain extends SubsystemBase {
 
   public Rotation2d getHeadingRotation2d(){
     return Rotation2d.fromDegrees(getHeading());
+  }
+
+  public double getRoll(){
+    return gyro.getRoll();
+  }
+
+  public double getPitch(){
+    return gyro.getPitch();
   }
 
   public void stopModules(){
