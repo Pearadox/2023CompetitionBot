@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
@@ -37,8 +38,10 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    driver = new PearadoxSparkMax(23, MotorType.kBrushless, IdleMode.kBrake, 25, true);
-    pivot = new PearadoxSparkMax(24, MotorType.kBrushless, IdleMode.kBrake, 40, true);
+    driver = new PearadoxSparkMax(ArmConstants.ARM_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 25, true);
+    pivot = new PearadoxSparkMax(ArmConstants.ARM_PIVOT_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true,
+      ArmConstants.PIVOT_kP, ArmConstants.PIVOT_kI, ArmConstants.PIVOT_kD, 
+      ArmConstants.PIVOT_kFF, ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT);
 
     armEncoder = pivot.getEncoder();
     armController = pivot.getPIDController();
@@ -149,6 +152,8 @@ public class Arm extends SubsystemBase {
     armController.setFF(ArmConstants.PIVOT_kFF, 0);
     armController.setOutputRange(ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT, 0);
     pivot.burnFlash();
+    String key = "Spark " + pivot.getDeviceId() + " Flashes";
+    Preferences.setDouble(key, Preferences.getDouble(key, 0) + 1);
   }
 
   @Override

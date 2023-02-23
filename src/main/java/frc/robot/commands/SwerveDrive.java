@@ -22,12 +22,13 @@ public class SwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.drivetrain.swerveDriveRot(
+    RobotContainer.drivetrain.swerveDrive(
       -RobotContainer.driverController.getLeftY(), 
       -RobotContainer.driverController.getLeftX(), 
       RobotContainer.driverController.getRightX(),
       -RobotContainer.driverController.getRightY(),
       !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
+      true,
       true);
   }
 

@@ -10,6 +10,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
@@ -35,7 +36,9 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     driver = new PearadoxSparkMax(21, MotorType.kBrushless, IdleMode.kBrake, 40, true);
-    pivot = new PearadoxSparkMax(22, MotorType.kBrushless, IdleMode.kBrake, 40, true);
+    pivot = new PearadoxSparkMax(22, MotorType.kBrushless, IdleMode.kBrake, 40, true,
+      IntakeConstants.PIVOT_kP, IntakeConstants.PIVOT_kI, IntakeConstants.PIVOT_kD, 
+      IntakeConstants.PIVOT_kFF, IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT);
 
     pivotEncoder = pivot.getEncoder();
     intakeController = pivot.getPIDController();
@@ -74,10 +77,6 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  public void intakeStop(){
-    pivot.set(0);
-  }
-
   public void resetPivotEncoder(){
     pivotEncoder.setPosition(0);
   }
@@ -89,6 +88,8 @@ public class Intake extends SubsystemBase {
     intakeController.setFF(IntakeConstants.PIVOT_kFF, 0);
     intakeController.setOutputRange(IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT, 0);
     pivot.burnFlash();
+    String key = "Spark " + pivot.getDeviceId() + " Flashes";
+    Preferences.setDouble(key, Preferences.getDouble(key, 0) + 1);
   }
 
   @Override

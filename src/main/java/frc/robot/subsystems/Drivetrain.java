@@ -93,40 +93,9 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putString("Pose", getPose().toString());
     SmartDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((rates[2] / 180)) + "pi rad/s");
   }
-  
-  public void swerveDrive(double frontSpeed, double sideSpeed, double turnSpeed, boolean fieldOriented, boolean deadband){
-    SmartDashboard.putNumber("X Speed", frontSpeed);
-    SmartDashboard.putNumber("Y Speed", sideSpeed);
-    SmartDashboard.putNumber("Turn Speed", turnSpeed);
 
-    if(deadband){
-      frontSpeed = Math.abs(frontSpeed) > 0.1 ? frontSpeed : 0;
-      sideSpeed = Math.abs(sideSpeed) > 0.1 ? sideSpeed : 0;
-      turnSpeed = Math.abs(turnSpeed) > 0.1 ? turnSpeed : 0;
-    }
-
-    frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.5 : frontSpeed;
-    sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? sideSpeed * 0.5 : sideSpeed;
-    turnSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? turnSpeed * 0.5 : turnSpeed;
-
-    frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
-    sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
-    turnSpeed = turnLimiter.calculate(turnSpeed) * SwerveConstants.TELE_DRIVE_MAX_ANGULAR_SPEED;
-
-    ChassisSpeeds chassisSpeeds;
-    if(fieldOriented){
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(frontSpeed, sideSpeed, turnSpeed, getHeadingRotation2d());
-    }
-    else{
-      chassisSpeeds = new ChassisSpeeds(frontSpeed, sideSpeed, turnSpeed);
-    }
-
-    SwerveModuleState[] moduleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-
-    setModuleStates(moduleStates);
-  }
-
-  public void swerveDriveRot(double frontSpeed, double sideSpeed, double turnX, double turnY, boolean fieldOriented, boolean deadband){
+  public void swerveDrive(double frontSpeed, double sideSpeed, double turnX, double turnY, 
+    boolean fieldOriented, boolean headingControl, boolean deadband){
     if(deadband){
       frontSpeed = Math.abs(frontSpeed) > 0.1 ? frontSpeed : 0;
       sideSpeed = Math.abs(sideSpeed) > 0.1 ? sideSpeed : 0;
@@ -134,52 +103,32 @@ public class Drivetrain extends SubsystemBase {
       turnY = Math.abs(turnY) > 0.1 ? turnY : 0;
     }
 
-    double error;
-    double targetAngle;
     double turnSpeed;
-    if(turnX == 0 && turnY == 0){
-      turnSpeed = 0;
+    if(headingControl){
+      if(turnX == 0 && turnY == 0){
+        turnSpeed = 0;
+      }
+      else{
+        double error = getJoystickAngle(turnX, turnY) - getHeading();
+    
+        if(error > 180) {
+          error -= 360;
+        }
+        else if(error < -180){
+          error += 360;
+        }
+    
+        if(Math.abs(error) > 1){
+          turnSpeed = Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error;
+        }
+        else{
+          turnSpeed = 0;
+        }
+      }
     }
     else{
-      if(turnX == 0 && turnY > 0){
-        targetAngle = -90.0;
-      }
-      else if(turnX == 0 && turnY < 0){
-        targetAngle = 90.0;
-      }
-      else{
-        targetAngle = Math.atan(turnY/turnX) * (180 / Math.PI);
-      }
-  
-      if(turnX > 0 && turnY > 0){
-        targetAngle -= 180.0;
-      }
-      else if(turnX > 0 && turnY <= 0){
-        targetAngle += 180.0;
-      }
-  
-      if(targetAngle + 180 > 180){
-        targetAngle -= 180.0;
-      }
-      else{
-        targetAngle += 180.0;
-      }
-  
-      error = targetAngle - getHeading();
-  
-      if(error > 180) {
-        error -= 360;
-      }
-      else if(error < -180){
-        error += 360;
-      }
-  
-      turnSpeed = Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error;
+      turnSpeed = -turnX;
     }
-
-    SmartDashboard.putNumber("X Speed", frontSpeed);
-    SmartDashboard.putNumber("Y Speed", sideSpeed);
-    SmartDashboard.putNumber("Turn Speed", turnSpeed);
 
     frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.5 : frontSpeed;
     sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? sideSpeed * 0.5 : sideSpeed;
@@ -275,4 +224,36 @@ public class Drivetrain extends SubsystemBase {
     positions[3] = rightBack.getPosition();
     return positions;
   } 
+
+  public double getJoystickAngle(double turnX, double turnY){
+    double targetAngle;
+
+    if(turnX == 0 && turnY > 0){
+      targetAngle = -90.0;
+    }
+    else if(turnX == 0 && turnY < 0){
+      targetAngle = 90.0;
+    }
+    else{
+      targetAngle = Math.atan(turnY/turnX) * (180 / Math.PI);
+    }
+    
+    targetAngle -= 90.0;
+      
+    if(turnX > 0 && turnY > 0){
+      targetAngle -= 180.0;
+    }
+    else if(turnX > 0 && turnY <= 0){
+      targetAngle += 180.0;
+    }
+  
+    if(targetAngle + 180 > 180){
+      targetAngle -= 180.0;
+    }
+    else{
+      targetAngle += 180.0;
+    }
+
+    return targetAngle;
+  }
 }
