@@ -111,7 +111,7 @@ public class SwerveModule extends SubsystemBase {
     setSpeed(desiredState);
   }
 
-  private void setSpeed(SwerveModuleState desiredState){
+  public void setSpeed(SwerveModuleState desiredState){
         driveMotor.set(desiredState.speedMetersPerSecond / SwerveConstants.DRIVETRAIN_MAX_SPEED);
     // else {
     //     double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
@@ -119,7 +119,7 @@ public class SwerveModule extends SubsystemBase {
     // }
   }
 
-  private void setAngle(SwerveModuleState desiredState){
+  public void setAngle(SwerveModuleState desiredState){
     Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (SwerveConstants.DRIVETRAIN_MAX_SPEED * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
     
     turnMotor.set(turnPIDController.calculate(getTurnMotorPosition(), desiredState.angle.getRadians()));

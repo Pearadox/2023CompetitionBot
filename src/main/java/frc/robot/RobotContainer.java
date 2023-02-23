@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeHold;
 import frc.robot.commands.ShooterHold;
@@ -51,7 +52,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
     arm.setDefaultCommand(new ArmHold());
-    // shooter.setDefaultCommand(new ShooterHold());
+    shooter.setDefaultCommand(new ShooterHold());
   }
 
   /**
@@ -66,8 +67,9 @@ public class RobotContainer {
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     deployIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
-    RB.whileTrue(new RunCommand(() -> arm.intakeSubs(0.3))).onFalse(new InstantCommand(() -> arm.intakeIn(0.1))
-      .andThen(new InstantCommand(arm::setSubsUpMode, arm)));
+    // RB.whileTrue(new RunCommand(() -> arm.intakeSubs(0.3))).onFalse(new InstantCommand(() -> arm.intakeIn(0.1))
+    //   .andThen(new InstantCommand(arm::setSubsUpMode, arm)));
+    RB.whileTrue(new AutoBalance()).onFalse(new SwerveDrive());
     armUp_Y.onTrue(new InstantCommand(arm::armUp, arm));
     armDown_A.onTrue(new InstantCommand(arm::armDown, arm));
     armSubs_X.onTrue(new InstantCommand(arm::setSubsUpMode, arm));

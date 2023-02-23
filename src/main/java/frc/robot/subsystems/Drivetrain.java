@@ -90,6 +90,8 @@ public class Drivetrain extends SubsystemBase {
     odometry.update(getHeadingRotation2d(), getModulePositions());
     gyro.getRawGyro(rates);
     SmartDashboard.putNumber("Robot Angle", getHeading());
+    SmartDashboard.putNumber("Robot Pitch", getPitch());
+    SmartDashboard.putNumber("Robot Roll", getRoll());
     SmartDashboard.putString("Pose", getPose().toString());
     SmartDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((rates[2] / 180)) + "pi rad/s");
   }
@@ -194,11 +196,18 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getRoll(){
-    return gyro.getRoll();
+    return gyro.getRoll() + 0.92;
   }
 
   public double getPitch(){
-    return gyro.getPitch();
+    return gyro.getPitch() + 0.13;
+  }
+
+  public void formX(){
+    leftFront.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    rightFront.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    leftBack.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    rightBack.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
   public void stopModules(){

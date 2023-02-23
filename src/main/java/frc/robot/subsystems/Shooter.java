@@ -49,8 +49,12 @@ public class Shooter extends SubsystemBase {
 
   public void shooterHold(){
     topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
-    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4) + 0.2);
-    feeder.set(0.5);
+    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
+      feeder.set(0.5);
+  }
+
+  public boolean hasCube(){
+    return !irSensor.get();
   }
 
   @Override
@@ -59,5 +63,6 @@ public class Shooter extends SubsystemBase {
     if(!SmartDashboard.containsKey("Shooter Speed")){
       SmartDashboard.putNumber("Shooter Speed", 0.4);
     }
+    SmartDashboard.putBoolean("Distance Sensor", !irSensor.get());
   }
 }

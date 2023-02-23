@@ -85,7 +85,7 @@ public final class Constants {
     );
 
     public static final double kS_PERCENT = 0.035;
-    public static final double kP_PERCENT = 0.012;
+    public static final double kP_PERCENT = 0.009;
   }
 
   public static final class IntakeConstants{

@@ -35,8 +35,8 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    driver = new PearadoxSparkMax(21, MotorType.kBrushless, IdleMode.kBrake, 40, true);
-    pivot = new PearadoxSparkMax(22, MotorType.kBrushless, IdleMode.kBrake, 40, true,
+    driver = new PearadoxSparkMax(IntakeConstants.INTAKE_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true);
+    pivot = new PearadoxSparkMax(IntakeConstants.INTAKE_PIVOT_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true,
       IntakeConstants.PIVOT_kP, IntakeConstants.PIVOT_kI, IntakeConstants.PIVOT_kD, 
       IntakeConstants.PIVOT_kFF, IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT);
 
@@ -46,6 +46,10 @@ public class Intake extends SubsystemBase {
 
   public void intakeIn(){
     driver.set(0.5);
+  }
+
+  public void stop(){
+    driver.set(0);
   }
 
   public void intakeHold(){
