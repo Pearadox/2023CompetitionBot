@@ -48,8 +48,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shooterHold(){
-    topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
-    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
+    topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.1));
+    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.1));
       feeder.set(0.5);
   }
 
@@ -61,7 +61,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if(!SmartDashboard.containsKey("Shooter Speed")){
-      SmartDashboard.putNumber("Shooter Speed", 0.4);
+      SmartDashboard.putNumber("Shooter Speed", 0.1);
     }
     SmartDashboard.putBoolean("Distance Sensor", !irSensor.get());
   }

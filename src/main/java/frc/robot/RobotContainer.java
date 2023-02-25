@@ -15,7 +15,10 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -36,6 +39,8 @@ public class RobotContainer {
   public static final Arm arm = Arm.getInstance();
   public static final Shooter shooter = Shooter.getInstance();
 
+  private SendableChooser<String> autoChooser = new SendableChooser<>();
+
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
   private final JoystickButton deployIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
@@ -53,6 +58,10 @@ public class RobotContainer {
     intake.setDefaultCommand(new IntakeHold());
     arm.setDefaultCommand(new ArmHold());
     shooter.setDefaultCommand(new ShooterHold());
+
+    SmartDashboard.putData("Auton Chooser", autoChooser);
+    autoChooser.setDefaultOption("1M + Balance", "1M + Balance");
+    autoChooser.addOption("2NC + Balance", "2NC + Balance");
   }
 
   /**
@@ -83,6 +92,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto();
+    if(autoChooser.getSelected().equals("1M + Balance")){
+      return Autos.OneM_Balance();
+    }
+    else if(autoChooser.getSelected().equals("2NC + Balance")){
+      return Autos.TwoNC_Balance();
+    }
+    else{
+      return Autos.OneM_Balance();
+    }
   }
 }
