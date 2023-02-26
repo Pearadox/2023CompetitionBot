@@ -48,9 +48,18 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shooterHold(){
-    topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.1));
-    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.1));
+    topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4) - 0.2);
+    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
+    if(!hasCube()){
       feeder.set(0.5);
+    }
+    else{
+      feeder.set(0);
+    }
+  }
+
+  public void feederShoot(){
+    feeder.set(1);
   }
 
   public boolean hasCube(){
@@ -61,7 +70,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if(!SmartDashboard.containsKey("Shooter Speed")){
-      SmartDashboard.putNumber("Shooter Speed", 0.1);
+      SmartDashboard.putNumber("Shooter Speed", 0.4);
     }
     SmartDashboard.putBoolean("Distance Sensor", !irSensor.get());
   }

@@ -6,9 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
-import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeHold;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterHold;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Arm;
@@ -60,8 +60,10 @@ public class RobotContainer {
     shooter.setDefaultCommand(new ShooterHold());
 
     SmartDashboard.putData("Auton Chooser", autoChooser);
-    autoChooser.setDefaultOption("1M + Balance", "1M + Balance");
-    autoChooser.addOption("2NC + Balance", "2NC + Balance");
+    autoChooser.setDefaultOption("1CubeM_Bal", "1CubeM_Bal");
+    autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
+    autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
+    autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
   }
 
   /**
@@ -78,7 +80,7 @@ public class RobotContainer {
     deployIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
     // RB.whileTrue(new RunCommand(() -> arm.intakeSubs(0.3))).onFalse(new InstantCommand(() -> arm.intakeIn(0.1))
     //   .andThen(new InstantCommand(arm::setSubsUpMode, arm)));
-    RB.whileTrue(new AutoBalance()).onFalse(new SwerveDrive());
+    RB.whileTrue(new Shoot());
     armUp_Y.onTrue(new InstantCommand(arm::armUp, arm));
     armDown_A.onTrue(new InstantCommand(arm::armDown, arm));
     armSubs_X.onTrue(new InstantCommand(arm::setSubsUpMode, arm));
@@ -92,14 +94,20 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    if(autoChooser.getSelected().equals("1M + Balance")){
-      return Autos.OneM_Balance();
+    if(autoChooser.getSelected().equals("1CubeM_Bal")){
+      return Autos.c1C0_M_Bal();
     }
-    else if(autoChooser.getSelected().equals("2NC + Balance")){
-      return Autos.TwoNC_Balance();
+    else if(autoChooser.getSelected().equals("2CubeNC_Bal")){
+      return Autos.c2C0_NC_Bal();
+    }
+    else if(autoChooser.getSelected().equals("1Cone1CubeNC_Bal")){
+      return Autos.c1C1_NC_Bal();
+    }
+    else if(autoChooser.getSelected().equals("1Cone1CubeC_Bal")){
+      return Autos.c1C1_C_Bal();
     }
     else{
-      return Autos.OneM_Balance();
+      return Autos.c1C0_M_Bal();
     }
   }
 }

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.List;
 
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
@@ -23,83 +24,105 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.SwerveConstants;
 
 public final class Autos {
+  private static PIDController frontController = new PIDController(SwerveConstants.AUTO_kP_FRONT, 0, 0);
+  private static PIDController sideController = new PIDController(SwerveConstants.AUTO_kP_SIDE, 0, 0);
+  private static PIDController turnController = new PIDController(SwerveConstants.AUTO_kP_TURN, 0, 0);
+
   /** Example static factory for an autonomous command. */
-  public static CommandBase OneM_Balance() {
-    PIDController frontController = new PIDController(SwerveConstants.AUTO_kP_FRONT, 0, 0);
-    PIDController sideController = new PIDController(SwerveConstants.AUTO_kP_SIDE, 0, 0);
-    PIDController turnController = new PIDController(SwerveConstants.AUTO_kP_TURN, 0, 0);
-    turnController.enableContinuousInput(-Math.PI, Math.PI);
+  public static CommandBase c1C0_M_Bal() {
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("c1C0_M_Bal", SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.25, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION);
 
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("OneM_Balance", SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.25, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION);
+    PPSwerveControllerCommand driveOnCS = makeSwerveControllerCommand(trajectory);
 
-    PPSwerveControllerCommand command = new PPSwerveControllerCommand(
-      trajectory, 
-      RobotContainer.drivetrain::getPose, 
-      SwerveConstants.DRIVE_KINEMATICS,
-      frontController, 
-      sideController, 
-      turnController, 
-      RobotContainer.drivetrain::setModuleStates,
-      true,
-      RobotContainer.drivetrain);
-
-    PathPlannerState initialState = DriverStation.getAlliance().equals(Alliance.Red) ? 
-      PathPlannerTrajectory.transformStateForAlliance(trajectory.getInitialState(), Alliance.Red) :
-      trajectory.getInitialState();
-
-    Pose2d initialPose = new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation);
-    
     return new SequentialCommandGroup(
-      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(initialPose)),
-      command,
+      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(trajectory))),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      driveOnCS,
       new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
     );
   }
 
-  public static CommandBase TwoNC_Balance() {
-    PIDController frontController = new PIDController(SwerveConstants.AUTO_kP_FRONT, 0, 0);
-    PIDController sideController = new PIDController(SwerveConstants.AUTO_kP_SIDE, 0, 0);
-    PIDController turnController = new PIDController(SwerveConstants.AUTO_kP_TURN, 0, 0);
-    turnController.enableContinuousInput(-Math.PI, Math.PI);
+  public static CommandBase c2C0_NC_Bal() {
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c2C0_NC_Bal", 
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.0, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
 
-    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("TwoNC_Balance", SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION);
-
-    PPSwerveControllerCommand command1 = new PPSwerveControllerCommand(
-      pathGroup.get(0), 
-      RobotContainer.drivetrain::getPose, 
-      SwerveConstants.DRIVE_KINEMATICS,
-      frontController, 
-      sideController, 
-      turnController, 
-      RobotContainer.drivetrain::setModuleStates,
-      true,
-      RobotContainer.drivetrain);
-
-    PPSwerveControllerCommand command2 = new PPSwerveControllerCommand(
-      pathGroup.get(1), 
-      RobotContainer.drivetrain::getPose, 
-      SwerveConstants.DRIVE_KINEMATICS,
-      frontController, 
-      sideController, 
-      turnController, 
-      RobotContainer.drivetrain::setModuleStates,
-      true,
-      RobotContainer.drivetrain);
-
-    PathPlannerState initialState = DriverStation.getAlliance().equals(Alliance.Red) ? 
-      PathPlannerTrajectory.transformStateForAlliance(pathGroup.get(0).getInitialState(), Alliance.Red) :
-      pathGroup.get(0).getInitialState();
-
-    Pose2d initialPose = new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation);
+    PPSwerveControllerCommand driveToCube1 = makeSwerveControllerCommand(pathGroup.get(0));
+    PPSwerveControllerCommand driveOnCS = makeSwerveControllerCommand(pathGroup.get(1));
     
     return new SequentialCommandGroup(
-      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(initialPose)),
+      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
       new InstantCommand(() -> RobotContainer.intake.intakeToggle()),
-      command1,
+      driveToCube1,
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
       new WaitCommand(1),
-      command2,
+      driveOnCS,
+      new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
+    );
+  }
+
+  public static CommandBase c1C1_NC_Bal() {
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c1C1_NC_Bal",
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.0, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION), 
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+
+    PPSwerveControllerCommand scoreCone1 =  makeSwerveControllerCommand(pathGroup.get(0));
+    PPSwerveControllerCommand driveToCube1 =  makeSwerveControllerCommand(pathGroup.get(1));
+    PPSwerveControllerCommand driveOnCS =  makeSwerveControllerCommand(pathGroup.get(2));
+    
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.arm.setHighMode()),
+      scoreCone1,
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
+      new WaitCommand(1),
+      driveToCube1.alongWith(
+        new InstantCommand(() -> RobotContainer.arm.setZeroMode())
+        .andThen(new InstantCommand(() -> RobotContainer.intake.intakeToggle()))
+      ),
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
+      new WaitCommand(1),
+      driveOnCS,
+      new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
+    );
+  }
+
+  public static CommandBase c1C1_C_Bal() {
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c1C1_C_Bal",
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.0, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION), 
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.0, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+
+    PPSwerveControllerCommand scoreCone1 =  makeSwerveControllerCommand(pathGroup.get(0));
+    PPSwerveControllerCommand driveOut =  makeSwerveControllerCommand(pathGroup.get(1));
+    PPSwerveControllerCommand driveOverCP =  makeSwerveControllerCommand(pathGroup.get(2));
+    PPSwerveControllerCommand driveToCube1 =  makeSwerveControllerCommand(pathGroup.get(3));
+    PPSwerveControllerCommand driveOnCS =  makeSwerveControllerCommand(pathGroup.get(4));
+    
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.arm.setHighMode()),
+      scoreCone1,
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
+      new WaitCommand(1),
+      driveOut.alongWith(
+        new InstantCommand(() -> RobotContainer.arm.setZeroMode())
+        .andThen(new InstantCommand(() -> RobotContainer.intake.intakeToggle()))
+      ),
+      driveOverCP,
+      driveToCube1,
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
+      new WaitCommand(1),
+      driveOnCS,
       new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
     );
@@ -107,5 +130,27 @@ public final class Autos {
 
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
+  }
+
+  private static PPSwerveControllerCommand makeSwerveControllerCommand(PathPlannerTrajectory traj){
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
+    return new PPSwerveControllerCommand(
+      traj, 
+      RobotContainer.drivetrain::getPose, 
+      SwerveConstants.DRIVE_KINEMATICS,
+      frontController, 
+      sideController,
+      turnController, 
+      RobotContainer.drivetrain::setModuleStates,
+      true,
+      RobotContainer.drivetrain);
+  }
+
+  private static Pose2d getInitialPose(PathPlannerTrajectory traj){
+    PathPlannerState initialState = DriverStation.getAlliance().equals(Alliance.Red) ? 
+    PathPlannerTrajectory.transformStateForAlliance(traj.getInitialState(), Alliance.Red) :
+    traj.getInitialState();
+
+    return new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation);
   }
 }
