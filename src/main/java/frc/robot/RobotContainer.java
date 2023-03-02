@@ -4,18 +4,21 @@
 
 package frc.robot;
 
+import frc.lib.drivers.Launchpad;
+import frc.lib.drivers.LaunchpadButton;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
 import frc.robot.commands.Autos;
+import frc.robot.commands.BigStickHold;
 import frc.robot.commands.IntakeHold;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterHold;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.BigStick;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +41,7 @@ public class RobotContainer {
   public static final Intake intake = Intake.getInstance();
   public static final Arm arm = Arm.getInstance();
   public static final Shooter shooter = Shooter.getInstance();
+  public static final BigStick bigStick = BigStick.getInstance();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 
@@ -49,15 +53,21 @@ public class RobotContainer {
   private final JoystickButton armDown_A = new JoystickButton(driverController, XboxController.Button.kA.value);
   private final JoystickButton armSubs_X = new JoystickButton(driverController, XboxController.Button.kX.value);
   private final JoystickButton armScore_B = new JoystickButton(driverController, XboxController.Button.kB.value);
+  private final JoystickButton deployBigStick_Back = new JoystickButton(driverController, XboxController.Button.kBack.value);
+
+  public static final Launchpad opController = new Launchpad();
+  private final LaunchpadButton[][] gridButtons = new LaunchpadButton[3][9];
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    loadGridButtons();
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
     arm.setDefaultCommand(new ArmHold());
     shooter.setDefaultCommand(new ShooterHold());
+    bigStick.setDefaultCommand(new BigStickHold());
 
     SmartDashboard.putData("Auton Chooser", autoChooser);
     autoChooser.setDefaultOption("1CubeM_Bal", "1CubeM_Bal");
@@ -85,6 +95,7 @@ public class RobotContainer {
     armDown_A.onTrue(new InstantCommand(arm::armDown, arm));
     armSubs_X.onTrue(new InstantCommand(arm::setSubsUpMode, arm));
     armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn(0.1)));
+    deployBigStick_Back.onTrue(new InstantCommand(() -> bigStick.toggleDeploy()));
   }
 
   /**
@@ -108,6 +119,14 @@ public class RobotContainer {
     }
     else{
       return Autos.c1C0_M_Bal();
+    }
+  }
+
+  public void loadGridButtons(){
+    for(int r = 0; r < 3; r++){
+      for(int c = 0; c < 9; c++){
+        gridButtons[r][c] = new LaunchpadButton(opController, r, c);
+      }
     }
   }
 }

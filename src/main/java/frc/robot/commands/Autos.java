@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
@@ -80,13 +81,13 @@ public final class Autos {
       new InstantCommand(() -> RobotContainer.arm.setHighMode()),
       scoreCone1,
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
-      new WaitCommand(1),
+      new RunCommand(() -> RobotContainer.arm.intakeOut()).withTimeout(0.5),
       driveToCube1.alongWith(
         new InstantCommand(() -> RobotContainer.arm.setZeroMode())
         .andThen(new InstantCommand(() -> RobotContainer.intake.intakeToggle()))
       ),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
-      new WaitCommand(1),
+      new Shoot().withTimeout(2),
       driveOnCS,
       new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())

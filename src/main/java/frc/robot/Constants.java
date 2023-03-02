@@ -59,7 +59,7 @@ public final class Constants {
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED = 3.5 * Math.PI;
 
     //Teleop constraints
-    public static final double TELE_DRIVE_MAX_SPEED = DRIVETRAIN_MAX_SPEED / 1;
+    public static final double TELE_DRIVE_MAX_SPEED = DRIVETRAIN_MAX_SPEED / 3;
     public static final double TELE_DRIVE_MAX_ANGULAR_SPEED = DRIVETRAIN_MAX_ANGULAR_SPEED / 1.75;
     public static final double TELE_DRIVE_MAX_ACCELERATION = 3;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION = 3;
@@ -99,7 +99,7 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.25;
     public static final double PIVOT_MAX_OUTPUT = 0.1;
 
-    public static final double DEPLOYED_ROT = 6.3;
+    public static final double DEPLOYED_ROT = 5.79;
   }
 
   public static final class ArmConstants{
@@ -114,9 +114,9 @@ public final class Constants {
     public static final double PIVOT_MAX_OUTPUT = 0.5;
 
     public static final double LOW_MODE_ROT = 10;
-    public static final double MID_MODE_ROT = 19;
-    public static final double HIGH_MODE_ROT = 23;
-    public static final double SUBS_UP_MODE_ROT = 21;
+    public static final double MID_MODE_ROT = 16.5;
+    public static final double HIGH_MODE_ROT = 21;
+    public static final double SUBS_UP_MODE_ROT = 19.5;
     public static final double SUBS_DOWN_MODE_ROT = 18.75;
   }
 
@@ -126,5 +126,18 @@ public final class Constants {
     public static final int FEEDER_ID = 33;
 
     public static final int IR_SENSOR_ID = 0;
+  }
+
+  public static final class BigStickConstants{
+    public static final int BIG_STICK_ID = 40;
+
+    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+    public static final double PIVOT_kFF = 0;
+    public static final double PIVOT_MIN_OUTPUT = -0.5;
+    public static final double PIVOT_MAX_OUTPUT = 0.5;
+
+    public static final double DEPLOYED_ROT = 7.4;
   }
 }

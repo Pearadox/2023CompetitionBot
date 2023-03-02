@@ -8,6 +8,8 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +26,8 @@ public class Shooter extends SubsystemBase {
   private SparkMaxPIDController botController;
 
   private DigitalInput irSensor;
+
+  private NetworkTable llTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
 
   private LerpTable shooterLerp;
 
@@ -48,8 +52,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shooterHold(){
-    topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4) - 0.2);
-    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
+    topShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4));
+    botShooter.set(SmartDashboard.getNumber("Shooter Speed", 0.4)-0.12);
     if(!hasCube()){
       feeder.set(0.5);
     }
@@ -59,7 +63,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feederShoot(){
-    feeder.set(1);
+    feeder.set(0.7);
   }
 
   public boolean hasCube(){
@@ -73,5 +77,13 @@ public class Shooter extends SubsystemBase {
       SmartDashboard.putNumber("Shooter Speed", 0.4);
     }
     SmartDashboard.putBoolean("Distance Sensor", !irSensor.get());
+  }
+
+  public NetworkTable getLLTable(){
+    return llTable;
+  }
+
+  public void changeLLPipeline(int pipeline){
+    llTable.getEntry("pipeline").setNumber(pipeline);
   }
 }

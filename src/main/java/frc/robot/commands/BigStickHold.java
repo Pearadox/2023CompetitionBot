@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class ArmHold extends CommandBase {
-  /** Creates a new ArmHold. */
-  public ArmHold() {
+public class BigStickHold extends CommandBase {
+  /** Creates a new BigStickHold. */
+  public BigStickHold() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.arm);
+    addRequirements(RobotContainer.bigStick);
   }
 
   // Called when the command is initially scheduled.
@@ -21,8 +21,7 @@ public class ArmHold extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.arm.armHold();
-    RobotContainer.arm.intakeIn(0.3);
+    RobotContainer.bigStick.bigStickHold();
   }
 
   // Called once the command ends or is interrupted.

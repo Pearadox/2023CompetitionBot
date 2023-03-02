@@ -28,7 +28,7 @@ public class SwerveDrive extends CommandBase {
       RobotContainer.driverController.getRightX(),
       -RobotContainer.driverController.getRightY(),
       !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
-      true,
+      false,
       true);
   }
 

@@ -102,7 +102,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void intakeOut(){
-    driver.set(-1.0);
+    driver.set(-0.9);
   }
 
   public void intakeStop(){
