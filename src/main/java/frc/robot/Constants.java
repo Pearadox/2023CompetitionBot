@@ -17,6 +17,8 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final PDH_ID = ;
+
   public static class IOConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
   }
@@ -95,7 +97,6 @@ public final class Constants {
     public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
-    public static final double PIVOT_kFF = 0.01;
     public static final double PIVOT_MIN_OUTPUT = -0.25;
     public static final double PIVOT_MAX_OUTPUT = 0.1;
 
@@ -109,7 +110,6 @@ public final class Constants {
     public static final double PIVOT_kP = 0.09;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
-    public static final double PIVOT_kFF = 0;
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
 
@@ -126,6 +126,16 @@ public final class Constants {
     public static final int FEEDER_ID = 33;
 
     public static final int IR_SENSOR_ID = 0;
+
+    public static final double SHOOTER_kS = 0;
+    public static final double SHOOTER_kV = 0;
+    public static final double SHOOTER_kA = 0;
+
+    public static final double SHOOTER_kP = 0;
+    public static final double SHOOTER_kI = 0;
+    public static final double SHOOTER_kD = 0;
+    public static final double SHOOTER_MIN_OUTPUT = -1.0;
+    public static final double SHOOTER_MAX_OUTPUT = 1.0;
   }
 
   public static final class BigStickConstants{
@@ -134,7 +144,6 @@ public final class Constants {
     public static final double PIVOT_kP = 0.1;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
-    public static final double PIVOT_kFF = 0;
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
 

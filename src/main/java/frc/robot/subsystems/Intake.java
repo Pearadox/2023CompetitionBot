@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
     driver = new PearadoxSparkMax(IntakeConstants.INTAKE_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true);
     pivot = new PearadoxSparkMax(IntakeConstants.INTAKE_PIVOT_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true,
       IntakeConstants.PIVOT_kP, IntakeConstants.PIVOT_kI, IntakeConstants.PIVOT_kD, 
-      IntakeConstants.PIVOT_kFF, IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT);
+      IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT);
 
     pivotEncoder = pivot.getEncoder();
     intakeController = pivot.getPIDController();
@@ -83,17 +83,6 @@ public class Intake extends SubsystemBase {
 
   public void resetPivotEncoder(){
     pivotEncoder.setPosition(0);
-  }
-
-  public void configPivotController(){
-    intakeController.setP(IntakeConstants.PIVOT_kP, 0);
-    intakeController.setI(IntakeConstants.PIVOT_kI, 0);
-    intakeController.setD(IntakeConstants.PIVOT_kD, 0);
-    intakeController.setFF(IntakeConstants.PIVOT_kFF, 0);
-    intakeController.setOutputRange(IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT, 0);
-    pivot.burnFlash();
-    String key = "Spark " + pivot.getDeviceId() + " Flashes";
-    Preferences.setDouble(key, Preferences.getDouble(key, 0) + 1);
   }
 
   @Override

@@ -30,7 +30,7 @@ public class PearadoxSparkMax extends CANSparkMax {
     }
 
     public PearadoxSparkMax(int deviceId, MotorType m, IdleMode mode, int limit, boolean isInverted, 
-        double kP, double kI, double kD, double kFF, double minOutput, double maxOutput){
+        double kP, double kI, double kD, double minOutput, double maxOutput){
         super(deviceId, m);
         this.restoreFactoryDefaults();
         this.setSmartCurrentLimit(limit);
@@ -39,7 +39,6 @@ public class PearadoxSparkMax extends CANSparkMax {
         this.getPIDController().setP(kP, 0);
         this.getPIDController().setI(kI, 0);
         this.getPIDController().setD(kD, 0);
-        this.getPIDController().setFF(kFF, 0);
         this.getPIDController().setOutputRange(minOutput, maxOutput, 0);
         this.burnFlash();
         String key = "Spark " + this.getDeviceId() + " Flashes";

@@ -41,7 +41,7 @@ public class Arm extends SubsystemBase {
     driver = new PearadoxSparkMax(ArmConstants.ARM_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 25, true);
     pivot = new PearadoxSparkMax(ArmConstants.ARM_PIVOT_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true,
       ArmConstants.PIVOT_kP, ArmConstants.PIVOT_kI, ArmConstants.PIVOT_kD, 
-      ArmConstants.PIVOT_kFF, ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT);
+      ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT);
 
     armEncoder = pivot.getEncoder();
     armController = pivot.getPIDController();
@@ -143,17 +143,6 @@ public class Arm extends SubsystemBase {
     else if(mode == ArmMode.kLow){
       mode = ArmMode.kZero;
     }
-  }
-
-  public void configPivotController(){
-    armController.setP(ArmConstants.PIVOT_kP, 0);
-    armController.setI(ArmConstants.PIVOT_kI, 0);
-    armController.setD(ArmConstants.PIVOT_kD, 0);
-    armController.setFF(ArmConstants.PIVOT_kFF, 0);
-    armController.setOutputRange(ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT, 0);
-    pivot.burnFlash();
-    String key = "Spark " + pivot.getDeviceId() + " Flashes";
-    Preferences.setDouble(key, Preferences.getDouble(key, 0) + 1);
   }
 
   @Override

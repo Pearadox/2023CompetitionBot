@@ -31,7 +31,7 @@ public class BigStick extends SubsystemBase {
   /** Creates a new BigStick. */
   public BigStick() {
     pivot = new PearadoxSparkMax(BigStickConstants.BIG_STICK_ID, MotorType.kBrushless, IdleMode.kBrake, 25, false,
-      BigStickConstants.PIVOT_kP, BigStickConstants.PIVOT_kI, BigStickConstants.PIVOT_kD, BigStickConstants.PIVOT_kFF, 
+      BigStickConstants.PIVOT_kP, BigStickConstants.PIVOT_kI, BigStickConstants.PIVOT_kD, 
       BigStickConstants.PIVOT_MIN_OUTPUT, BigStickConstants.PIVOT_MAX_OUTPUT);
 
     bigStickEncoder =  pivot.getEncoder();

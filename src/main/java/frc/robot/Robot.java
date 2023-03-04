@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    RobotContainer.pdh.setSwitchableChannel(false);
   }
 
   /**
@@ -50,6 +51,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.drivetrain.setAllMode(false);
+    RobotContainer.pdh.setSwitchableChannel(false);
   }
 
   @Override
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    RobotContainer.pdh.setSwitchableChannel(true);
   }
 
   /** This function is called periodically during autonomous. */
@@ -77,6 +80,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     RobotContainer.drivetrain.setAllMode(true);
+    RobotContainer.pdh.setSwitchableChannel(true);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

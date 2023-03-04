@@ -112,11 +112,13 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setSpeed(SwerveModuleState desiredState){
-        driveMotor.set(desiredState.speedMetersPerSecond / SwerveConstants.DRIVETRAIN_MAX_SPEED);
-    // else {
-    //     double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-    //     mDriveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
-    // }
+    driveMotor.set(desiredState.speedMetersPerSecond / SwerveConstants.DRIVETRAIN_MAX_SPEED);
+
+    // driveController.setReference(
+    //   desiredState.speedMetersPerSecond,
+    //   ControlType.kVelocity,
+    //   0,
+    //   feedforward.calculate(desiredState.speedMetersPerSecond));
   }
 
   public void setAngle(SwerveModuleState desiredState){

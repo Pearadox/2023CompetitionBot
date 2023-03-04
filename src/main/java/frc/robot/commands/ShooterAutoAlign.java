@@ -12,45 +12,16 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.SwerveConstants;
 
 public class ShooterAutoAlign extends CommandBase {
-  int r;
-  int c;
 
   /** Creates a new AutoAlign. */
-  public ShooterAutoAlign(int r, int c) {
+  public ShooterAutoAlign() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.drivetrain);
-    this.r = r;
-    this.c = c;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    if(DriverStation.getAlliance().equals(Alliance.Red)){
-      if((r == 7 && c == 1) || (r == 8 && c == 1)){
-        RobotContainer.shooter.changeLLPipeline(1);
-      }
-      else if((r == 7 && c == 4) || (r == 8 && c == 4)){
-        RobotContainer.shooter.changeLLPipeline(2);
-      }
-      else if((r == 7 && c == 7) || (r == 8 && c == 7)){
-        RobotContainer.shooter.changeLLPipeline(3);
-      }
-    }
-    else if(DriverStation.getAlliance().equals(Alliance.Blue)){
-      if(DriverStation.getAlliance().equals(Alliance.Red)){
-        if((r == 7 && c == 1) || (r == 8 && c == 1)){
-          RobotContainer.shooter.changeLLPipeline(6);
-        }
-        else if((r == 7 && c == 4) || (r == 8 && c == 4)){
-          RobotContainer.shooter.changeLLPipeline(7);
-        }
-        else if((r == 7 && c == 7) || (r == 8 && c == 7)){
-          RobotContainer.shooter.changeLLPipeline(8);
-        }
-      }
-    }
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

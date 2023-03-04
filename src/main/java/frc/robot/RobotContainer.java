@@ -19,7 +19,9 @@ import frc.robot.subsystems.BigStick;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,6 +44,8 @@ public class RobotContainer {
   public static final Arm arm = Arm.getInstance();
   public static final Shooter shooter = Shooter.getInstance();
   public static final BigStick bigStick = BigStick.getInstance();
+
+  public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 

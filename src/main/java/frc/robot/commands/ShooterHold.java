@@ -22,6 +22,7 @@ public class ShooterHold extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooter.shooterHold();
+    RobotContainer.shooter.feederHold();
   }
 
   // Called once the command ends or is interrupted.
