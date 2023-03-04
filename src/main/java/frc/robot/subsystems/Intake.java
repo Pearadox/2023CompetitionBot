@@ -10,7 +10,6 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
@@ -25,7 +24,6 @@ public class Intake extends SubsystemBase {
   private SparkMaxPIDController intakeController;
 
   private boolean deployed = false;
-  private boolean zeroed = false;
 
   private static final Intake intake = new Intake();
 
@@ -48,27 +46,21 @@ public class Intake extends SubsystemBase {
     driver.set(0.5);
   }
 
+  public void intakeOut(){
+    driver.set(-0.5);
+  }
+
   public void stop(){
     driver.set(0);
   }
 
+
   public void intakeHold(){
     if(deployed){
       intakeController.setReference(IntakeConstants.DEPLOYED_ROT, CANSparkMax.ControlType.kPosition, 0);
-      zeroed = false;
     }
     else{
-      if(!zeroed && pivot.getOutputCurrent() > 38){
-        zeroed = true;
-        resetPivotEncoder();
-      }
-      if(!zeroed){
-        pivot.set(-0.1);
-      }
-      if(zeroed){
-        pivot.set(0);
         intakeController.setReference(0, CANSparkMax.ControlType.kPosition, 0);
-      }
     }
   }
 
@@ -90,7 +82,7 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
     SmartDashboard.putBoolean("Deployed", deployed);
-    SmartDashboard.putBoolean("Zeroed", zeroed);
     SmartDashboard.putNumber("Pivot Current", pivot.getOutputCurrent());
+    SmartDashboard.putNumber("Intake Current", driver.getOutputCurrent());
   }
 }

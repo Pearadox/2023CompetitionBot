@@ -17,7 +17,7 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final PDH_ID = ;
+  public static final int PDH_ID = 10;
 
   public static class IOConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
@@ -61,7 +61,7 @@ public final class Constants {
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED = 3.5 * Math.PI;
 
     //Teleop constraints
-    public static final double TELE_DRIVE_MAX_SPEED = DRIVETRAIN_MAX_SPEED / 3;
+    public static final double TELE_DRIVE_MAX_SPEED = DRIVETRAIN_MAX_SPEED / 1;
     public static final double TELE_DRIVE_MAX_ANGULAR_SPEED = DRIVETRAIN_MAX_ANGULAR_SPEED / 1.75;
     public static final double TELE_DRIVE_MAX_ACCELERATION = 3;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION = 3;
@@ -98,9 +98,9 @@ public final class Constants {
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
     public static final double PIVOT_MIN_OUTPUT = -0.25;
-    public static final double PIVOT_MAX_OUTPUT = 0.1;
+    public static final double PIVOT_MAX_OUTPUT = 0.25;
 
-    public static final double DEPLOYED_ROT = 5.79;
+    public static final double DEPLOYED_ROT = 10.8;
   }
 
   public static final class ArmConstants{
@@ -113,10 +113,10 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.5;
     public static final double PIVOT_MAX_OUTPUT = 0.5;
 
-    public static final double LOW_MODE_ROT = 10;
+    public static final double LOW_MODE_ROT = 3.5;
     public static final double MID_MODE_ROT = 16.5;
     public static final double HIGH_MODE_ROT = 21;
-    public static final double SUBS_UP_MODE_ROT = 19.5;
+    public static final double SUBS_UP_MODE_ROT = 20.3;
     public static final double SUBS_DOWN_MODE_ROT = 18.75;
   }
 
@@ -127,15 +127,25 @@ public final class Constants {
 
     public static final int IR_SENSOR_ID = 0;
 
-    public static final double SHOOTER_kS = 0;
-    public static final double SHOOTER_kV = 0;
-    public static final double SHOOTER_kA = 0;
+    public static final double TOP_SHOOTER_kS = 0.062786;
+    public static final double TOP_SHOOTER_kV = 0.12905;
+    public static final double TOP_SHOOTER_kA = 0.011404;
 
-    public static final double SHOOTER_kP = 0;
-    public static final double SHOOTER_kI = 0;
-    public static final double SHOOTER_kD = 0;
+    public static final double TOP_SHOOTER_kP = 0.00035813;
+    public static final double TOP_SHOOTER_kI = 0;
+    public static final double TOP_SHOOTER_kD = 0.0005;
+
+    public static final double BOT_SHOOTER_kS = 0.11635;
+    public static final double BOT_SHOOTER_kV = 0.1291;
+    public static final double BOT_SHOOTER_kA = 0.012424;
+
+    public static final double BOT_SHOOTER_kP = 0.00036422;
+    public static final double BOT_SHOOTER_kI = 0;
+    public static final double BOT_SHOOTER_kD = 0;
+
     public static final double SHOOTER_MIN_OUTPUT = -1.0;
     public static final double SHOOTER_MAX_OUTPUT = 1.0;
+
   }
 
   public static final class BigStickConstants{

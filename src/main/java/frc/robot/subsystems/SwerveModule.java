@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.robot.Constants.SwerveConstants;
@@ -39,7 +40,7 @@ public class SwerveModule extends SubsystemBase {
 
       absoluteEncoder = new CANCoder(absoluteEncoderId);
 
-      driveMotor = new PearadoxSparkMax(driveMotorId, MotorType.kBrushless, IdleMode.kCoast, 35, driveMotorReversed);
+      driveMotor = new PearadoxSparkMax(driveMotorId, MotorType.kBrushless, IdleMode.kCoast, 45, driveMotorReversed);
       turnMotor = new PearadoxSparkMax(turnMotorId, MotorType.kBrushless, IdleMode.kCoast, 25, turnMotorReversed);
 
       driveEncoder = driveMotor.getEncoder();
@@ -109,6 +110,7 @@ public class SwerveModule extends SubsystemBase {
     desiredState = SwerveModuleState.optimize(desiredState, getState().angle); 
     setAngle(desiredState);
     setSpeed(desiredState);
+    SmartDashboard.putString("Swerve [" + driveMotor.getDeviceId() + "] State", getState().toString());
   }
 
   public void setSpeed(SwerveModuleState desiredState){

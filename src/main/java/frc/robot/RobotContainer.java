@@ -51,22 +51,28 @@ public class RobotContainer {
 
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
-  private final JoystickButton deployIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-  private final JoystickButton armUp_Y = new JoystickButton(driverController, XboxController.Button.kY.value);
-  private final JoystickButton armDown_A = new JoystickButton(driverController, XboxController.Button.kA.value);
-  private final JoystickButton armSubs_X = new JoystickButton(driverController, XboxController.Button.kX.value);
+  private final JoystickButton shoot_RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
   private final JoystickButton armScore_B = new JoystickButton(driverController, XboxController.Button.kB.value);
-  private final JoystickButton deployBigStick_Back = new JoystickButton(driverController, XboxController.Button.kBack.value);
+  private final JoystickButton deployBigStick_Back = new JoystickButton(driverController, XboxController.Button.kRightStick.value);
 
   public static final Launchpad opController = new Launchpad();
-  private final LaunchpadButton[][] gridButtons = new LaunchpadButton[3][9];
+  // private final LaunchpadButton[][] gridButtons = new LaunchpadButton[3][9];
+  private final LaunchpadButton armHigh_1_0 = new LaunchpadButton(opController, 1, 0);
+  private final LaunchpadButton armMid_2_0 = new LaunchpadButton(opController, 2, 0);
+  private final LaunchpadButton armLow_3_0 = new LaunchpadButton(opController, 3, 0);
+  private final LaunchpadButton armZero_4_0 = new LaunchpadButton(opController, 4, 0);
+  private final LaunchpadButton armSubs_2_1 = new LaunchpadButton(opController, 2, 1);
+
+  private final LaunchpadButton shooterHigh_1_7 = new LaunchpadButton(opController, 1, 7);
+  private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
+  private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
+
+  private final LaunchpadButton intakeToggle_2_5 = new LaunchpadButton(opController, 2, 5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    loadGridButtons();
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
     arm.setDefaultCommand(new ArmHold());
@@ -91,15 +97,21 @@ public class RobotContainer {
    */
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-    deployIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
-    // RB.whileTrue(new RunCommand(() -> arm.intakeSubs(0.3))).onFalse(new InstantCommand(() -> arm.intakeIn(0.1))
-    //   .andThen(new InstantCommand(arm::setSubsUpMode, arm)));
-    RB.whileTrue(new Shoot());
-    armUp_Y.onTrue(new InstantCommand(arm::armUp, arm));
-    armDown_A.onTrue(new InstantCommand(arm::armDown, arm));
-    armSubs_X.onTrue(new InstantCommand(arm::setSubsUpMode, arm));
+    shoot_RB.whileTrue(new Shoot());
     armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn(0.1)));
     deployBigStick_Back.onTrue(new InstantCommand(() -> bigStick.toggleDeploy()));
+
+    armHigh_1_0.onTrue(new InstantCommand(() -> arm.setHighMode()));
+    armMid_2_0.onTrue(new InstantCommand(() -> arm.setMidMode()));
+    armLow_3_0.onTrue(new InstantCommand(() -> arm.setLowMode()));
+    armZero_4_0.onTrue(new InstantCommand(() -> arm.setZeroMode()));
+    armSubs_2_1.onTrue(new InstantCommand(() -> arm.setSubsMode()));
+
+    shooterHigh_1_7.onTrue(new InstantCommand(() -> shooter.setHighMode()));
+    shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));
+    shooterCS_3_7.onTrue(new InstantCommand(() -> shooter.setCSMode()));
+
+    intakeToggle_2_5.onTrue(new InstantCommand(intake::intakeToggle, intake));
   }
 
   /**
@@ -126,11 +138,11 @@ public class RobotContainer {
     }
   }
 
-  public void loadGridButtons(){
-    for(int r = 0; r < 3; r++){
-      for(int c = 0; c < 9; c++){
-        gridButtons[r][c] = new LaunchpadButton(opController, r, c);
-      }
-    }
-  }
+  // public void loadGridButtons(){
+  //   for(int r = 0; r < 3; r++){
+  //     for(int c = 0; c < 9; c++){
+  //       gridButtons[r][c] = new LaunchpadButton(opController, r, c);
+  //     }
+  //   }
+  // }
 }

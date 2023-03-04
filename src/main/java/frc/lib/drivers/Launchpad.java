@@ -32,7 +32,6 @@ public class Launchpad extends SubsystemBase{
     }
     public boolean ifScored(int row, int col)
     {
-
         return scored[row][col];
     }
     public boolean ifCubeMode()

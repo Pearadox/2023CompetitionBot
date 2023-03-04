@@ -5,11 +5,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -24,20 +25,28 @@ public class Shooter extends SubsystemBase {
   private PearadoxSparkMax botShooter;
   private PearadoxSparkMax feeder;
 
+  private RelativeEncoder topEncoder;
+  private RelativeEncoder botEncoder;
+
   private SparkMaxPIDController topController;
   private SparkMaxPIDController botController;
-  private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(ShooterConstants.SHOOTER_kS, ShooterConstants.SHOOTER_kV, ShooterConstants.SHOOTER_kA);
+  // private SimpleMotorFeedforward topShooterFeedforward = new SimpleMotorFeedforward(ShooterConstants.TOP_SHOOTER_kS, ShooterConstants.TOP_SHOOTER_kV, ShooterConstants.TOP_SHOOTER_kA);
+  // private SimpleMotorFeedforward botShooterFeedforward = new SimpleMotorFeedforward(ShooterConstants.BOT_SHOOTER_kS, ShooterConstants.BOT_SHOOTER_kV, ShooterConstants.BOT_SHOOTER_kA);
 
   private DigitalInput irSensor;
 
   private NetworkTable llTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
   private LerpTable shooterLerp;
-  private double[] targetPose;
+  private double target;
+  // private double[] targetPose;
+
+  // private double dist;
+  // private MedianFilter distFilter = new MedianFilter(5);
 
   private enum ShooterMode{
-    kAuto, kFixed
+    kHigh, kMid, kCS
   }
-  private ShooterMode shooterMode = ShooterMode.kAuto;
+  private ShooterMode shooterMode = ShooterMode.kHigh;
 
   private static final Shooter shooter = new Shooter();
 
@@ -48,12 +57,15 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   public Shooter() {
     topShooter = new PearadoxSparkMax(ShooterConstants.TOP_SHOOTER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, true,
-      ShooterConstants.SHOOTER_kP, ShooterConstants.SHOOTER_kI, ShooterConstants.SHOOTER_kD,
+      ShooterConstants.TOP_SHOOTER_kP, ShooterConstants.TOP_SHOOTER_kI, ShooterConstants.TOP_SHOOTER_kD,
       ShooterConstants.SHOOTER_MIN_OUTPUT, ShooterConstants.SHOOTER_MAX_OUTPUT);
     botShooter = new PearadoxSparkMax(ShooterConstants.BOT_SHOOTER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, false,
-      ShooterConstants.SHOOTER_kP, ShooterConstants.SHOOTER_kI, ShooterConstants.SHOOTER_kD,
+      ShooterConstants.BOT_SHOOTER_kP, ShooterConstants.BOT_SHOOTER_kI, ShooterConstants.BOT_SHOOTER_kD,
       ShooterConstants.SHOOTER_MIN_OUTPUT, ShooterConstants.SHOOTER_MAX_OUTPUT);
     feeder = new PearadoxSparkMax(ShooterConstants.FEEDER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, true);
+
+    topEncoder = topShooter.getEncoder();
+    botEncoder = botShooter.getEncoder();
 
     topController = topShooter.getPIDController();
     botController = botShooter.getPIDController();
@@ -61,29 +73,46 @@ public class Shooter extends SubsystemBase {
     irSensor = new DigitalInput(0);
 
     shooterLerp = new LerpTable();
+
+    //SHOOTER LOOKUP TABLE: (speed (rpm), distance (meters))
+    shooterLerp.addPoint(0, 0);
   }
 
   public void shooterHold(){
-    topController.setReference(
-    desiredState.speedMetersPerSecond,
-    CANSparkMax.ControlType.kVelocity,
-    0,
-    shooterFeedforward.calculate(desiredState.speedMetersPerSecond));
+    if(shooterMode == ShooterMode.kCS){
+      topController.setReference(
+        target + 0.5,
+        CANSparkMax.ControlType.kVoltage,
+        0);
+  
+      botController.setReference(
+        target-1,
+        CANSparkMax.ControlType.kVoltage,
+        0);
+    }
+    else{
+      topController.setReference(
+      target,
+      CANSparkMax.ControlType.kVoltage,
+      0);
 
     botController.setReference(
-      desiredState.speedMetersPerSecond,
-      CANSparkMax.ControlType.kVelocity,
-      0,
-      shooterFeedforward.calculate(desiredState.speedMetersPerSecond));
+      target,
+      CANSparkMax.ControlType.kVoltage,
+      0);
+    }
   }
 
   public void feederHold(){
-    if(!hasCube()){
-      feeder.set(0.5);
-    }
-    else{
-      feeder.set(0);
-    }
+    feeder.set(0.25);
+  }
+
+  public void feederOut(){
+    feeder.set(-0.25);
+  }
+
+  public void feederStop(){
+    feeder.set(0);
   }
 
   public void feederShoot(){
@@ -94,24 +123,56 @@ public class Shooter extends SubsystemBase {
     return !irSensor.get();
   }
 
-  public void toggleMode(){
-    if(shooterMode == ShooterMode.kAuto){
-      shooterMode = ShooterMode.kFixed;
-    }
-    else{
-      shooterMode = ShooterMode.kAuto;
-    }
+  // public void toggleMode(){
+  //   if(shooterMode == ShooterMode.kAuto){
+  //     shooterMode = ShooterMode.kFixed;
+  //   }
+  //   else{
+  //     shooterMode = ShooterMode.kAuto;
+  //   }
+  // }
+
+  public void setHighMode(){
+    shooterMode = ShooterMode.kHigh;
+  }
+
+  public void setMidMode(){
+    shooterMode = ShooterMode.kMid;
+  }
+
+  public void setCSMode(){
+    shooterMode = ShooterMode.kCS;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    targetPose = NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("targetpose_cameraspace").getDoubleArray(new double[6]);
-
-    if(!SmartDashboard.containsKey("Shooter Speed")){
-      SmartDashboard.putNumber("Shooter Speed", 0.4);
+    if(!SmartDashboard.containsKey("Shooter Voltage")){
+      SmartDashboard.putNumber("Shooter Voltage", 4);
     }
+
+    // targetPose = NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
+    // dist = Math.sqrt(Math.pow(targetPose[0], 2) + Math.pow(targetPose[2], 2));
+
+    // if (llTable.getEntry("tv").getDouble(0) != 0 && shooterMode == ShooterMode.kAuto) {
+    //   dist = distFilter.calculate(dist);
+    //   target = shooterLerp.interpolate(dist);
+    // }
+    if(shooterMode == ShooterMode.kHigh) {
+      target = 2.3;
+    }
+    else if (shooterMode == ShooterMode.kMid){
+      target = 1.7;
+    }
+    else{
+      target = SmartDashboard.getNumber("Shooter Voltage", 4);
+    }
+
+    SmartDashboard.putNumber("Shooter Target", target);
     SmartDashboard.putBoolean("Distance Sensor", !irSensor.get());
+    SmartDashboard.putString("Shooter Mode", shooterMode.toString());
+    SmartDashboard.putNumber("Top Shooter Velocity", topEncoder.getVelocity());
+    SmartDashboard.putNumber("Bot Shooter Velocity", botEncoder.getVelocity());
   }
 
   public NetworkTable getLLTable(){

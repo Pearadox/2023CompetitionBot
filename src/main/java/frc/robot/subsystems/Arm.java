@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
@@ -25,7 +24,7 @@ public class Arm extends SubsystemBase {
   private SparkMaxPIDController armController;
 
   private enum ArmMode{
-    kHigh, kMid, kLow, kSubsUp, kSubsDown, kZero
+    kHigh, kMid, kLow, kSubs, kZero
   }
 
   private ArmMode mode = ArmMode.kZero;
@@ -57,11 +56,8 @@ public class Arm extends SubsystemBase {
     else if(mode == ArmMode.kHigh){
       armController.setReference(ArmConstants.HIGH_MODE_ROT, ControlType.kPosition);
     }
-    else if(mode == ArmMode.kSubsUp){
+    else if(mode == ArmMode.kSubs){
       armController.setReference(ArmConstants.SUBS_UP_MODE_ROT, ControlType.kPosition);
-    }
-    else if(mode == ArmMode.kSubsDown){
-      armController.setReference(ArmConstants.SUBS_DOWN_MODE_ROT, ControlType.kPosition);
     }
     else if(mode == ArmMode.kZero){
       armController.setReference(0.0, ControlType.kPosition);
@@ -84,17 +80,8 @@ public class Arm extends SubsystemBase {
     mode = ArmMode.kHigh;
   }
 
-  public void setSubsUpMode(){
-    mode = ArmMode.kSubsUp;
-  }
-
-  public void setSubsDownMode(){
-    mode = ArmMode.kSubsDown;
-  }
-
-  public void intakeSubs(double speed){
-    driver.set(speed);
-    setSubsDownMode();
+  public void setSubsMode(){
+    mode = ArmMode.kSubs;
   }
 
   public void intakeIn(double speed){
@@ -119,10 +106,7 @@ public class Arm extends SubsystemBase {
     else if(mode == ArmMode.kMid){
       mode = ArmMode.kHigh;
     }
-    else if(mode == ArmMode.kSubsUp){
-      mode = ArmMode.kHigh;
-    }
-    else if(mode == ArmMode.kSubsDown){
+    else if(mode == ArmMode.kSubs){
       mode = ArmMode.kHigh;
     }
   }
@@ -131,10 +115,7 @@ public class Arm extends SubsystemBase {
     if(mode == ArmMode.kHigh){
       mode = ArmMode.kMid;
     }
-    else if(mode == ArmMode.kSubsUp){
-      mode = ArmMode.kMid;
-    }
-    else if(mode == ArmMode.kSubsDown){
+    else if(mode == ArmMode.kSubs){
       mode = ArmMode.kMid;
     }
     else if(mode == ArmMode.kMid){
@@ -161,11 +142,8 @@ public class Arm extends SubsystemBase {
     else if(mode == ArmMode.kHigh){
       SmartDashboard.putString("Arm Mode", "kHigh");
     }
-    else if(mode == ArmMode.kSubsUp){
-      SmartDashboard.putString("Arm Mode", "kSubsUp");
-    }
-    else if(mode == ArmMode.kSubsDown){
-      SmartDashboard.putString("Arm Mode", "kSubsDown");
+    else if(mode == ArmMode.kSubs){
+      SmartDashboard.putString("Arm Mode", "kSubs");
     }
   }
 }
