@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ArmHold extends CommandBase {
@@ -22,12 +23,14 @@ public class ArmHold extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm.armHold();
-    RobotContainer.arm.intakeIn();
+    RobotContainer.arm.intakeHold();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    RobotContainer.arm.intakeStop();
+  }
 
   // Returns true when the command should end.
   @Override

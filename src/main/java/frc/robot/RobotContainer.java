@@ -63,6 +63,9 @@ public class RobotContainer {
   private final LaunchpadButton armZero_4_0 = new LaunchpadButton(opController, 4, 0);
   private final LaunchpadButton armSubs_2_1 = new LaunchpadButton(opController, 2, 1);
 
+  private final LaunchpadButton armAdjustUp_1_3 = new LaunchpadButton(opController, 1, 3);
+  private final LaunchpadButton armAdjustDown_2_3 = new LaunchpadButton(opController, 2, 3);
+
   private final LaunchpadButton shooterHigh_1_7 = new LaunchpadButton(opController, 1, 7);
   private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
   private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
@@ -99,13 +102,16 @@ public class RobotContainer {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     toggleIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
     shoot_RB.whileTrue(new Shoot());
-    armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut()));
+    armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
 
     armHigh_1_0.onTrue(new InstantCommand(() -> arm.setHighMode()));
     armMid_2_0.onTrue(new InstantCommand(() -> arm.setMidMode()));
     armLow_3_0.onTrue(new InstantCommand(() -> arm.setLowMode()));
     armZero_4_0.onTrue(new InstantCommand(() -> arm.setZeroMode()));
     armSubs_2_1.onTrue(new InstantCommand(() -> arm.setSubsMode()));
+
+    armAdjustUp_1_3.onTrue(new InstantCommand(() -> arm.armAdjustUp()));
+    armAdjustDown_2_3.onTrue(new InstantCommand(() -> arm.armAdjustDown()));
 
     shooterHigh_1_7.onTrue(new InstantCommand(() -> shooter.setHighMode()));
     shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));

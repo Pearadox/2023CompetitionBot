@@ -27,7 +27,13 @@ public class Arm extends SubsystemBase {
     kHigh, kMid, kLow, kSubs, kZero
   }
 
-  private ArmMode mode = ArmMode.kZero;
+  private enum IntakeMode{
+    kIn, kOut
+  }
+
+  private ArmMode armMode = ArmMode.kZero;
+  private IntakeMode intakeMode = IntakeMode.kIn;
+  private double armAdjust = 0;
 
   private static final Arm arm = new Arm();
 
@@ -47,114 +53,133 @@ public class Arm extends SubsystemBase {
   }
 
   public void armHold(){
-    if(mode == ArmMode.kLow){
-      armController.setReference(ArmConstants.LOW_MODE_ROT, ControlType.kPosition);
+    if(armMode == ArmMode.kLow){
+      armController.setReference(ArmConstants.LOW_MODE_ROT + armAdjust, ControlType.kPosition);
     }
-    else if(mode == ArmMode.kMid){
-      armController.setReference(ArmConstants.MID_MODE_ROT, ControlType.kPosition);
+    else if(armMode == ArmMode.kMid){
+      armController.setReference(ArmConstants.MID_MODE_ROT + armAdjust, ControlType.kPosition);
     }
-    else if(mode == ArmMode.kHigh){
-      armController.setReference(ArmConstants.HIGH_MODE_ROT, ControlType.kPosition);
+    else if(armMode == ArmMode.kHigh){
+      armController.setReference(ArmConstants.HIGH_MODE_ROT + armAdjust, ControlType.kPosition);
     }
-    else if(mode == ArmMode.kSubs){
-      armController.setReference(ArmConstants.SUBS_UP_MODE_ROT, ControlType.kPosition);
+    else if(armMode == ArmMode.kSubs){
+      armController.setReference(ArmConstants.SUBS_MODE_ROT + armAdjust, ControlType.kPosition);
     }
-    else if(mode == ArmMode.kZero){
+    else if(armMode == ArmMode.kZero){
       armController.setReference(0.0, ControlType.kPosition);
     }
   }
 
   public void setZeroMode(){
-    mode = ArmMode.kZero;
+    armMode = ArmMode.kZero;
   }
 
   public void setLowMode(){
-    mode = ArmMode.kLow;
+    armMode = ArmMode.kLow;
   }
 
   public void setMidMode(){
-    mode = ArmMode.kMid;
+    armMode = ArmMode.kMid;
   }
 
   public void setHighMode(){
-    mode = ArmMode.kHigh;
+    armMode = ArmMode.kHigh;
   }
 
   public void setSubsMode(){
-    mode = ArmMode.kSubs;
+    armMode = ArmMode.kSubs;
   }
 
   public boolean isDeployed(){
-    return !(mode == ArmMode.kZero);
+    return !(armMode == ArmMode.kZero);
   }
 
-  public void intakeIn(){
-    if(mode == ArmMode.kZero){
-      intakeStop();
-    }
-    else if(mode == ArmMode.kSubs){
-      driver.set(0.9);
+  public void intakeHold(){
+    if(intakeMode == IntakeMode.kIn){
+      if(armMode == ArmMode.kZero){
+        intakeStop();
+      }
+      else if(armMode == ArmMode.kSubs){
+        driver.set(0.9);
+      }
+      else{
+        driver.set(0.15);
+      }
     }
     else{
-      driver.set(0.15);
+      driver.set(-0.9);
     }
-  }
-
-  public void intakeOut(){
-    driver.set(-0.9);
   }
 
   public void intakeStop(){
     driver.set(0);
   }
 
+  public void intakeIn(){
+    intakeMode = IntakeMode.kIn;
+  }
+
+  public void intakeOut(){
+    intakeMode = IntakeMode.kOut;
+  }
+
   public void armUp(){
-    if(mode == ArmMode.kZero){
-      mode = ArmMode.kLow;
+    if(armMode == ArmMode.kZero){
+      armMode = ArmMode.kLow;
     }
-    else if(mode == ArmMode.kLow){
-      mode = ArmMode.kMid;
+    else if(armMode == ArmMode.kLow){
+      armMode = ArmMode.kMid;
     }
-    else if(mode == ArmMode.kMid){
-      mode = ArmMode.kHigh;
+    else if(armMode == ArmMode.kMid){
+      armMode = ArmMode.kHigh;
     }
-    else if(mode == ArmMode.kSubs){
-      mode = ArmMode.kHigh;
+    else if(armMode == ArmMode.kSubs){
+      armMode = ArmMode.kHigh;
     }
   }
 
   public void armDown(){
-    if(mode == ArmMode.kHigh){
-      mode = ArmMode.kMid;
+    if(armMode == ArmMode.kHigh){
+      armMode = ArmMode.kMid;
     }
-    else if(mode == ArmMode.kSubs){
-      mode = ArmMode.kMid;
+    else if(armMode == ArmMode.kSubs){
+      armMode = ArmMode.kMid;
     }
-    else if(mode == ArmMode.kMid){
-      mode = ArmMode.kLow;
+    else if(armMode == ArmMode.kMid){
+      armMode = ArmMode.kLow;
     }
-    else if(mode == ArmMode.kLow){
-      mode = ArmMode.kZero;
+    else if(armMode == ArmMode.kLow){
+      armMode = ArmMode.kZero;
     }
+  }
+
+  public void armAdjustUp(){
+    armAdjust += 0.2;
+  }
+
+  public void armAdjustDown(){
+    armAdjust -= 0.2;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Arm Adjust", armAdjust);
+
     SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition());
-    if(mode == ArmMode.kZero){
+    if(armMode == ArmMode.kZero){
       SmartDashboard.putString("Arm Mode", "kZero");
     }
-    else if(mode == ArmMode.kLow){
+    else if(armMode == ArmMode.kLow){
       SmartDashboard.putString("Arm Mode", "kLow");
     }
-    else if(mode == ArmMode.kMid){
+    else if(armMode == ArmMode.kMid){
       SmartDashboard.putString("Arm Mode", "kMid");
     }
-    else if(mode == ArmMode.kHigh){
+    else if(armMode == ArmMode.kHigh){
       SmartDashboard.putString("Arm Mode", "kHigh");
     }
-    else if(mode == ArmMode.kSubs){
+    else if(armMode == ArmMode.kSubs){
       SmartDashboard.putString("Arm Mode", "kSubs");
     }
   }

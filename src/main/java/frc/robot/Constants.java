@@ -100,7 +100,7 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.25;
     public static final double PIVOT_MAX_OUTPUT = 0.25;
 
-    public static final double DEPLOYED_ROT = 10.8;
+    public static final double DEPLOYED_ROT = 10.2;
   }
 
   public static final class ArmConstants{
@@ -116,8 +116,7 @@ public final class Constants {
     public static final double LOW_MODE_ROT = 3.5;
     public static final double MID_MODE_ROT = 16.5;
     public static final double HIGH_MODE_ROT = 21;
-    public static final double SUBS_UP_MODE_ROT = 20.3;
-    public static final double SUBS_DOWN_MODE_ROT = 18.75;
+    public static final double SUBS_MODE_ROT = 20.1;
   }
 
   public static final class ShooterConstants{

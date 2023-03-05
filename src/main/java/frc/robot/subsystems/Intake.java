@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
       intakeController.setReference(IntakeConstants.DEPLOYED_ROT, CANSparkMax.ControlType.kPosition, 0);
     }
     else{
-        intakeController.setReference(0, CANSparkMax.ControlType.kPosition, 0);
+      intakeController.setReference(0, CANSparkMax.ControlType.kPosition, 0);
     }
   }
 
