@@ -26,7 +26,7 @@ public class IntakeHold extends CommandBase {
       RobotContainer.intake.intakeIn();
     }
     else{
-      RobotContainer.intake.stop();
+      RobotContainer.intake.intakeStop();
     }
   }
 

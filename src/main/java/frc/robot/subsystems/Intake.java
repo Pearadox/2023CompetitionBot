@@ -43,14 +43,19 @@ public class Intake extends SubsystemBase {
   }
 
   public void intakeIn(){
-    driver.set(0.5);
+    if(deployed){
+      driver.set(0.5);
+    }
+    else{
+      intakeStop();
+    }
   }
 
   public void intakeOut(){
     driver.set(-0.5);
   }
 
-  public void stop(){
+  public void intakeStop(){
     driver.set(0);
   }
 
@@ -71,6 +76,10 @@ public class Intake extends SubsystemBase {
     else{
       deployed = false;
     }
+  }
+
+  public boolean isDeployed(){
+    return deployed;
   }
 
   public void resetPivotEncoder(){

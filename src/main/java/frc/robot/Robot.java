@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -80,19 +81,25 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     RobotContainer.drivetrain.setAllMode(true);
-    RobotContainer.pdh.setSwitchableChannel(true);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
     RobotContainer.drivetrain.resetAllEncoders();
-    // RobotContainer.intake.configPivotController();
-    // RobotContainer.arm.configPivotController();
+    RobotContainer.pdh.setSwitchableChannel(true);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if(RobotContainer.arm.isDeployed() ? 
+        (RobotContainer.intake.isDeployed() || RobotContainer.bigStick.isDeployed()) : 
+        (RobotContainer.intake.isDeployed() && RobotContainer.bigStick.isDeployed())){
+      RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 1);
+    }
+    else{
+      RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0);
+    }
+  }
 
   @Override
   public void testInit() {

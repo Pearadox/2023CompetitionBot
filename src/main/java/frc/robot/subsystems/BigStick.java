@@ -56,4 +56,8 @@ public class BigStick extends SubsystemBase {
   public void toggleDeploy(){
     deployed = deployed ? false : true;
   }
+
+  public boolean isDeployed(){
+    return deployed;
+  }
 }

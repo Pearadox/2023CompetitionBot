@@ -10,7 +10,6 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -46,7 +45,7 @@ public class Shooter extends SubsystemBase {
   private enum ShooterMode{
     kHigh, kMid, kCS
   }
-  private ShooterMode shooterMode = ShooterMode.kHigh;
+  private ShooterMode mode = ShooterMode.kHigh;
 
   private static final Shooter shooter = new Shooter();
 
@@ -79,7 +78,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shooterHold(){
-    if(shooterMode == ShooterMode.kCS){
+    if(mode == ShooterMode.kCS){
       topController.setReference(
         target + 0.5,
         CANSparkMax.ControlType.kVoltage,
@@ -133,15 +132,15 @@ public class Shooter extends SubsystemBase {
   // }
 
   public void setHighMode(){
-    shooterMode = ShooterMode.kHigh;
+    mode = ShooterMode.kHigh;
   }
 
   public void setMidMode(){
-    shooterMode = ShooterMode.kMid;
+    mode = ShooterMode.kMid;
   }
 
   public void setCSMode(){
-    shooterMode = ShooterMode.kCS;
+    mode = ShooterMode.kCS;
   }
 
   @Override
@@ -158,10 +157,10 @@ public class Shooter extends SubsystemBase {
     //   dist = distFilter.calculate(dist);
     //   target = shooterLerp.interpolate(dist);
     // }
-    if(shooterMode == ShooterMode.kHigh) {
+    if(mode == ShooterMode.kHigh) {
       target = 2.3;
     }
-    else if (shooterMode == ShooterMode.kMid){
+    else if (mode == ShooterMode.kMid){
       target = 1.7;
     }
     else{
@@ -170,7 +169,7 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("Shooter Target", target);
     SmartDashboard.putBoolean("Distance Sensor", !irSensor.get());
-    SmartDashboard.putString("Shooter Mode", shooterMode.toString());
+    SmartDashboard.putString("Shooter Mode", mode.toString());
     SmartDashboard.putNumber("Top Shooter Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("Bot Shooter Velocity", botEncoder.getVelocity());
   }

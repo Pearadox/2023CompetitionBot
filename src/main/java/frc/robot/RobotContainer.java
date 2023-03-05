@@ -51,9 +51,9 @@ public class RobotContainer {
 
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
+  private final JoystickButton toggleIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton shoot_RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
   private final JoystickButton armScore_B = new JoystickButton(driverController, XboxController.Button.kB.value);
-  private final JoystickButton deployBigStick_Back = new JoystickButton(driverController, XboxController.Button.kRightStick.value);
 
   public static final Launchpad opController = new Launchpad();
   // private final LaunchpadButton[][] gridButtons = new LaunchpadButton[3][9];
@@ -67,7 +67,7 @@ public class RobotContainer {
   private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
   private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
 
-  private final LaunchpadButton intakeToggle_2_5 = new LaunchpadButton(opController, 2, 5);
+  private final LaunchpadButton toggleBigStick_2_5 = new LaunchpadButton(opController, 2, 5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -97,9 +97,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+    toggleIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
     shoot_RB.whileTrue(new Shoot());
-    armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn(0.1)));
-    deployBigStick_Back.onTrue(new InstantCommand(() -> bigStick.toggleDeploy()));
+    armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut()));
 
     armHigh_1_0.onTrue(new InstantCommand(() -> arm.setHighMode()));
     armMid_2_0.onTrue(new InstantCommand(() -> arm.setMidMode()));
@@ -111,7 +111,7 @@ public class RobotContainer {
     shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));
     shooterCS_3_7.onTrue(new InstantCommand(() -> shooter.setCSMode()));
 
-    intakeToggle_2_5.onTrue(new InstantCommand(intake::intakeToggle, intake));
+    toggleBigStick_2_5.onTrue(new InstantCommand(() -> bigStick.toggleDeploy()));
   }
 
   /**

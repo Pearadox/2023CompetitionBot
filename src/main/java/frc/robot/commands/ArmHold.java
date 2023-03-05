@@ -22,7 +22,7 @@ public class ArmHold extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm.armHold();
-    RobotContainer.arm.intakeIn(0.4);
+    RobotContainer.arm.intakeIn();
   }
 
   // Called once the command ends or is interrupted.

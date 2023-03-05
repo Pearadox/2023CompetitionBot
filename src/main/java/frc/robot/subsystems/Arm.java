@@ -84,8 +84,20 @@ public class Arm extends SubsystemBase {
     mode = ArmMode.kSubs;
   }
 
-  public void intakeIn(double speed){
-    driver.set(speed);
+  public boolean isDeployed(){
+    return !(mode == ArmMode.kZero);
+  }
+
+  public void intakeIn(){
+    if(mode == ArmMode.kZero){
+      intakeStop();
+    }
+    else if(mode == ArmMode.kSubs){
+      driver.set(0.9);
+    }
+    else{
+      driver.set(0.15);
+    }
   }
 
   public void intakeOut(){
