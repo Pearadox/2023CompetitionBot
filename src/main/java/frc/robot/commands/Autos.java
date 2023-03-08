@@ -61,13 +61,11 @@ public final class Autos {
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new WaitCommand(1),
       new Shoot().withTimeout(1),
-      new InstantCommand(() -> RobotContainer.shooter.detectCube(false)),
       new InstantCommand(() -> RobotContainer.intake.intakeToggle()),
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
       driveToCube1,
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
       new Shoot().withTimeout(2),
-      new InstantCommand(() -> RobotContainer.shooter.detectCube(false)),
       driveOnCS,
       new AutoBalance(),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())

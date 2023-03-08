@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    RobotContainer.drivetrain.setAllMode(true);
+    RobotContainer.drivetrain.setAllMode(false);
     RobotContainer.pdh.setSwitchableChannel(false);
   }
 

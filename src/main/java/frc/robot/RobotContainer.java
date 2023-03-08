@@ -11,6 +11,7 @@ import frc.robot.commands.ArmHold;
 import frc.robot.commands.Autos;
 import frc.robot.commands.BigStickHold;
 import frc.robot.commands.IntakeHold;
+import frc.robot.commands.IntakeRollersHold;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterHold;
 import frc.robot.commands.SwerveDrive;
@@ -42,10 +43,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static final Drivetrain drivetrain = Drivetrain.getInstance();
   public static final Intake intake = Intake.getInstance();
+  public static final IntakeRollers intakeRollers = IntakeRollers.getInstance();
   public static final Arm arm = Arm.getInstance();
   public static final Shooter shooter = Shooter.getInstance();
   public static final BigStick bigStick = BigStick.getInstance();
-  public static final IntakeRollers intakeRollers = IntakeRollers.getInstance();
 
   public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
@@ -80,6 +81,7 @@ public class RobotContainer {
     configureBindings();
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
+    intakeRollers.setDefaultCommand(new IntakeRollersHold());
     arm.setDefaultCommand(new ArmHold());
     shooter.setDefaultCommand(new ShooterHold());
     bigStick.setDefaultCommand(new BigStickHold());
@@ -104,7 +106,7 @@ public class RobotContainer {
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     toggleIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
-    shoot_RB.whileTrue(new Shoot()).onFalse(new InstantCommand(() -> shooter.detectCube(false)));
+    shoot_RB.whileTrue(new Shoot());
     armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
 
 
