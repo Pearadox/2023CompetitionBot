@@ -17,7 +17,6 @@ import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
   //POSITIVE IN/DEPLOY, NEGATIVE OUT/STOWED
-  private PearadoxSparkMax driver;
   private PearadoxSparkMax pivot;
 
   private RelativeEncoder pivotEncoder;
@@ -33,7 +32,6 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    driver = new PearadoxSparkMax(IntakeConstants.INTAKE_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true);
     pivot = new PearadoxSparkMax(IntakeConstants.INTAKE_PIVOT_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true,
       IntakeConstants.PIVOT_kP, IntakeConstants.PIVOT_kI, IntakeConstants.PIVOT_kD, 
       IntakeConstants.PIVOT_MIN_OUTPUT, IntakeConstants.PIVOT_MAX_OUTPUT);
@@ -41,24 +39,6 @@ public class Intake extends SubsystemBase {
     pivotEncoder = pivot.getEncoder();
     intakeController = pivot.getPIDController();
   }
-
-  public void intakeIn(){
-    if(deployed){
-      driver.set(0.5);
-    }
-    else{
-      intakeStop();
-    }
-  }
-
-  public void intakeOut(){
-    driver.set(-0.5);
-  }
-
-  public void intakeStop(){
-    driver.set(0);
-  }
-
 
   public void intakeHold(){
     if(deployed){
@@ -92,6 +72,5 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
     SmartDashboard.putBoolean("Deployed", deployed);
     SmartDashboard.putNumber("Pivot Current", pivot.getOutputCurrent());
-    SmartDashboard.putNumber("Intake Current", driver.getOutputCurrent());
   }
 }

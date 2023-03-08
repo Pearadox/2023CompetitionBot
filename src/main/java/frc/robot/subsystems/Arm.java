@@ -103,7 +103,7 @@ public class Arm extends SubsystemBase {
         driver.set(0.9);
       }
       else{
-        driver.set(0.15);
+        driver.set(0.25);
       }
     }
     else{

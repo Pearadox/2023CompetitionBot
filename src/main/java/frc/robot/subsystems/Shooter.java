@@ -37,6 +37,7 @@ public class Shooter extends SubsystemBase {
   private NetworkTable llTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
   private LerpTable shooterLerp;
   private double target;
+  private boolean hasCube = false;
   // private double[] targetPose;
 
   // private double dist;
@@ -119,7 +120,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean hasCube(){
+    return hasCube;
+  }
+
+  public boolean distSensor(){
     return !irSensor.get();
+  }
+
+  public void detectCube(boolean hasCube){
+    this.hasCube = hasCube;
   }
 
   // public void toggleMode(){

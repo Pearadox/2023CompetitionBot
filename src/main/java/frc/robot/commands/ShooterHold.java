@@ -29,6 +29,9 @@ public class ShooterHold extends CommandBase {
     else{
       RobotContainer.shooter.feederStop();
     }
+    if(!RobotContainer.shooter.hasCube() && RobotContainer.shooter.distSensor()){
+      RobotContainer.shooter.detectCube(true);
+    }
   }
 
   // Called once the command ends or is interrupted.

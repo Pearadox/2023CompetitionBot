@@ -5,9 +5,7 @@
 package frc.robot.commands;
 
 import java.util.List;
-import java.util.spi.ResourceBundleControlProvider;
 
-import com.ctre.phoenixpro.signals.RobotEnableValue;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -19,8 +17,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -57,21 +55,21 @@ public final class Autos {
     PPSwerveControllerCommand driveToCube1 = makeSwerveControllerCommand(pathGroup.get(0));
     PPSwerveControllerCommand driveOnCS = makeSwerveControllerCommand(pathGroup.get(1));
     
-    return new SequentialCommandGroup(
+    return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
       new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
-      new Shoot().withTimeout(2),
+      new WaitCommand(1),
+      new Shoot().withTimeout(1),
+      new InstantCommand(() -> RobotContainer.shooter.detectCube(false)),
       new InstantCommand(() -> RobotContainer.intake.intakeToggle()),
+      new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
       driveToCube1,
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
-      new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
-      new InstantCommand(() -> RobotContainer.intake.intakeToggle()),
-      new InstantCommand(() -> RobotContainer.bigStick.toggleDeploy()),
       new Shoot().withTimeout(2),
-      new InstantCommand(() -> RobotContainer.bigStick.toggleDeploy()),
+      new InstantCommand(() -> RobotContainer.shooter.detectCube(false)),
       driveOnCS,
-      new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
+      new AutoBalance(),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
     );
   }
@@ -143,6 +141,13 @@ public final class Autos {
       driveOnCS,
       new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
+    );
+  }
+
+  public static CommandBase testAuto(){
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
+      new InstantCommand(() -> RobotContainer.intake.intakeToggle())
     );
   }
 

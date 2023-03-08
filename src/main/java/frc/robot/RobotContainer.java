@@ -18,6 +18,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BigStick;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
@@ -44,6 +45,7 @@ public class RobotContainer {
   public static final Arm arm = Arm.getInstance();
   public static final Shooter shooter = Shooter.getInstance();
   public static final BigStick bigStick = BigStick.getInstance();
+  public static final IntakeRollers intakeRollers = IntakeRollers.getInstance();
 
   public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
@@ -54,7 +56,7 @@ public class RobotContainer {
   private final JoystickButton toggleIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton shoot_RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
   private final JoystickButton armScore_B = new JoystickButton(driverController, XboxController.Button.kB.value);
-
+  
   public static final Launchpad opController = new Launchpad();
   // private final LaunchpadButton[][] gridButtons = new LaunchpadButton[3][9];
   private final LaunchpadButton armHigh_1_0 = new LaunchpadButton(opController, 1, 0);
@@ -87,6 +89,7 @@ public class RobotContainer {
     autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
     autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
     autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
+    autoChooser.addOption("TestAuto", "TestAuto");
   }
 
   /**
@@ -101,8 +104,9 @@ public class RobotContainer {
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     toggleIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
-    shoot_RB.whileTrue(new Shoot());
+    shoot_RB.whileTrue(new Shoot()).onFalse(new InstantCommand(() -> shooter.detectCube(false)));
     armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
+
 
     armHigh_1_0.onTrue(new InstantCommand(() -> arm.setHighMode()));
     armMid_2_0.onTrue(new InstantCommand(() -> arm.setMidMode()));
@@ -138,6 +142,9 @@ public class RobotContainer {
     }
     else if(autoChooser.getSelected().equals("1Cone1CubeC_Bal")){
       return Autos.c1C1_C_Bal();
+    }
+    else if(autoChooser.getSelected().equals("TestAuto")){
+      return Autos.testAuto();
     }
     else{
       return Autos.c1C0_M_Bal();

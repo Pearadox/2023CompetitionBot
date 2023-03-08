@@ -11,7 +11,7 @@ public class Shoot extends CommandBase {
   /** Creates a new Shoot. */
   public Shoot() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.shooter, RobotContainer.intake);
+    addRequirements(RobotContainer.shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -21,8 +21,8 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.intake.intakeIn();
     RobotContainer.shooter.feederShoot();
+    
   }
 
   // Called once the command ends or is interrupted.
