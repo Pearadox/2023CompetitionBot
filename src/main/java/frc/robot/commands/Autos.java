@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.SwerveConstants;
 
@@ -40,9 +41,12 @@ public final class Autos {
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(trajectory))),
       new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
-      new Shoot().withTimeout(2),
+      new WaitCommand(1),
+      new Shoot().withTimeout(1),
+      new InstantCommand(() -> RobotContainer.transport.setHasCube(false)),
+      new InstantCommand(() -> RobotContainer.transport.feederStop()),
       driveOnCS,
-      new AutoBalance().until(() -> (Math.abs(RobotContainer.drivetrain.getRoll()) < 2.0 && Math.abs(RobotContainer.drivetrain.getPitch()) < 2.0)),
+      new AutoBalance(),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
     );
   }
@@ -59,13 +63,18 @@ public final class Autos {
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
       new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
-      new WaitCommand(1),
-      new Shoot().withTimeout(1),
+      new Shoot().withTimeout(1.25),
+      new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
+      new InstantCommand(() -> RobotContainer.transport.feederStop()),
+      new InstantCommand(() -> RobotContainer.transport.setHasCube(false)),
       new InstantCommand(() -> RobotContainer.intake.intakeToggle()),
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
       driveToCube1,
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
-      new Shoot().withTimeout(2),
+      new Shoot().withTimeout(1.25),
+      new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
+      new InstantCommand(() -> RobotContainer.transport.feederStop()),
+      new InstantCommand(() -> RobotContainer.transport.setHasCube(false)),
       driveOnCS,
       new AutoBalance(),
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
@@ -144,8 +153,7 @@ public final class Autos {
 
   public static CommandBase testAuto(){
     return new SequentialCommandGroup(
-      new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
-      new InstantCommand(() -> RobotContainer.intake.intakeToggle())
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
     );
   }
 

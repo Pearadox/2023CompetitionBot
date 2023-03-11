@@ -22,14 +22,36 @@ public class SwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.drivetrain.swerveDrive(
-      -RobotContainer.driverController.getLeftY(), 
-      -RobotContainer.driverController.getLeftX(), 
-      RobotContainer.driverController.getRightX(),
-      -RobotContainer.driverController.getRightY(),
-      !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
-      false,
-      true);
+    if(RobotContainer.drivetrain.getDriveMode() == RobotContainer.drivetrain.getGridMode()){
+      RobotContainer.drivetrain.swerveDrive(
+        -RobotContainer.driverController.getLeftY(), 
+        -RobotContainer.driverController.getLeftX(), 
+        1,
+        0,
+        !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
+        true,
+        true);
+    }
+    else if(RobotContainer.drivetrain.getDriveMode() == RobotContainer.drivetrain.getSubsMode()){
+      RobotContainer.drivetrain.swerveDrive(
+        -RobotContainer.driverController.getLeftY(), 
+        -RobotContainer.driverController.getLeftX(), 
+        -1,
+        0,
+        !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
+        true,
+        true);
+    }
+    else{
+      RobotContainer.drivetrain.swerveDrive(
+        -RobotContainer.driverController.getLeftY(), 
+        -RobotContainer.driverController.getLeftX(), 
+        RobotContainer.driverController.getRightX(),
+        -RobotContainer.driverController.getRightY(),
+        !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
+        false,
+        true);
+    }
   }
 
   // Called once the command ends or is interrupted.

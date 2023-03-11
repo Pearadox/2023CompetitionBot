@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +32,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     RobotContainer.pdh.setSwitchableChannel(false);
+    PortForwarder.add(8888, "limelight.local", 5800);
+    PortForwarder.add(8889, "limelight.local", 5801);
   }
 
   /**
@@ -87,6 +90,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     RobotContainer.drivetrain.resetAllEncoders();
+    RobotContainer.shooter.shooterOff();
     RobotContainer.pdh.setSwitchableChannel(true);
   }
 

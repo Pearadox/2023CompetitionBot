@@ -17,12 +17,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.lib.util.LerpTable;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   private PearadoxSparkMax topShooter;
   private PearadoxSparkMax botShooter;
-  private PearadoxSparkMax feeder;
 
   private RelativeEncoder topEncoder;
   private RelativeEncoder botEncoder;
@@ -61,7 +61,6 @@ public class Shooter extends SubsystemBase {
     botShooter = new PearadoxSparkMax(ShooterConstants.BOT_SHOOTER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, false,
       ShooterConstants.BOT_SHOOTER_kP, ShooterConstants.BOT_SHOOTER_kI, ShooterConstants.BOT_SHOOTER_kD,
       ShooterConstants.SHOOTER_MIN_OUTPUT, ShooterConstants.SHOOTER_MAX_OUTPUT);
-    feeder = new PearadoxSparkMax(ShooterConstants.FEEDER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, true);
 
     topEncoder = topShooter.getEncoder();
     botEncoder = botShooter.getEncoder();
@@ -80,12 +79,23 @@ public class Shooter extends SubsystemBase {
   public void shooterHold(){
     if(mode == ShooterMode.kCS){
       topController.setReference(
-        target + 0.5,
+        target + 0.85,
         CANSparkMax.ControlType.kVoltage,
         0);
   
       botController.setReference(
         target-1,
+        CANSparkMax.ControlType.kVoltage,
+        0);
+    }
+    else if(mode == ShooterMode.kHigh){
+      topController.setReference(
+        target-0.2,
+        CANSparkMax.ControlType.kVoltage,
+        0);
+  
+      botController.setReference(
+        target+0.7,
         CANSparkMax.ControlType.kVoltage,
         0);
     }
@@ -100,22 +110,6 @@ public class Shooter extends SubsystemBase {
       CANSparkMax.ControlType.kVoltage,
       0);
     }
-  }
-
-  public void feederHold(){
-    feeder.set(0.2);
-  }
-
-  public void feederOut(){
-    feeder.set(-0.25);
-  }
-
-  public void feederStop(){
-    feeder.set(0);
-  }
-
-  public void feederShoot(){
-    feeder.set(0.7);
   }
 
   public boolean hasCube(){
@@ -143,11 +137,23 @@ public class Shooter extends SubsystemBase {
     mode = ShooterMode.kCS;
   }
 
+  public void shooterOff(){
+    topController.setReference(
+      0,
+      CANSparkMax.ControlType.kVoltage,
+      0);
+
+    botController.setReference(
+      0,
+      CANSparkMax.ControlType.kVoltage,
+      0);
+    }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     if(!SmartDashboard.containsKey("Shooter Voltage")){
-      SmartDashboard.putNumber("Shooter Voltage", 4);
+      SmartDashboard.putNumber("Shooter Voltage", 4.7);
     }
 
     // targetPose = NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
@@ -158,13 +164,13 @@ public class Shooter extends SubsystemBase {
     //   target = shooterLerp.interpolate(dist);
     // }
     if(mode == ShooterMode.kHigh) {
-      target = 2.3;
+      target = 2.27;
     }
     else if (mode == ShooterMode.kMid){
       target = 1.7;
     }
     else{
-      target = SmartDashboard.getNumber("Shooter Voltage", 4);
+      target = SmartDashboard.getNumber("Shooter Voltage", 4.7);
     }
 
     SmartDashboard.putNumber("Shooter Target", target);
@@ -172,6 +178,16 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putString("Shooter Mode", mode.toString());
     SmartDashboard.putNumber("Top Shooter Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("Bot Shooter Velocity", botEncoder.getVelocity());
+
+    if(RobotContainer.backupOpController.getPOV() == 0){
+      mode = ShooterMode.kHigh;
+    }
+    else if(RobotContainer.backupOpController.getPOV() == 90){
+      mode = ShooterMode.kMid;
+    }
+    else if(RobotContainer.backupOpController.getPOV() == 180){
+      mode = ShooterMode.kCS;
+    }
   }
 
   public NetworkTable getLLTable(){

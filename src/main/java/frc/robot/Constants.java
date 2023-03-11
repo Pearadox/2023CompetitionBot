@@ -21,6 +21,7 @@ public final class Constants {
 
   public static class IOConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
+    public static final int OP_CONTROLLER_PORT = 1;
   }
 
   public static final class SwerveConstants{
@@ -46,7 +47,7 @@ public final class Constants {
     public static final double LEFT_FRONT_OFFSET = 310.605; //change
     public static final double RIGHT_FRONT_OFFSET = 354.462; //change
     public static final double LEFT_BACK_OFFSET = 71.367; //change
-    public static final double RIGHT_BACK_OFFSET = 282.568; //change
+    public static final double RIGHT_BACK_OFFSET = 36; //change
 
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;

@@ -67,6 +67,12 @@ public class Drivetrain extends SubsystemBase {
 
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(SwerveConstants.DRIVE_KINEMATICS, new Rotation2d(0), getModulePositions());
 
+  private enum DriveMode{
+    kNormal, kSubs, kGrid
+  }
+
+  DriveMode mode = DriveMode.kNormal;
+
   private static final Drivetrain drivetrain = new Drivetrain();
 
   public static Drivetrain getInstance(){
@@ -161,6 +167,7 @@ public class Drivetrain extends SubsystemBase {
     odometry.resetPosition(getHeadingRotation2d(), getModulePositions(), pose);
   }
 
+
   public void setAllMode(boolean brake){
     if(brake){
       leftFront.setBrake(true);
@@ -185,6 +192,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void zeroHeading(){
     gyro.setYaw(0);
+  }
+
+  public void setHeading(double heading){
+    gyro.setYaw(heading);
   }
 
   public double getHeading(){
@@ -264,5 +275,33 @@ public class Drivetrain extends SubsystemBase {
     }
 
     return targetAngle;
+  }
+
+  public DriveMode getDriveMode(){
+    return mode;
+  }
+
+  public DriveMode getNormalMode(){
+    return DriveMode.kNormal;
+  }
+
+  public DriveMode getSubsMode(){
+    return DriveMode.kSubs;
+  }
+
+  public DriveMode getGridMode(){
+    return DriveMode.kGrid;
+  }
+
+  public void setGridMode(){
+    mode = DriveMode.kGrid;
+  }
+
+  public void setSubsMode(){
+    mode = DriveMode.kSubs;
+  }
+
+  public void setNormalMode(){
+    mode = DriveMode.kNormal;
   }
 }

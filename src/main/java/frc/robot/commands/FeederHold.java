@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class ShooterHold extends CommandBase {
-  /** Creates a new ShooterHold. */
-  public ShooterHold() {
+public class FeederHold extends CommandBase {
+  /** Creates a new FeederHold. */
+  public FeederHold() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.shooter);
+    addRequirements(RobotContainer.transport);
   }
 
   // Called when the command is initially scheduled.
@@ -21,7 +21,12 @@ public class ShooterHold extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.shooter.shooterHold();
+    if(RobotContainer.transport.hasCube()){
+      RobotContainer.transport.feederStop();
+    }
+    else{
+      RobotContainer.transport.feederHold();
+    }
   }
 
   // Called once the command ends or is interrupted.

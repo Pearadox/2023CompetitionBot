@@ -64,5 +64,4 @@ public class Launchpad extends SubsystemBase{
         CubeMode = table.getEntry("CubeMode").getBoolean(false);
         ConeMode = table.getEntry("ConeMode").getBoolean(false);
     }
-
 }
