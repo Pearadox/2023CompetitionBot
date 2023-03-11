@@ -18,6 +18,7 @@ public class Launchpad extends SubsystemBase{
     public NetworkTableInstance nt;
     public NetworkTable table;
     public NetworkTable score;
+    // public static boolean flash = false;
     public Launchpad()
     {
         nt = NetworkTableInstance.getDefault();
@@ -42,6 +43,18 @@ public class Launchpad extends SubsystemBase{
     {
         return ConeMode;
     }
+    // public static void flashing(){ 
+    //     if(flash)
+    //     {
+    //         SmartDashboard.putBoolean("ifConnected", true);
+    //         flash = false;
+    //     }
+    //     else
+    //     {
+    //         SmartDashboard.putBoolean("ifConnected", false);
+    //         flash = true;
+    //     }
+    // }
     @Override
     public void periodic()
     {

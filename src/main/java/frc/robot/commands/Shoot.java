@@ -15,13 +15,13 @@ import frc.robot.RobotContainer;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Shoot extends SequentialCommandGroup {
   /** Creates a new Shoot. */
-  public Shoot() {
+  public Shoot(double waitTime) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(() -> RobotContainer.transport.setDefault(false)),
+      // new InstantCommand(() -> RobotContainer.transport.setDefault(false)),
       new InstantCommand(() -> RobotContainer.shooter.shooterHold()),
-      new WaitCommand(0.75),
+      new WaitCommand(waitTime),
       new RunCommand(() -> RobotContainer.transport.feederShoot())
     );
   }

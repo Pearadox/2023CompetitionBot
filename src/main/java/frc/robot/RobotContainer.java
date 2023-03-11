@@ -105,10 +105,14 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auton Chooser", autoChooser);
     autoChooser.setDefaultOption("1CubeM_Bal", "1CubeM_Bal");
+    autoChooser.addOption("2CubeNC", "2CubeNC");
     autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
+    autoChooser.addOption("3CubeNC_Bal", "3CubeNC_Bal");
+    autoChooser.addOption("4CubeNC", "4CubeNC");
     // autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
     // autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
     autoChooser.addOption("Nothing", "TestAuto");
+    autoChooser.addOption("DriveBack", "DriveBack");
   }
 
   /**
@@ -123,12 +127,10 @@ public class RobotContainer {
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     toggleIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
-    shoot_RB.whileTrue(new Shoot()).onFalse(new InstantCommand(() -> RobotContainer.transport.setHasCube(false))
-      .andThen(new InstantCommand(() -> transport.feederStop()))
-      .andThen(new InstantCommand(() -> transport.setDefault(true)))
+    shoot_RB.whileTrue(new Shoot(0.75)).onFalse(new InstantCommand(() -> transport.feederStop())
       .andThen(new InstantCommand(() -> shooter.shooterOff())));
     armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
-    outtake_X.whileTrue(new Outtake()).onFalse(new InstantCommand(() -> RobotContainer.transport.setHasCube(false)));
+    outtake_X.whileTrue(new Outtake()).onFalse(new InstantCommand(() -> transport.feederStop()));
     gridDriveMode_A.whileTrue(new RunCommand(() -> drivetrain.setGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     subsDriveMode_Y.whileTrue(new RunCommand(() -> drivetrain.setSubsMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
 
@@ -171,10 +173,25 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c1C0_M_Bal();
     }
+    else if(autoChooser.getSelected().equals("2CubeNC")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c2C0_NC();
+    }
     else if(autoChooser.getSelected().equals("2CubeNC_Bal")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c2C0_NC_Bal();
+    }
+    else if(autoChooser.getSelected().equals("3CubeNC_Bal")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c3C0_NC_Bal();
+    }
+    else if(autoChooser.getSelected().equals("4CubeNC")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c4C0_NC();
     }
     // else if(autoChooser.getSelected().equals("1Cone1CubeNC_Bal")){
     //   return Autos.c1C1_NC_Bal();
@@ -187,10 +204,15 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.testAuto();
     }
+    else if(autoChooser.getSelected().equals("DriveBack")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.driveBack();
+    }
     else{
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c1C0_M_Bal();
+      return Autos.driveBack();
     }
   }
 

@@ -11,13 +11,12 @@ public class Outtake extends CommandBase {
   /** Creates a new Outtake. */
   public Outtake() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.shooter, RobotContainer.intakeRollers);
+    addRequirements(RobotContainer.transport, RobotContainer.intakeRollers);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.transport.setDefault(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,7 +29,6 @@ public class Outtake extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.transport.setDefault(true);
   }
 
   // Returns true when the command should end.

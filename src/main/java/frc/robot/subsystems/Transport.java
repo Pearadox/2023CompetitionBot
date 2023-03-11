@@ -9,15 +9,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
 
 public class Transport extends SubsystemBase {
   private PearadoxSparkMax feeder;
 
   private static final Transport transport = new Transport();
-  private boolean hasCube = false;
-  private boolean isDefault = true;
 
   public static Transport getInstance(){
     return transport;
@@ -30,18 +27,6 @@ public class Transport extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    // if(RobotContainer.shooter.hasCube() && !hasCube()){
-    //   setHasCube(true);
-    // }
-    // if(isDefault){
-    //   if(RobotContainer.transport.hasCube()){
-    //     RobotContainer.transport.feederStop();
-    //   }
-    //   else{
-    //     RobotContainer.transport.feederHold();
-    //   }
-    // }
   }
 
   public void feederHold(){
@@ -58,17 +43,5 @@ public class Transport extends SubsystemBase {
 
   public void feederShoot(){
     feeder.set(0.7);
-  }
-
-  public void setHasCube(boolean hasCube){
-    this.hasCube = hasCube;
-  }
-
-  public boolean hasCube(){
-    return hasCube;
-  }
-
-  public void setDefault(boolean b){
-    isDefault = b;
   }
 }

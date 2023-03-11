@@ -79,12 +79,12 @@ public class Shooter extends SubsystemBase {
   public void shooterHold(){
     if(mode == ShooterMode.kCS){
       topController.setReference(
-        target + 0.85,
+        target + 0.95,
         CANSparkMax.ControlType.kVoltage,
         0);
   
       botController.setReference(
-        target-1,
+        target-1.1,
         CANSparkMax.ControlType.kVoltage,
         0);
     }
