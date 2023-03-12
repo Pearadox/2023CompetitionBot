@@ -79,12 +79,12 @@ public class Shooter extends SubsystemBase {
   public void shooterHold(){
     if(mode == ShooterMode.kCS){
       topController.setReference(
-        target + 0.95,
+        target + 1.05,
         CANSparkMax.ControlType.kVoltage,
         0);
   
       botController.setReference(
-        target-1.1,
+        target - 1.25,
         CANSparkMax.ControlType.kVoltage,
         0);
     }
@@ -153,7 +153,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if(!SmartDashboard.containsKey("Shooter Voltage")){
-      SmartDashboard.putNumber("Shooter Voltage", 4.7);
+      SmartDashboard.putNumber("Shooter Voltage", 4.25);
     }
 
     // targetPose = NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
@@ -170,7 +170,7 @@ public class Shooter extends SubsystemBase {
       target = 1.7;
     }
     else{
-      target = SmartDashboard.getNumber("Shooter Voltage", 4.7);
+      target = SmartDashboard.getNumber("Shooter Voltage", 4.25);
     }
 
     SmartDashboard.putNumber("Shooter Target", target);

@@ -137,7 +137,7 @@ public final class Autos {
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
-      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED * 1.5, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
 
     PPSwerveControllerCommand driveToCube1 = makeSwerveControllerCommand(pathGroup.get(0));
     PPSwerveControllerCommand driveToCube2 = makeSwerveControllerCommand(pathGroup.get(1));
