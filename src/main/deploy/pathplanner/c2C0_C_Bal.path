@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.77,
-        "y": 4.607919144579382
+        "x": 4.45,
+        "y": 0.94
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.77,
-        "y": 4.607919144579382
+        "x": 5.450000000000004,
+        "y": 0.94
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,19 +24,19 @@
     },
     {
       "anchorPoint": {
-        "x": 3.271997137818505,
-        "y": 4.61
+        "x": 6.9,
+        "y": 0.94
       },
       "prevControl": {
-        "x": 2.973199194725746,
-        "y": 4.61
+        "x": 6.431039465639135,
+        "y": 0.94
       },
       "nextControl": {
-        "x": 3.550705435835121,
-        "y": 4.61
+        "x": 6.431039465639135,
+        "y": 0.94
       },
       "holonomicAngle": 0,
-      "isReversal": false,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
@@ -49,12 +49,37 @@
     },
     {
       "anchorPoint": {
-        "x": 5.794928074416719,
-        "y": 4.61
+        "x": 5.28,
+        "y": 2.6276563717022934
       },
       "prevControl": {
-        "x": 4.794928074416719,
-        "y": 4.61
+        "x": 5.661759888585762,
+        "y": 2.6276563717022934
+      },
+      "nextControl": {
+        "x": 4.899882384275157,
+        "y": 2.6276563717022934
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.25,
+        "y": 2.63
+      },
+      "prevControl": {
+        "x": 4.546514103674236,
+        "y": 2.63
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -70,12 +95,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 1.5,
-      "names": [
-        "bigStickToggle"
-      ]
-    }
-  ]
+  "markers": []
 }

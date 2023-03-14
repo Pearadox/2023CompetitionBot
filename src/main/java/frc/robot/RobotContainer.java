@@ -23,6 +23,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transport;
+
+import java.util.HashMap;
+
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -54,6 +57,8 @@ public class RobotContainer {
   public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
+
+  public static HashMap<String, Command> eventMap = new HashMap<>();
 
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
@@ -107,12 +112,15 @@ public class RobotContainer {
     autoChooser.setDefaultOption("1CubeM_Bal", "1CubeM_Bal");
     autoChooser.addOption("2CubeNC", "2CubeNC");
     autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
+    autoChooser.addOption("2CubeC_Bal", "2CubeC_Bal");
     autoChooser.addOption("3CubeNC_Bal", "3CubeNC_Bal");
     autoChooser.addOption("4CubeNC", "4CubeNC");
-    // autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
     // autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
+    autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
     autoChooser.addOption("Nothing", "TestAuto");
     autoChooser.addOption("DriveBack", "DriveBack");
+
+    eventMap.put("bigStickToggle", new InstantCommand(() -> bigStick.toggleDeploy()));
   }
 
   /**
@@ -183,6 +191,11 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c2C0_NC_Bal();
     }
+    else if(autoChooser.getSelected().equals("2CubeC_Bal")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c2C0_C_Bal();
+    }
     else if(autoChooser.getSelected().equals("3CubeNC_Bal")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
@@ -193,9 +206,11 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c4C0_NC();
     }
-    // else if(autoChooser.getSelected().equals("1Cone1CubeNC_Bal")){
-    //   return Autos.c1C1_NC_Bal();
-    // }
+    else if(autoChooser.getSelected().equals("1Cone1CubeNC_Bal")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(90);
+      return Autos.c1C1_NC_Bal();
+    }
     // else if(autoChooser.getSelected().equals("1Cone1CubeC_Bal")){
     //   return Autos.c1C1_C_Bal();
     // }

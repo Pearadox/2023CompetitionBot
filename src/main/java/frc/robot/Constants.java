@@ -98,8 +98,8 @@ public final class Constants {
     public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
-    public static final double PIVOT_MIN_OUTPUT = -0.25;
-    public static final double PIVOT_MAX_OUTPUT = 0.25;
+    public static final double PIVOT_MIN_OUTPUT = -0.4;
+    public static final double PIVOT_MAX_OUTPUT = 0.4;
 
     public static final double DEPLOYED_ROT = 10.2;
   }
@@ -115,7 +115,7 @@ public final class Constants {
     public static final double PIVOT_MAX_OUTPUT = 0.5;
 
     public static final double LOW_MODE_ROT = 3.5;
-    public static final double MID_MODE_ROT = 16.5;
+    public static final double MID_MODE_ROT = 17.5;
     public static final double HIGH_MODE_ROT = 21;
     public static final double SUBS_MODE_ROT = 20.1;
   }
