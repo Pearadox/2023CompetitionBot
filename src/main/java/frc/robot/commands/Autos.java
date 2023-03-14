@@ -234,6 +234,29 @@ public final class Autos {
     );
   }
 
+  public static CommandBase c5C0_NC() {
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c4C0_NC", 
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+
+    PPSwerveControllerCommand command = makeSwerveControllerCommand(pathGroup.get(0));
+
+    FollowPathWithEvents driveToCubes = new FollowPathWithEvents(
+      command,
+      pathGroup.get(0).getMarkers(),
+      RobotContainer.eventMap
+    );
+    
+    return Commands.sequence(
+      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
+      driveToCubes,
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
+      new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
+      new InstantCommand(() -> RobotContainer.transport.feederStop())
+    );
+  }
+
   public static CommandBase driveBack() {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("DriveBack", SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION);
 

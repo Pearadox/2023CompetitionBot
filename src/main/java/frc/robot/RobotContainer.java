@@ -101,26 +101,14 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     portForwarding();
+    loadEventMap();
+    loadAutoChooser();
     configureBindings();
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
     intakeRollers.setDefaultCommand(new IntakeRollersHold());
     arm.setDefaultCommand(new ArmHold());
     bigStick.setDefaultCommand(new BigStickHold());
-
-    SmartDashboard.putData("Auton Chooser", autoChooser);
-    autoChooser.setDefaultOption("1CubeM_Bal", "1CubeM_Bal");
-    autoChooser.addOption("2CubeNC", "2CubeNC");
-    autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
-    autoChooser.addOption("2CubeC_Bal", "2CubeC_Bal");
-    autoChooser.addOption("3CubeNC_Bal", "3CubeNC_Bal");
-    autoChooser.addOption("4CubeNC", "4CubeNC");
-    // autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
-    autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
-    autoChooser.addOption("Nothing", "TestAuto");
-    autoChooser.addOption("DriveBack", "DriveBack");
-
-    eventMap.put("bigStickToggle", new InstantCommand(() -> bigStick.toggleDeploy()));
   }
 
   /**
@@ -206,6 +194,11 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c4C0_NC();
     }
+    else if(autoChooser.getSelected().equals("5CubeNC")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c5C0_NC();
+    }
     else if(autoChooser.getSelected().equals("1Cone1CubeNC_Bal")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(90);
@@ -234,6 +227,29 @@ public class RobotContainer {
   private void portForwarding(){
     EForwardableConnections.addPortForwarding(EForwardableConnections.LIMELIGHT_ARM_CAMERA_FEED);
     EForwardableConnections.addPortForwarding(EForwardableConnections.LIMELIGHT_ARM_WEB_VIEW);
+  }
+
+  private void loadEventMap(){
+    eventMap.put("bigStickToggle", new InstantCommand(() -> bigStick.toggleDeploy()));
+    eventMap.put("intakeToggle", new InstantCommand(() -> intake.intakeToggle()));
+    eventMap.put("shooterHold", new InstantCommand(() -> RobotContainer.shooter.shooterHold()));
+    eventMap.put("shoot", new Shoot(0).withTimeout(0.5));
+    eventMap.put("feederStop", new InstantCommand(() -> RobotContainer.transport.feederStop()));
+  }
+
+  private void loadAutoChooser(){
+    SmartDashboard.putData("Auton Chooser", autoChooser);
+    autoChooser.setDefaultOption("DriveBack", "DriveBack");
+    autoChooser.addOption("1CubeM_Bal", "1CubeM_Bal");
+    autoChooser.addOption("2CubeNC", "2CubeNC");
+    autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
+    autoChooser.addOption("2CubeC_Bal", "2CubeC_Bal");
+    autoChooser.addOption("3CubeNC_Bal", "3CubeNC_Bal");
+    autoChooser.addOption("4CubeNC", "4CubeNC");
+    autoChooser.addOption("5CubeNC", "5CubeNC");
+    // autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
+    autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
+    autoChooser.addOption("Nothing", "TestAuto");
   }
 
   // public void loadGridButtons(){
