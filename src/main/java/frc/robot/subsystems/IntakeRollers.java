@@ -30,8 +30,8 @@ public class IntakeRollers extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void intakeIn(){
-    driver.set(0.5);
+  public void intakeIn(double speed){
+    driver.set(speed);
   }
 
   public void intakeOut(){

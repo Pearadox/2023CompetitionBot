@@ -184,6 +184,11 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c2C0_C_Bal();
     }
+    else if(autoChooser.getSelected().equals("3CubeC_Bal")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c3C0_C_Bal();
+    }
     else if(autoChooser.getSelected().equals("3CubeNC_Bal")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
@@ -244,6 +249,7 @@ public class RobotContainer {
     autoChooser.addOption("2CubeNC", "2CubeNC");
     autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
     autoChooser.addOption("2CubeC_Bal", "2CubeC_Bal");
+    autoChooser.addOption("3CubeC_Bal", "3CubeC_Bal");
     autoChooser.addOption("3CubeNC_Bal", "3CubeNC_Bal");
     autoChooser.addOption("4CubeNC", "4CubeNC");
     autoChooser.addOption("5CubeNC", "5CubeNC");
