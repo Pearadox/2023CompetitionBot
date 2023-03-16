@@ -11,6 +11,7 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -103,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void swerveDrive(double frontSpeed, double sideSpeed, double turnX, double turnY, 
-    boolean fieldOriented, boolean headingControl, boolean deadband){
+    boolean fieldOriented, Translation2d centerOfRotation, boolean headingControl, boolean deadband){
     if(deadband){
       frontSpeed = Math.abs(frontSpeed) > 0.1 ? frontSpeed : 0;
       sideSpeed = Math.abs(sideSpeed) > 0.1 ? sideSpeed : 0;
@@ -154,7 +155,7 @@ public class Drivetrain extends SubsystemBase {
       chassisSpeeds = new ChassisSpeeds(frontSpeed, sideSpeed, turnSpeed);
     }
 
-    SwerveModuleState[] moduleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] moduleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds, centerOfRotation);
 
     setModuleStates(moduleStates);
   }

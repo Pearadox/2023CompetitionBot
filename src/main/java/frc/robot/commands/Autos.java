@@ -293,6 +293,41 @@ public final class Autos {
     );
   }
 
+  public static CommandBase c5C0_NC_Bal() {
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c5C0_NC_Bal", 
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED * 1.5, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+
+    PPSwerveControllerCommand command = makeSwerveControllerCommand(pathGroup.get(0));
+    PPSwerveControllerCommand command1 = makeSwerveControllerCommand(pathGroup.get(1));
+
+    FollowPathWithEvents driveToCubes = new FollowPathWithEvents(
+      command,
+      pathGroup.get(0).getMarkers(),
+      RobotContainer.eventMap
+    );
+
+    FollowPathWithEvents driveOnCS = new FollowPathWithEvents(
+      command1,
+      pathGroup.get(1).getMarkers(),
+      RobotContainer.eventMap
+    );
+    
+    return Commands.sequence(
+      new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
+      new Shoot(0.5).withTimeout(1),
+      new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
+      driveToCubes,
+      driveOnCS,
+      new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
+      new InstantCommand(() -> RobotContainer.transport.feederStop()),
+      new AutoBalance(),
+      new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
+    );
+  }
+
   public static CommandBase driveBack() {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("DriveBack", SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION);
 

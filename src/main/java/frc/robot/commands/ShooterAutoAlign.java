@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -27,7 +28,8 @@ public class ShooterAutoAlign extends CommandBase {
     double error = RobotContainer.shooter.getLLTable().getEntry("tx").getDouble(0);
     double hasTarget = RobotContainer.shooter.getLLTable().getEntry("tv").getDouble(0);
     if(hasTarget != 0){
-      RobotContainer.drivetrain.swerveDrive(0, 0, Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error, 0, true, false, false);
+      RobotContainer.drivetrain.swerveDrive(0, 0, Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error, 0, 
+        true, new Translation2d(),false, false);
     }
     else{
       RobotContainer.drivetrain.swerveDrive(
@@ -36,6 +38,7 @@ public class ShooterAutoAlign extends CommandBase {
         RobotContainer.driverController.getRightX(),
         -RobotContainer.driverController.getRightY(),
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
+        new Translation2d(), // change
         true,
         true);
     }

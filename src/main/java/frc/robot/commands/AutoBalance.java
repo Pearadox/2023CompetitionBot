@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
@@ -28,25 +29,25 @@ public class AutoBalance extends CommandBase {
     if(Math.abs(RobotContainer.drivetrain.getRoll()) > 15.0){
       double speed = initPidController.calculate(RobotContainer.drivetrain.getRoll(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading()) > 165 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(-speed, 0.0, 0.0, 0.0, true, false, false);
+      RobotContainer.drivetrain.swerveDrive(-speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
     }
     else if(Math.abs(RobotContainer.drivetrain.getRoll()) > 2.5 && Math.abs(RobotContainer.drivetrain.getRoll()) < 15.0){
       double speed = finalPidController.calculate(RobotContainer.drivetrain.getRoll(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading()) > 165 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(-speed, 0.0, 0.0, 0.0, true, false, false);
+      RobotContainer.drivetrain.swerveDrive(-speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
     }
     else if(Math.abs(RobotContainer.drivetrain.getPitch()) > 15.0){
       double speed = initPidController.calculate(RobotContainer.drivetrain.getPitch(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading() - 90) > 15 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(speed, 0.0, 0.0, 0.0, true, false, false);
+      RobotContainer.drivetrain.swerveDrive(speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
     }
     else if(Math.abs(RobotContainer.drivetrain.getPitch()) > 2.5 && Math.abs(RobotContainer.drivetrain.getPitch()) < 15.0){
       double speed = finalPidController.calculate(RobotContainer.drivetrain.getPitch(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading() - 90) > 15 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(speed, 0.0, 0.0, 0.0, true, false, false);
+      RobotContainer.drivetrain.swerveDrive(speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
     }
     else{
-      RobotContainer.drivetrain.swerveDrive(0.0, 0.0, 0.0, 0.0, true, false, false);
+      RobotContainer.drivetrain.swerveDrive(0.0, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
     }
   }
 

@@ -139,7 +139,7 @@
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -149,12 +149,37 @@
     },
     {
       "anchorPoint": {
-        "x": 5.8,
-        "y": 0.65
+        "x": 5.28,
+        "y": 2.02
       },
       "prevControl": {
-        "x": 5.926024801632489,
-        "y": 0.65
+        "x": 5.417763520513516,
+        "y": 2.02
+      },
+      "nextControl": {
+        "x": 5.110653804693784,
+        "y": 2.02
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.3,
+        "y": 2.02
+      },
+      "prevControl": {
+        "x": 4.609010015601924,
+        "y": 2.02
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -164,7 +189,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -184,6 +209,12 @@
       ]
     },
     {
+      "position": 0.55,
+      "names": [
+        "feederStop"
+      ]
+    },
+    {
       "position": 2.15,
       "names": [
         "intakeToggle"
@@ -196,6 +227,12 @@
       ]
     },
     {
+      "position": 2.4,
+      "names": [
+        "shoot"
+      ]
+    },
+    {
       "position": 2.65,
       "names": [
         "bigStickToggle"
@@ -205,6 +242,12 @@
       "position": 2.8,
       "names": [
         "intakeToggle"
+      ]
+    },
+    {
+      "position": 2.97,
+      "names": [
+        "feederStop"
       ]
     },
     {
@@ -238,6 +281,12 @@
       ]
     },
     {
+      "position": 3.97,
+      "names": [
+        "feederStop"
+      ]
+    },
+    {
       "position": 4.15,
       "names": [
         "intakeToggle"
@@ -268,43 +317,19 @@
       ]
     },
     {
-      "position": 5.15,
-      "names": [
-        "intakeToggle"
-      ]
-    },
-    {
-      "position": 5.32,
-      "names": [
-        "bigStickToggle"
-      ]
-    },
-    {
-      "position": 2.97,
-      "names": [
-        "feederStop"
-      ]
-    },
-    {
-      "position": 3.97,
-      "names": [
-        "feederStop"
-      ]
-    },
-    {
       "position": 4.97,
       "names": [
         "feederStop"
       ]
     },
     {
-      "position": 0.55,
+      "position": 5.25,
       "names": [
-        "feederStop"
+        "intakeToggle"
       ]
     },
     {
-      "position": 2.4,
+      "position": 6.05,
       "names": [
         "shoot"
       ]
