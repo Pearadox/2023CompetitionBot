@@ -10,14 +10,18 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.lib.util.LerpTable;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
@@ -37,13 +41,18 @@ public class Shooter extends SubsystemBase {
   private NetworkTable llTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
   private LerpTable shooterLerp;
   private double target;
-  // private double[] targetPose;
+  private double[] cameraPose = new double[6];
 
-  // private double dist;
-  // private MedianFilter distFilter = new MedianFilter(5);
+  private int r = 0;
+  private int c = 0;
+  private double tz = 0;
+  private double tx = 0;
+  private double dist = 0;
+  private double targetAngle = 0;
+  private MedianFilter distFilter = new MedianFilter(5);
 
   private enum ShooterMode{
-    kHigh, kMid, kCS
+    kAuto, kHigh, kMid, kCS
   }
   private ShooterMode mode = ShooterMode.kHigh;
 
@@ -156,14 +165,21 @@ public class Shooter extends SubsystemBase {
       SmartDashboard.putNumber("Shooter Voltage", 4.25);
     }
 
-    // targetPose = NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
-    // dist = Math.sqrt(Math.pow(targetPose[0], 2) + Math.pow(targetPose[2], 2));
+    // cameraPose = NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
+    // tz = cameraPose[2];
+    // tx = cameraPose[0];
 
-    // if (llTable.getEntry("tv").getDouble(0) != 0 && shooterMode == ShooterMode.kAuto) {
-    //   dist = distFilter.calculate(dist);
-    //   target = shooterLerp.interpolate(dist);
-    // }
-    if(mode == ShooterMode.kHigh) {
+    setPipeline(c);
+
+    if (llTable.getEntry("tv").getDouble(0) != 0 && mode == ShooterMode.kAuto) {
+      calculateTx(r, c);
+      calculateTz(r);
+      dist = Math.hypot(Math.abs(tx), Math.abs(tz));
+      dist = distFilter.calculate(dist);
+      target = shooterLerp.interpolate(dist);
+      setTargetAngle();
+    }
+    else if(mode == ShooterMode.kHigh) {
       target = 2.27;
     }
     else if (mode == ShooterMode.kMid){
@@ -196,5 +212,78 @@ public class Shooter extends SubsystemBase {
 
   public void changeLLPipeline(int pipeline){
     llTable.getEntry("pipeline").setNumber(pipeline);
+  }
+
+  public void setTargetNode(int r, int c){
+    this.r = r;
+    this.c = c;
+  }
+
+  public void setPipeline(int c){
+    if(DriverStation.getAlliance().equals(Alliance.Red)){
+      if(c == 0 || c == 1 || c == 2){
+        changeLLPipeline(1);
+      }
+      if(c == 3 || c == 4 || c == 5){
+        changeLLPipeline(2);
+      }
+      if(c == 6 || c == 7 || c == 8){
+        changeLLPipeline(3);
+      }
+    }
+    else if(DriverStation.getAlliance().equals(Alliance.Blue)){
+      if(c == 0 || c == 1 || c == 2){
+        changeLLPipeline(6);
+      }
+      if(c == 3 || c == 4 || c == 5){
+        changeLLPipeline(7);
+      }
+      if(c == 6 || c == 7 || c == 8){
+        changeLLPipeline(8);
+      }
+    }
+  }
+
+  public void calculateTz(int r){
+    switch(r){
+      case 0:
+        tz -= FieldConstants.APRIL_TAG_TO_HYBRID;
+        break;
+      case 1:
+        tz += FieldConstants.APRIL_TAG_TO_MID;
+        break;
+      case 2:
+        tz += FieldConstants.APRIL_TAG_TO_HIGH;
+        break;
+      default:
+        tz -= FieldConstants.APRIL_TAG_TO_HYBRID;
+    }
+  }
+
+  public void calculateTx(int r, int c){
+    if(r == 0){
+      if(c == 0){
+        tx -= FieldConstants.HYBRID_TO_OUTER_HYBRID;
+      }
+      else if(c == 8){
+        tx += FieldConstants.HYBRID_TO_OUTER_HYBRID;
+      }
+      else if(c == 2 || c == 5){
+        tx += FieldConstants.HYBRID_TO_INNER_HYBRID;
+      }
+      else if(c == 3 || c == 6){
+        tx -= FieldConstants.HYBRID_TO_INNER_HYBRID;
+      }
+    }
+  }
+
+  public void setTargetAngle(){
+    if(tz != 0){
+      targetAngle = Math.toDegrees(Math.atan(tx/tz));
+    }
+  }
+
+  public double getTargetAngle(){
+    return targetAngle;
   }
 }

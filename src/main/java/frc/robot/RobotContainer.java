@@ -9,10 +9,13 @@ import frc.lib.drivers.Launchpad;
 import frc.lib.drivers.LaunchpadButton;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
+import frc.robot.commands.ArmToggle;
 import frc.robot.commands.Autos;
 import frc.robot.commands.BigStickHold;
+import frc.robot.commands.BigStickToggle;
 import frc.robot.commands.IntakeHold;
 import frc.robot.commands.IntakeRollersHold;
+import frc.robot.commands.IntakeToggle;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveDrive;
@@ -122,7 +125,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-    toggleIntake_LB.onTrue(new InstantCommand(intake::intakeToggle, intake));
+    toggleIntake_LB.onTrue(new IntakeToggle());
     shoot_RB.whileTrue(new Shoot(0.75)).onFalse(new InstantCommand(() -> transport.feederStop())
       .andThen(new InstantCommand(() -> shooter.shooterOff())));
     armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
@@ -130,12 +133,11 @@ public class RobotContainer {
     gridDriveMode_A.whileTrue(new RunCommand(() -> drivetrain.setGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     subsDriveMode_Y.whileTrue(new RunCommand(() -> drivetrain.setSubsMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
 
-
-    armHigh_1_0.onTrue(new InstantCommand(() -> arm.setHighMode()));
-    armMid_2_0.onTrue(new InstantCommand(() -> arm.setMidMode()));
-    armLow_3_0.onTrue(new InstantCommand(() -> arm.setLowMode()));
-    armZero_4_0.onTrue(new InstantCommand(() -> arm.setZeroMode()));
-    armSubs_2_1.onTrue(new InstantCommand(() -> arm.setSubsMode()));
+    armHigh_1_0.onTrue(new ArmToggle(3));
+    armMid_2_0.onTrue(new ArmToggle(2));
+    armLow_3_0.onTrue(new ArmToggle(1));
+    armZero_4_0.onTrue(new ArmToggle(0));
+    armSubs_2_1.onTrue(new ArmToggle(4));
 
     armAdjustUp_1_3.onTrue(new InstantCommand(() -> arm.armAdjustUp()));
     armAdjustDown_2_3.onTrue(new InstantCommand(() -> arm.armAdjustDown()));
@@ -144,17 +146,17 @@ public class RobotContainer {
     shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));
     shooterCS_3_7.onTrue(new InstantCommand(() -> shooter.setCSMode()));
 
-    toggleBigStick_2_5.onTrue(new InstantCommand(() -> bigStick.toggleDeploy()));
+    toggleBigStick_2_5.onTrue(new BigStickToggle());
 
     feederOut_4_2.whileTrue(new RunCommand(() -> transport.feederOut(-0.1))).onFalse(new InstantCommand(() -> transport.feederStop()));
     feederIn_4_3.whileTrue(new RunCommand(() -> transport.feederHold())).onFalse(new InstantCommand(() -> transport.feederStop()));
 
-    intakeToggle_1_5.onTrue(new InstantCommand(intake::intakeToggle, intake));
+    intakeToggle_1_5.onTrue(new IntakeToggle());
 
     armUp_Y.onTrue(new InstantCommand(() -> arm.armUp()));
     armDown_A.onTrue(new InstantCommand(() -> arm.armDown()));
     armSubs_X.onTrue(new InstantCommand(() -> arm.setSubsMode()));
-    toggleBigStick_RB.onTrue(new InstantCommand(() -> bigStick.toggleDeploy()));
+    toggleBigStick_RB.onTrue(new BigStickToggle());
   }
 
   /**
@@ -203,6 +205,11 @@ public class RobotContainer {
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c5C0_NC();
+    }
+    else if(autoChooser.getSelected().equals("5CubeNC_Bal")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c5C0_NC_Bal();
     }
     else if(autoChooser.getSelected().equals("1Cone1CubeNC_Bal")){
       drivetrain.resetAllEncoders();
@@ -253,6 +260,7 @@ public class RobotContainer {
     autoChooser.addOption("3CubeNC_Bal", "3CubeNC_Bal");
     autoChooser.addOption("4CubeNC", "4CubeNC");
     autoChooser.addOption("5CubeNC", "5CubeNC");
+    autoChooser.addOption("5CubeNC_Bal", "5CubeNC_Bal");
     // autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
     autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
     autoChooser.addOption("Nothing", "TestAuto");

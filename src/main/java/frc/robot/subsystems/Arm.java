@@ -183,4 +183,28 @@ public class Arm extends SubsystemBase {
       SmartDashboard.putString("Arm Mode", "kSubs");
     }
   }
+
+  public ArmMode getArmMode(){
+    return armMode;
+  }
+
+  public ArmMode getZeroMode(){
+    return ArmMode.kZero;
+  }
+
+  public ArmMode getLowMode(){
+    return ArmMode.kLow;
+  }
+
+  public ArmMode getMidMode(){
+    return ArmMode.kMid;
+  }
+
+  public ArmMode getHighMode(){
+    return ArmMode.kHigh;
+  }
+
+  public ArmMode getSubsMode(){
+    return ArmMode.kSubs;
+  }
 }

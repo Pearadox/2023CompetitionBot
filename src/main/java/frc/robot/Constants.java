@@ -159,4 +159,13 @@ public final class Constants {
 
     public static final double DEPLOYED_ROT = 7.4;
   }
+
+  public static final class FieldConstants{
+    public static final double APRIL_TAG_TO_MID = Units.inchesToMeters(8.9375);
+    public static final double APRIL_TAG_TO_HIGH = Units.inchesToMeters(26.3125);
+    public static final double APRIL_TAG_TO_HYBRID = Units.inchesToMeters(6.875);
+
+    public static final double HYBRID_TO_INNER_HYBRID = Units.inchesToMeters(22);
+    public static final double HYBRID_TO_OUTER_HYBRID = Units.inchesToMeters(25.625);
+  }
 }
