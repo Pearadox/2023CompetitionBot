@@ -103,40 +103,12 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((rates[2] / 180)) + "pi rad/s");
   }
 
-  public void swerveDrive(double frontSpeed, double sideSpeed, double turnX, double turnY, 
-    boolean fieldOriented, Translation2d centerOfRotation, boolean headingControl, boolean deadband){
+  public void swerveDrive(double frontSpeed, double sideSpeed, double turnSpeed, 
+    boolean fieldOriented, Translation2d centerOfRotation, boolean deadband){ //Drive with rotational speed control w/ joystick
     if(deadband){
       frontSpeed = Math.abs(frontSpeed) > 0.1 ? frontSpeed : 0;
       sideSpeed = Math.abs(sideSpeed) > 0.1 ? sideSpeed : 0;
-      turnX = Math.abs(turnX) > 0.1 ? turnX : 0;
-      turnY = Math.abs(turnY) > 0.1 ? turnY : 0;
-    }
-
-    double turnSpeed;
-    if(headingControl){
-      if(turnX == 0 && turnY == 0){
-        turnSpeed = 0;
-      }
-      else{
-        double error = getJoystickAngle(turnX, turnY) - getHeading();
-    
-        if(error > 180) {
-          error -= 360;
-        }
-        else if(error < -180){
-          error += 360;
-        }
-    
-        if(Math.abs(error) > 1){
-          turnSpeed = Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error;
-        }
-        else{
-          turnSpeed = 0;
-        }
-      }
-    }
-    else{
-      turnSpeed = -turnX;
+      turnSpeed = Math.abs(turnSpeed) > 0.1 ? turnSpeed : 0;
     }
 
     frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.45 : frontSpeed;
@@ -159,6 +131,85 @@ public class Drivetrain extends SubsystemBase {
 
     setModuleStates(moduleStates);
   }
+
+  public void swerveDrive(double frontSpeed, double sideSpeed, double turnX, double turnY, 
+    boolean fieldOriented, Translation2d centerOfRotation, boolean deadband){ //Drive with rotational heading control w/ joystick
+    if(deadband){
+      frontSpeed = Math.abs(frontSpeed) > 0.1 ? frontSpeed : 0;
+      sideSpeed = Math.abs(sideSpeed) > 0.1 ? sideSpeed : 0;
+      turnX = Math.abs(turnX) > 0.1 ? turnX : 0;
+      turnY = Math.abs(turnY) > 0.1 ? turnY : 0;
+    }
+
+    double turnSpeed;
+    if(turnX == 0 && turnY == 0){
+      turnSpeed = 0;
+    }
+    else{
+      double error = getJoystickAngle(turnX, turnY) - getHeading();
+    
+      if(error > 180) {
+        error -= 360;
+      }
+      else if(error < -180){
+        error += 360;
+      }
+    
+      if(Math.abs(error) > 1){
+        turnSpeed = Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error;
+      }
+      else{
+        turnSpeed = 0;
+      }
+    }
+
+    frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.45 : frontSpeed;
+    sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? sideSpeed * 0.45 : sideSpeed;
+    turnSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? turnSpeed * 0.45 : turnSpeed;
+
+    frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
+    sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
+    turnSpeed = turnLimiter.calculate(turnSpeed) * SwerveConstants.TELE_DRIVE_MAX_ANGULAR_SPEED;
+
+    ChassisSpeeds chassisSpeeds;
+    if(fieldOriented){
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(frontSpeed, sideSpeed, turnSpeed, getHeadingRotation2d());
+    }
+    else{
+      chassisSpeeds = new ChassisSpeeds(frontSpeed, sideSpeed, turnSpeed);
+    }
+
+    SwerveModuleState[] moduleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds, centerOfRotation);
+
+    setModuleStates(moduleStates);
+  }
+
+  public void turnToHeading(double heading, Translation2d centerOfRotation){
+    double turnSpeed;
+    double error = heading - getHeading();
+
+    if(error > 180) {
+      error -= 360;
+    }
+    else if(error < -180){
+      error += 360;
+    }
+    
+    if(Math.abs(error) > 1){
+      turnSpeed = Math.signum(error) * SwerveConstants.kS_PERCENT + SwerveConstants.kP_PERCENT * error;
+    }
+    else{
+      turnSpeed = 0;
+    }
+
+    turnSpeed = turnLimiter.calculate(turnSpeed) * SwerveConstants.TELE_DRIVE_MAX_ANGULAR_SPEED;
+
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, turnSpeed, getHeadingRotation2d());
+
+    SwerveModuleState[] moduleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds, centerOfRotation);
+
+    setModuleStates(moduleStates);
+  }
   
   public Pose2d getPose(){
     return odometry.getPoseMeters();
@@ -168,8 +219,7 @@ public class Drivetrain extends SubsystemBase {
     odometry.resetPosition(getHeadingRotation2d(), getModulePositions(), pose);
   }
 
-
-  public void setAllMode(boolean brake){
+  public void setAllIdleMode(boolean brake){
     if(brake){
       leftFront.setBrake(true);
       rightFront.setBrake(true);
@@ -200,7 +250,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getHeading(){
-    return Math.IEEEremainder(gyro.getYaw(), 360);
+    return Math.IEEEremainder(gyro.getYaw(), 360); //clamp heading between -180 and 180
   }
 
   public Rotation2d getHeadingRotation2d(){
@@ -249,32 +299,13 @@ public class Drivetrain extends SubsystemBase {
   public double getJoystickAngle(double turnX, double turnY){
     double targetAngle;
 
-    if(turnX == 0 && turnY > 0){
-      targetAngle = -90.0;
-    }
-    else if(turnX == 0 && turnY < 0){
-      targetAngle = 90.0;
+    if(turnX != 0){
+      targetAngle = Math.toDegrees(Math.atan2(-turnX, turnY));   
     }
     else{
-      targetAngle = Math.atan(turnY/turnX) * (180 / Math.PI);
+      targetAngle = Math.toDegrees(Math.atan2(turnX, turnY));
     }
     
-    targetAngle -= 90.0;
-      
-    if(turnX > 0 && turnY > 0){
-      targetAngle -= 180.0;
-    }
-    else if(turnX > 0 && turnY <= 0){
-      targetAngle += 180.0;
-    }
-  
-    if(targetAngle + 180 > 180){
-      targetAngle -= 180.0;
-    }
-    else{
-      targetAngle += 180.0;
-    }
-
     return targetAngle;
   }
 

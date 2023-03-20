@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
@@ -145,7 +148,6 @@ public final class Constants {
 
     public static final double SHOOTER_MIN_OUTPUT = -1.0;
     public static final double SHOOTER_MAX_OUTPUT = 1.0;
-
   }
 
   public static final class BigStickConstants{
@@ -154,8 +156,8 @@ public final class Constants {
     public static final double PIVOT_kP = 0.1;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
-    public static final double PIVOT_MIN_OUTPUT = -0.5;
-    public static final double PIVOT_MAX_OUTPUT = 0.5;
+    public static final double PIVOT_MIN_OUTPUT = -1.0;
+    public static final double PIVOT_MAX_OUTPUT = 1.0;
 
     public static final double DEPLOYED_ROT = 7.4;
   }
@@ -167,5 +169,18 @@ public final class Constants {
 
     public static final double HYBRID_TO_INNER_HYBRID = Units.inchesToMeters(22);
     public static final double HYBRID_TO_OUTER_HYBRID = Units.inchesToMeters(25.625);
+  }
+
+  public static final class VisionConstants{
+    public static final String SHOOTER_LL_NAME = "limelight-shooter";
+    public static final String ARM_LL_NAME = "limelight-arm";
+
+    public static final Transform3d ROBOT_TO_SHOOTER_LL = new Transform3d(
+      new Translation3d( 
+        -Units.inchesToMeters(0.1941),
+        Units.inchesToMeters(5.8752),
+        Units.inchesToMeters(25.7158)
+      ), 
+      new Rotation3d());
   }
 }

@@ -36,7 +36,7 @@ public enum EForwardableConnections {
     return mPort;
   }
 
-  public String gepIPAddress() {
+  public String getIPAddress() {
     return mpIPAddress;
   }
   /**
@@ -47,7 +47,7 @@ public enum EForwardableConnections {
   public static void addPortForwarding(EForwardableConnections pExternalConnection) {
     PortForwarder.add(
         pExternalConnection.getPort(),
-        pExternalConnection.gepIPAddress(),
+        pExternalConnection.getIPAddress(),
         pExternalConnection.getPort());
   }
 }

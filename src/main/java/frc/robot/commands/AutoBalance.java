@@ -26,28 +26,32 @@ public class AutoBalance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(Math.abs(RobotContainer.drivetrain.getRoll()) > 15.0){
+    if(Math.abs(RobotContainer.drivetrain.getRoll()) > 15.0){ //Robot docks from the front or back
       double speed = initPidController.calculate(RobotContainer.drivetrain.getRoll(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading()) > 165 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(-speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
+
+      RobotContainer.drivetrain.swerveDrive(-speed, 0, 0, true, new Translation2d(), false);
     }
     else if(Math.abs(RobotContainer.drivetrain.getRoll()) > 2.5 && Math.abs(RobotContainer.drivetrain.getRoll()) < 15.0){
       double speed = finalPidController.calculate(RobotContainer.drivetrain.getRoll(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading()) > 165 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(-speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
+
+      RobotContainer.drivetrain.swerveDrive(-speed, 0, 0, true, new Translation2d(), false);
     }
-    else if(Math.abs(RobotContainer.drivetrain.getPitch()) > 15.0){
+    else if(Math.abs(RobotContainer.drivetrain.getPitch()) > 15.0){ //Robot docks from the side
       double speed = initPidController.calculate(RobotContainer.drivetrain.getPitch(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading() - 90) > 15 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
+
+      RobotContainer.drivetrain.swerveDrive(speed, 0, 0, true, new Translation2d(), false);
     }
     else if(Math.abs(RobotContainer.drivetrain.getPitch()) > 2.5 && Math.abs(RobotContainer.drivetrain.getPitch()) < 15.0){
       double speed = finalPidController.calculate(RobotContainer.drivetrain.getPitch(), 0.0);
       speed = Math.abs(RobotContainer.drivetrain.getHeading() - 90) > 15 ? -speed : speed;
-      RobotContainer.drivetrain.swerveDrive(speed, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
+
+      RobotContainer.drivetrain.swerveDrive(speed, 0, 0, true, new Translation2d(), false);
     }
     else{
-      RobotContainer.drivetrain.swerveDrive(0.0, 0.0, 0.0, 0.0, true, new Translation2d(), false, false);
+      RobotContainer.drivetrain.swerveDrive(0, 0, 0, true, new Translation2d(), false);
     }
   }
 

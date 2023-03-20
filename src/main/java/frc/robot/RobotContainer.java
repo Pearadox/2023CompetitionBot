@@ -59,7 +59,9 @@ public class RobotContainer {
 
   public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
-  private SendableChooser<String> autoChooser = new SendableChooser<>();
+  private SendableChooser<String> autoGamePiecesChooser = new SendableChooser<>();
+  private SendableChooser<String> autoStartingSideChooser = new SendableChooser<>();
+  private SendableChooser<String> autoBalanceChooser = new SendableChooser<>();
 
   public static HashMap<String, Command> eventMap = new HashMap<>();
 
@@ -74,25 +76,24 @@ public class RobotContainer {
   
   public static final Launchpad opController = new Launchpad();
   // private final LaunchpadButton[][] gridButtons = new LaunchpadButton[3][9];
-  private final LaunchpadButton armHigh_1_0 = new LaunchpadButton(opController, 1, 0);
+  private final LaunchpadButton armHigh_1_0 = new LaunchpadButton(opController, 1, 0); //Arm buttons
   private final LaunchpadButton armMid_2_0 = new LaunchpadButton(opController, 2, 0);
   private final LaunchpadButton armLow_3_0 = new LaunchpadButton(opController, 3, 0);
   private final LaunchpadButton armZero_4_0 = new LaunchpadButton(opController, 4, 0);
   private final LaunchpadButton armSubs_2_1 = new LaunchpadButton(opController, 2, 1);
-
   private final LaunchpadButton armAdjustUp_1_3 = new LaunchpadButton(opController, 1, 3);
   private final LaunchpadButton armAdjustDown_2_3 = new LaunchpadButton(opController, 2, 3);
 
-  private final LaunchpadButton shooterHigh_1_7 = new LaunchpadButton(opController, 1, 7);
+  private final LaunchpadButton shooterHigh_1_7 = new LaunchpadButton(opController, 1, 7); //Shooter mode buttons
   private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
   private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
 
-  private final LaunchpadButton toggleBigStick_2_5 = new LaunchpadButton(opController, 2, 5);
+  private final LaunchpadButton toggleBigStick_2_5 = new LaunchpadButton(opController, 2, 5); //Big stick buttons
 
-  private final LaunchpadButton feederOut_4_2 = new LaunchpadButton(opController, 4, 2);
+  private final LaunchpadButton feederOut_4_2 = new LaunchpadButton(opController, 4, 2); //Transport buttons
   private final LaunchpadButton feederIn_4_3 = new LaunchpadButton(opController, 4, 3);
 
-  private final LaunchpadButton intakeToggle_1_5 = new LaunchpadButton(opController, 1, 5);
+  private final LaunchpadButton intakeToggle_1_5 = new LaunchpadButton(opController, 1, 5); //Intake buttons
 
   public static final XboxController backupOpController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
   private final JoystickButton armUp_Y = new JoystickButton(backupOpController, XboxController.Button.kY.value);
@@ -105,8 +106,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     portForwarding();
     loadEventMap();
-    loadAutoChooser();
+    loadAutoChoosers();
     configureBindings();
+
     drivetrain.setDefaultCommand(new SwerveDrive());
     intake.setDefaultCommand(new IntakeHold());
     intakeRollers.setDefaultCommand(new IntakeRollersHold());
@@ -124,6 +126,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    //Driver controller
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     toggleIntake_LB.onTrue(new IntakeToggle());
     shoot_RB.whileTrue(new Shoot(0.75)).onFalse(new InstantCommand(() -> transport.feederStop())
@@ -133,6 +136,7 @@ public class RobotContainer {
     gridDriveMode_A.whileTrue(new RunCommand(() -> drivetrain.setGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     subsDriveMode_Y.whileTrue(new RunCommand(() -> drivetrain.setSubsMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
 
+    //Launchpad
     armHigh_1_0.onTrue(new ArmToggle(3));
     armMid_2_0.onTrue(new ArmToggle(2));
     armLow_3_0.onTrue(new ArmToggle(1));
@@ -153,6 +157,7 @@ public class RobotContainer {
 
     intakeToggle_1_5.onTrue(new IntakeToggle());
 
+    //Backup operator controller
     armUp_Y.onTrue(new InstantCommand(() -> arm.armUp()));
     armDown_A.onTrue(new InstantCommand(() -> arm.armDown()));
     armSubs_X.onTrue(new InstantCommand(() -> arm.setSubsMode()));
@@ -166,65 +171,75 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    if(autoChooser.getSelected().equals("1CubeM_Bal")){
+    if(autoGamePiecesChooser.getSelected().equals("1")
+        && autoStartingSideChooser.getSelected().equals("Middle")
+        && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c1C0_M_Bal();
     }
-    else if(autoChooser.getSelected().equals("2CubeNC")){
+    else if(autoGamePiecesChooser.getSelected().equals("2")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c2C0_NC();
     }
-    else if(autoChooser.getSelected().equals("2CubeNC_Bal")){
+    else if(autoGamePiecesChooser.getSelected().equals("2")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c2C0_NC_Bal();
     }
-    else if(autoChooser.getSelected().equals("2CubeC_Bal")){
+    else if(autoGamePiecesChooser.getSelected().equals("2")
+            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c2C0_C_Bal();
     }
-    else if(autoChooser.getSelected().equals("3CubeC_Bal")){
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c3C0_C_Bal();
     }
-    else if(autoChooser.getSelected().equals("3CubeNC_Bal")){
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c3C0_NC_Bal();
     }
-    else if(autoChooser.getSelected().equals("4CubeNC")){
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c4C0_NC();
     }
-    else if(autoChooser.getSelected().equals("5CubeNC")){
+    else if(autoGamePiecesChooser.getSelected().equals("5")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c5C0_NC();
     }
-    else if(autoChooser.getSelected().equals("5CubeNC_Bal")){
+    else if(autoGamePiecesChooser.getSelected().equals("5")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c5C0_NC_Bal();
     }
-    else if(autoChooser.getSelected().equals("1Cone1CubeNC_Bal")){
-      drivetrain.resetAllEncoders();
-      drivetrain.setHeading(90);
-      return Autos.c1C1_NC_Bal();
-    }
-    // else if(autoChooser.getSelected().equals("1Cone1CubeC_Bal")){
-    //   return Autos.c1C1_C_Bal();
-    // }
-    else if(autoChooser.getSelected().equals("TestAuto")){
+    else if(autoGamePiecesChooser.getSelected().equals("Nothing")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.testAuto();
     }
-    else if(autoChooser.getSelected().equals("DriveBack")){
+    else if(autoGamePiecesChooser.getSelected().equals("DriveBack")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.driveBack();
@@ -249,21 +264,82 @@ public class RobotContainer {
     eventMap.put("feederStop", new InstantCommand(() -> RobotContainer.transport.feederStop()));
   }
 
-  private void loadAutoChooser(){
-    SmartDashboard.putData("Auton Chooser", autoChooser);
-    autoChooser.setDefaultOption("DriveBack", "DriveBack");
-    autoChooser.addOption("1CubeM_Bal", "1CubeM_Bal");
-    autoChooser.addOption("2CubeNC", "2CubeNC");
-    autoChooser.addOption("2CubeNC_Bal", "2CubeNC_Bal");
-    autoChooser.addOption("2CubeC_Bal", "2CubeC_Bal");
-    autoChooser.addOption("3CubeC_Bal", "3CubeC_Bal");
-    autoChooser.addOption("3CubeNC_Bal", "3CubeNC_Bal");
-    autoChooser.addOption("4CubeNC", "4CubeNC");
-    autoChooser.addOption("5CubeNC", "5CubeNC");
-    autoChooser.addOption("5CubeNC_Bal", "5CubeNC_Bal");
-    // autoChooser.addOption("1Cone1CubeC_Bal", "1Cone1CubeC_Bal");
-    autoChooser.addOption("1Cone1CubeNC_Bal", "1Cone1CubeNC_Bal");
-    autoChooser.addOption("Nothing", "TestAuto");
+  private void loadAutoChoosers(){
+    SmartDashboard.putData("Auton Game Pieces", autoGamePiecesChooser);
+    autoGamePiecesChooser.setDefaultOption("1", "1");
+    autoGamePiecesChooser.addOption("2", "2");
+    autoGamePiecesChooser.addOption("3", "3");
+    autoGamePiecesChooser.addOption("4", "4");
+    autoGamePiecesChooser.addOption("5", "5");
+    autoGamePiecesChooser.addOption("Nothing", "Nothing");
+    autoGamePiecesChooser.addOption("DriveBack", "DriveBack");
+
+    SmartDashboard.putData("Auton Starting Side", autoStartingSideChooser);
+    autoStartingSideChooser.setDefaultOption("Non Cable", "Non Cable");
+    autoStartingSideChooser.addOption("Cable", "Cable");
+    autoStartingSideChooser.addOption("Middle", "Middle");
+
+    SmartDashboard.putData("Auton Balance", autoBalanceChooser);
+    autoBalanceChooser.setDefaultOption("Balance", "Balance");
+    autoBalanceChooser.addOption("No Balance", "No Balance");
+  }
+
+  public boolean isAutoValid(){
+    boolean isValid = false;
+
+    if(autoGamePiecesChooser.getSelected().equals("1")
+        && autoStartingSideChooser.getSelected().equals("Middle")
+        && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("2")
+              && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("No Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("2")
+              && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("2")
+              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+              && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+              && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("No Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("5")
+              && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("No Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("5")
+              && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("Nothing")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("DriveBack")){
+      isValid = true;
+    }
+
+    return isValid;
   }
 
   // public void loadGridButtons(){

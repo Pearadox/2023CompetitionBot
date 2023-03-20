@@ -70,12 +70,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 1.5,
-      "names": [
-        "bigStickToggle"
-      ]
-    }
-  ]
+  "markers": []
 }

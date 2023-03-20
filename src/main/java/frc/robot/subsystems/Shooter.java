@@ -23,6 +23,7 @@ import frc.lib.util.LerpTable;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.VisionConstants;
 
 public class Shooter extends SubsystemBase {
   private PearadoxSparkMax topShooter;
@@ -38,7 +39,7 @@ public class Shooter extends SubsystemBase {
 
   private DigitalInput irSensor;
 
-  private NetworkTable llTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
+  private NetworkTable llTable = NetworkTableInstance.getDefault().getTable(VisionConstants.SHOOTER_LL_NAME);
   private LerpTable shooterLerp;
   private double target;
   private double[] cameraPose = new double[6];
@@ -165,16 +166,15 @@ public class Shooter extends SubsystemBase {
       SmartDashboard.putNumber("Shooter Voltage", 4.25);
     }
 
-    // cameraPose = NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
-    // tz = cameraPose[2];
-    // tx = cameraPose[0];
-
     setPipeline(c);
-
     if (llTable.getEntry("tv").getDouble(0) != 0 && mode == ShooterMode.kAuto) {
-      calculateTx(r, c);
+      cameraPose = llTable.getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
+      tz = cameraPose[2];
+      tx = cameraPose[0];
+      calculateTx(r, c); //adjust tx and tz based on target node
       calculateTz(r);
       dist = Math.hypot(Math.abs(tx), Math.abs(tz));
+      
       dist = distFilter.calculate(dist);
       target = shooterLerp.interpolate(dist);
       setTargetAngle();

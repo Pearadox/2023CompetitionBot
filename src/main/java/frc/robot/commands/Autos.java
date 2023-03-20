@@ -38,7 +38,7 @@ public final class Autos {
 
     return new SequentialCommandGroup(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(trajectory))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new WaitCommand(1),
       new Shoot(0.75).withTimeout(1),
@@ -61,7 +61,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.arm.setHighMode()),
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
       scoreCone1,
@@ -91,7 +91,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new Shoot(0.75).withTimeout(1.25),
       new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
@@ -116,7 +116,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new Shoot(0.75).withTimeout(1.25),
       new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
@@ -144,7 +144,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
       new Shoot(0.75).withTimeout(1.25),
       new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
@@ -174,7 +174,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
       new Shoot(0.75).withTimeout(1.25),
       new InstantCommand(() -> RobotContainer.transport.feederStop()),
@@ -206,7 +206,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new Shoot(0.75).withTimeout(1.25),
       new InstantCommand(() -> RobotContainer.transport.feederStop()),
@@ -241,7 +241,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new Shoot(0.75).withTimeout(1.25),
       new InstantCommand(() -> RobotContainer.transport.feederStop()),
@@ -280,7 +280,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new Shoot(0.5).withTimeout(1),
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
@@ -315,7 +315,7 @@ public final class Autos {
     
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new Shoot(0.5).withTimeout(1),
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
@@ -331,17 +331,13 @@ public final class Autos {
   public static CommandBase driveBack() {
     PathPlannerTrajectory trajectory = PathPlanner.loadPath("DriveBack", SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION);
 
-    PPSwerveControllerCommand command = makeSwerveControllerCommand(trajectory);
-
-    FollowPathWithEvents driveBack = new FollowPathWithEvents(
-      command,
-      trajectory.getMarkers(),
-      RobotContainer.eventMap
-    );
+    PPSwerveControllerCommand driveBack = makeSwerveControllerCommand(trajectory);
 
     return new SequentialCommandGroup(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(trajectory))),
-      new InstantCommand(() -> RobotContainer.drivetrain.setAllMode(true)),
+      new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
+      new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
+      new Shoot(0.75).withTimeout(1.25),
       new InstantCommand(() -> RobotContainer.shooter.shooterOff()),
       new InstantCommand(() -> RobotContainer.transport.feederStop()),
       driveBack,

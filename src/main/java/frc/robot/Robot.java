@@ -7,9 +7,9 @@ package frc.robot;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.IntakeHold;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -50,12 +50,13 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putBoolean("Auto Is Valid?", m_robotContainer.isAutoValid());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    RobotContainer.drivetrain.setAllMode(false);
+    RobotContainer.drivetrain.setAllIdleMode(false);
     RobotContainer.pdh.setSwitchableChannel(false);
   }
 
@@ -72,7 +73,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
     RobotContainer.pdh.setSwitchableChannel(true);
-    RobotContainer.intake.setDefaultCommand(new IntakeHold());
   }
 
   /** This function is called periodically during autonomous. */
@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    RobotContainer.drivetrain.setAllMode(true);
+    RobotContainer.drivetrain.setAllIdleMode(true);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
