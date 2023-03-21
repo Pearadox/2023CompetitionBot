@@ -13,7 +13,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,8 +35,6 @@ public class Shooter extends SubsystemBase {
   private SparkMaxPIDController botController;
   // private SimpleMotorFeedforward topShooterFeedforward = new SimpleMotorFeedforward(ShooterConstants.TOP_SHOOTER_kS, ShooterConstants.TOP_SHOOTER_kV, ShooterConstants.TOP_SHOOTER_kA);
   // private SimpleMotorFeedforward botShooterFeedforward = new SimpleMotorFeedforward(ShooterConstants.BOT_SHOOTER_kS, ShooterConstants.BOT_SHOOTER_kV, ShooterConstants.BOT_SHOOTER_kA);
-
-  private DigitalInput irSensor;
 
   private NetworkTable llTable = NetworkTableInstance.getDefault().getTable(VisionConstants.SHOOTER_LL_NAME);
   private LerpTable shooterLerp;
@@ -77,8 +74,6 @@ public class Shooter extends SubsystemBase {
 
     topController = topShooter.getPIDController();
     botController = botShooter.getPIDController();
-
-    irSensor = new DigitalInput(0);
 
     shooterLerp = new LerpTable();
 
@@ -120,10 +115,6 @@ public class Shooter extends SubsystemBase {
       CANSparkMax.ControlType.kVoltage,
       0);
     }
-  }
-
-  public boolean hasCube(){
-    return !irSensor.get();
   }
 
   // public void toggleMode(){
@@ -190,7 +181,6 @@ public class Shooter extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Shooter Target", target);
-    SmartDashboard.putBoolean("Distance Sensor", !irSensor.get());
     SmartDashboard.putString("Shooter Mode", mode.toString());
     SmartDashboard.putNumber("Top Shooter Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("Bot Shooter Velocity", botEncoder.getVelocity());

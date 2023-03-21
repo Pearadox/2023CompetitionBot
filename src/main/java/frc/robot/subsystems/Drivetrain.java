@@ -69,7 +69,7 @@ public class Drivetrain extends SubsystemBase {
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(SwerveConstants.DRIVE_KINEMATICS, new Rotation2d(0), getModulePositions());
 
   private enum DriveMode{
-    kNormal, kSubs, kGrid
+    kNormal, kSubs, kArmGrid, kShooterGrid
   }
 
   DriveMode mode = DriveMode.kNormal;
@@ -321,12 +321,20 @@ public class Drivetrain extends SubsystemBase {
     return DriveMode.kSubs;
   }
 
-  public DriveMode getGridMode(){
-    return DriveMode.kGrid;
+  public DriveMode getArmGridMode(){
+    return DriveMode.kArmGrid;
   }
 
-  public void setGridMode(){
-    mode = DriveMode.kGrid;
+  public DriveMode getShooterGridMode(){
+    return DriveMode.kShooterGrid;
+  }
+
+  public void setArmGridMode(){
+    mode = DriveMode.kArmGrid;
+  }
+
+  public void setShooterGridMode(){
+    mode = DriveMode.kShooterGrid;
   }
 
   public void setSubsMode(){
