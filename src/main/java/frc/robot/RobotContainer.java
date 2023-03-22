@@ -20,6 +20,7 @@ import frc.robot.commands.Outtake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterHold;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.ThrowCone;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BigStick;
 import frc.robot.subsystems.Drivetrain;
@@ -71,7 +72,7 @@ public class RobotContainer {
   private final JoystickButton toggleIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton shoot_RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
   private final JoystickButton armScore_B = new JoystickButton(driverController, XboxController.Button.kB.value);
-  private final JoystickButton outtake_Back = new JoystickButton(driverController, XboxController.Button.kBack.value);
+  private final JoystickButton throwCone_Back = new JoystickButton(driverController, XboxController.Button.kBack.value);
   private final JoystickButton subsDriveMode_Y = new JoystickButton(driverController, XboxController.Button.kY.value);
   private final JoystickButton armGridDriveMode_A = new JoystickButton(driverController, XboxController.Button.kA.value);
   private final JoystickButton shooterGridDriveMode_X = new JoystickButton(driverController, XboxController.Button.kX.value);
@@ -90,13 +91,13 @@ public class RobotContainer {
   private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
   private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
 
-  private final LaunchpadButton toggleBigStick_4_5 = new LaunchpadButton(opController, 4, 5); //Big stick buttons
+  private final LaunchpadButton toggleBigStick_4_6 = new LaunchpadButton(opController, 4, 6); //Big stick buttons
 
   private final LaunchpadButton feederOut_4_2 = new LaunchpadButton(opController, 4, 2); //Transport buttons
   private final LaunchpadButton feederIn_4_3 = new LaunchpadButton(opController, 4, 3);
 
-  private final LaunchpadButton intakeToggle_1_5 = new LaunchpadButton(opController, 1, 5); //Intake buttons
-  private final LaunchpadButton outtakeToggle_2_5 = new LaunchpadButton(opController, 2, 5); //Outaek buttons
+  private final LaunchpadButton intakeToggle_1_6 = new LaunchpadButton(opController, 1, 6); //Intake buttons
+  private final LaunchpadButton outtakeToggle_2_6 = new LaunchpadButton(opController, 2, 6); //Outaek buttons
 
   public static final XboxController backupOpController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
   private final JoystickButton armUp_Y = new JoystickButton(backupOpController, XboxController.Button.kY.value);
@@ -136,7 +137,7 @@ public class RobotContainer {
     toggleIntake_LB.onTrue(new IntakeToggle());
     shoot_RB.whileTrue(new Shoot()).onFalse(new InstantCommand(() -> transport.feederStop()));
     armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
-    outtake_Back.whileTrue(new Outtake()).onFalse(new InstantCommand(() -> transport.feederStop()));
+    throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
     armGridDriveMode_A.whileTrue(new RunCommand(() -> drivetrain.setArmGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     shooterGridDriveMode_X.whileTrue(new RunCommand(() -> drivetrain.setShooterGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     subsDriveMode_Y.whileTrue(new RunCommand(() -> drivetrain.setSubsMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
@@ -155,13 +156,13 @@ public class RobotContainer {
     shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));
     shooterCS_3_7.onTrue(new InstantCommand(() -> shooter.setCSMode()));
 
-    toggleBigStick_4_5.onTrue(new BigStickToggle());
+    toggleBigStick_4_6.onTrue(new BigStickToggle());
 
     feederOut_4_2.whileTrue(new RunCommand(() -> transport.feederOut(-0.1))).onFalse(new InstantCommand(() -> transport.feederStop()));
     feederIn_4_3.whileTrue(new RunCommand(() -> transport.feederHold())).onFalse(new InstantCommand(() -> transport.feederStop()));
 
-    intakeToggle_1_5.onTrue(new IntakeToggle());
-    outtakeToggle_2_5.whileTrue(new Outtake()).onFalse(new InstantCommand(() -> transport.feederStop()));
+    intakeToggle_1_6.onTrue(new IntakeToggle());
+    outtakeToggle_2_6.whileTrue(new Outtake()).onFalse(new InstantCommand(() -> transport.feederStop()));
 
     gridButtons[0][0].onTrue(new InstantCommand(() -> shooter.setTargetNode(0, 0)));
     gridButtons[0][1].onTrue(new InstantCommand(() -> shooter.setTargetNode(0, 1)));

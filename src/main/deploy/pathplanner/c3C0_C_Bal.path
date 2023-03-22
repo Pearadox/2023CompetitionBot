@@ -124,11 +124,11 @@
     },
     {
       "anchorPoint": {
-        "x": 4.25,
+        "x": 4.1,
         "y": 2.61
       },
       "prevControl": {
-        "x": 4.718055996362634,
+        "x": 4.5680559963626335,
         "y": 2.61
       },
       "nextControl": null,
@@ -145,5 +145,24 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 1.1,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 2.654545454545448,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 3.090909090909091,
+      "names": [
+        "intakeToggle"
+      ]
+    }
+  ]
 }
