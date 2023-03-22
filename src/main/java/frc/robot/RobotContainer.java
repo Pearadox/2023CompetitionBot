@@ -25,6 +25,7 @@ import frc.robot.subsystems.BigStick;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.IntakeRollers;
+import frc.robot.subsystems.LEDStrip;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transport;
 
@@ -56,7 +57,8 @@ public class RobotContainer {
   public static final Arm arm = Arm.getInstance();
   public static final Shooter shooter = Shooter.getInstance();
   public static final BigStick bigStick = BigStick.getInstance();
-  public static final Transport transport = Transport.getInstance();
+  public static final Transport transport = Transport.getInstance();  
+  public static final LEDStrip ledStrip = new LEDStrip  (110, 9); 
 
   public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
