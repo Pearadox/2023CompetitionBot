@@ -43,6 +43,9 @@ public class ArmToggle extends InstantCommand {
       case 4:
         RobotContainer.arm.setSubsMode();
         break;
+      case 5:
+        RobotContainer.arm.setGroundConeMode();
+        break;
       default:
         RobotContainer.arm.setZeroMode();
     }

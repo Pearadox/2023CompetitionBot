@@ -24,7 +24,7 @@ public class Arm extends SubsystemBase {
   private SparkMaxPIDController armController;
 
   private enum ArmMode{
-    kHigh, kMid, kLow, kSubs, kZero
+    kHigh, kMid, kLow, kGroundCone, kSubs, kZero
   }
 
   private enum IntakeMode{
@@ -56,6 +56,9 @@ public class Arm extends SubsystemBase {
     if(armMode == ArmMode.kLow){
       armController.setReference(ArmConstants.LOW_MODE_ROT + armAdjust, ControlType.kPosition);
     }
+    else if(armMode == ArmMode.kGroundCone){
+      armController.setReference(ArmConstants.GROUND_CONE_MODE_ROT + armAdjust, ControlType.kPosition);
+    }
     else if(armMode == ArmMode.kMid){
       armController.setReference(ArmConstants.MID_MODE_ROT + armAdjust, ControlType.kPosition);
     }
@@ -76,6 +79,10 @@ public class Arm extends SubsystemBase {
 
   public void setLowMode(){
     armMode = ArmMode.kLow;
+  }
+
+  public void setGroundConeMode(){
+    armMode = ArmMode.kGroundCone;
   }
 
   public void setMidMode(){
@@ -99,7 +106,7 @@ public class Arm extends SubsystemBase {
       if(armMode == ArmMode.kZero){
         intakeStop();
       }
-      else if(armMode == ArmMode.kSubs){
+      else if(armMode == ArmMode.kSubs || armMode == ArmMode.kGroundCone){
         driver.set(0.65);
       }
       else{
@@ -127,7 +134,7 @@ public class Arm extends SubsystemBase {
     if(armMode == ArmMode.kZero){
       armMode = ArmMode.kLow;
     }
-    else if(armMode == ArmMode.kLow){
+    else if(armMode == ArmMode.kLow || armMode == ArmMode.kGroundCone){
       armMode = ArmMode.kMid;
     }
     else if(armMode == ArmMode.kMid){
@@ -145,7 +152,7 @@ public class Arm extends SubsystemBase {
     else if(armMode == ArmMode.kSubs){
       armMode = ArmMode.kMid;
     }
-    else if(armMode == ArmMode.kMid){
+    else if(armMode == ArmMode.kMid || armMode == ArmMode.kGroundCone){
       armMode = ArmMode.kLow;
     }
     else if(armMode == ArmMode.kLow){
@@ -173,6 +180,9 @@ public class Arm extends SubsystemBase {
     else if(armMode == ArmMode.kLow){
       SmartDashboard.putString("Arm Mode", "kLow");
     }
+    else if(armMode == ArmMode.kGroundCone){
+      SmartDashboard.putString("Arm Mode", "kGroundCone");
+    }
     else if(armMode == ArmMode.kMid){
       SmartDashboard.putString("Arm Mode", "kMid");
     }
@@ -190,6 +200,10 @@ public class Arm extends SubsystemBase {
 
   public ArmMode getZeroMode(){
     return ArmMode.kZero;
+  }
+
+  public ArmMode getGroundConeMode(){
+    return ArmMode.kGroundCone;
   }
 
   public ArmMode getLowMode(){

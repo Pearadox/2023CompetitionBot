@@ -86,6 +86,7 @@ public class RobotContainer {
   private final LaunchpadButton armLow_3_0 = new LaunchpadButton(opController, 3, 0);
   private final LaunchpadButton armZero_4_0 = new LaunchpadButton(opController, 4, 0);
   private final LaunchpadButton armSubs_2_1 = new LaunchpadButton(opController, 2, 1);
+  private final LaunchpadButton armGroundCone_3_1 = new LaunchpadButton(opController, 3, 1);
   private final LaunchpadButton armAdjustUp_1_3 = new LaunchpadButton(opController, 1, 3);
   private final LaunchpadButton armAdjustDown_2_3 = new LaunchpadButton(opController, 2, 3);
 
@@ -95,11 +96,11 @@ public class RobotContainer {
 
   private final LaunchpadButton toggleBigStick_4_6 = new LaunchpadButton(opController, 4, 6); //Big stick buttons
 
-  private final LaunchpadButton feederOut_4_2 = new LaunchpadButton(opController, 4, 2); //Transport buttons
-  private final LaunchpadButton feederIn_4_3 = new LaunchpadButton(opController, 4, 3);
+  private final LaunchpadButton coneMode_4_3 = new LaunchpadButton(opController, 4, 3); //LED buttons
+  private final LaunchpadButton cubeMode_4_4 = new LaunchpadButton(opController, 4, 4);
 
-  private final LaunchpadButton intakeToggle_1_6 = new LaunchpadButton(opController, 1, 6); //Intake buttons
-  private final LaunchpadButton outtakeToggle_2_6 = new LaunchpadButton(opController, 2, 6); //Outaek buttons
+  private final LaunchpadButton intakeToggle_3_6 = new LaunchpadButton(opController, 3, 6); //Intake buttons
+  private final LaunchpadButton outtakeToggle_2_6 = new LaunchpadButton(opController, 2, 6); //Outake buttons
 
   public static final XboxController backupOpController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
   private final JoystickButton armUp_Y = new JoystickButton(backupOpController, XboxController.Button.kY.value);
@@ -107,6 +108,7 @@ public class RobotContainer {
   private final JoystickButton armSubs_X = new JoystickButton(backupOpController, XboxController.Button.kX.value);
   private final JoystickButton toggleBigStick_RB = new JoystickButton(backupOpController, XboxController.Button.kRightBumper.value);
 
+  //Tanush was here
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -150,6 +152,7 @@ public class RobotContainer {
     armLow_3_0.onTrue(new ArmToggle(1));
     armZero_4_0.onTrue(new ArmToggle(0));
     armSubs_2_1.onTrue(new ArmToggle(4));
+    armGroundCone_3_1.onTrue(new ArmToggle(5));
 
     armAdjustUp_1_3.onTrue(new InstantCommand(() -> arm.armAdjustUp()));
     armAdjustDown_2_3.onTrue(new InstantCommand(() -> arm.armAdjustDown()));
@@ -160,10 +163,10 @@ public class RobotContainer {
 
     toggleBigStick_4_6.onTrue(new BigStickToggle());
 
-    feederOut_4_2.whileTrue(new RunCommand(() -> transport.feederOut(-0.1))).onFalse(new InstantCommand(() -> transport.feederStop()));
-    feederIn_4_3.whileTrue(new RunCommand(() -> transport.feederHold())).onFalse(new InstantCommand(() -> transport.feederStop()));
+    coneMode_4_3.onTrue(new InstantCommand(() -> ledStrip.setColor(255, 130, 0)));
+    cubeMode_4_4.onTrue(new InstantCommand(() -> ledStrip.setColor(128, 0, 128)));
 
-    intakeToggle_1_6.onTrue(new IntakeToggle());
+    intakeToggle_3_6.onTrue(new IntakeToggle());
     outtakeToggle_2_6.whileTrue(new Outtake()).onFalse(new InstantCommand(() -> transport.feederStop()));
 
     gridButtons[0][0].onTrue(new InstantCommand(() -> shooter.setTargetNode(0, 0)));

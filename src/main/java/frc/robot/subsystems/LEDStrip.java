@@ -6,81 +6,76 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDStrip extends SubsystemBase {
   public static enum LED_MODE {
-    Off, Solid
+    Default, Solid
   }
 
-  private AddressableLED _led;
-  private AddressableLEDBuffer _ledBuffer;
-  private final int _numLEDs;
-  private Color _currentColor = Color.kBlue;
-  private double _lastTime = Timer.getFPGATimestamp();
+  private AddressableLED led;
+  private AddressableLEDBuffer ledBuffer;
+  private final int numLEDs;
+  private int[] currentColor = new int[]{0, 255, 0};
 
-  private LED_MODE _mode = LED_MODE.Off;
-  private int _index;
-
-  private double _interval = 0.35;
+  private LED_MODE mode = LED_MODE.Default;
+  // private int _index;
 
   public LEDStrip(int numberOfLeds, int port) {
-    _led = new AddressableLED(port);
-    _numLEDs = numberOfLeds;
+    led = new AddressableLED(port);
+    numLEDs = numberOfLeds;
 
     // Length is expensive to set, so only set it once, then just update data
-    _ledBuffer = new AddressableLEDBuffer(_numLEDs);
-    _led.setLength(_ledBuffer.getLength());
-    _led.setData(_ledBuffer);
-    _led.start();
+    ledBuffer = new AddressableLEDBuffer(numLEDs);
+    led.setLength(ledBuffer.getLength());
+    led.setData(ledBuffer);
+    led.start();
 
-    for (var i = 0; i < _ledBuffer.getLength(); i++) {
-      _ledBuffer.setRGB(i, 0, 0, 0);
+    for (int i = 0; i < ledBuffer.getLength(); i++) {
+      ledBuffer.setRGB(i, 0, 255, 0);
     }
 
-    _led.setData(_ledBuffer);
+    led.setData(ledBuffer);
   }
 
   public void setMode(LED_MODE mode) {
-    _mode = mode;
+    this.mode = mode;
   }
 
-  public void setColor(Color color) {
-    _mode = LED_MODE.Solid;
-    _currentColor = color;
+  public void setColor(int r, int g, int b) {
+    mode = LED_MODE.Solid;
+    currentColor = new int[]{r, g, b};
   }
 
-  private void increment() {
-    _index++;
-    if (_index >= _ledBuffer.getLength()) {
-      _index = 0;
-    }
-  }
+  // private void increment() {
+  //   _index++;
+  //   if (_index >= _ledBuffer.getLength()) {
+  //     _index = 0;
+  //   }
+  // }
 
-  private void off() {
-    for (var i = 0; i < _ledBuffer.getLength(); i++) {
-      _ledBuffer.setRGB(i, 0, 0, 0);
+  private void ledHold() {
+    for (var i = 0; i < ledBuffer.getLength(); i++) {
+      ledBuffer.setRGB(i, 0, 255, 0);
     }
   }
 
   private void solid() {
-    for (var i = 0; i < _ledBuffer.getLength(); i++) {
-      _ledBuffer.setLED(i, _currentColor);
+    for (int i = 0; i < ledBuffer.getLength(); i++) {
+      ledBuffer.setRGB(i, currentColor[0], currentColor[1], currentColor[2]);
     }
   }
 
   @Override
   public void periodic() {
-    switch (_mode) {
+    switch (mode) {
       case Solid:
         solid();
         break;
       default:
-        off();
+        ledHold();
         break;
     }
-    _led.setData(_ledBuffer);
+    led.setData(ledBuffer);
   }
 }
