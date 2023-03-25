@@ -16,7 +16,6 @@ import frc.robot.Constants.ShooterConstants;
 public class Transport extends SubsystemBase {
   private PearadoxSparkMax feeder;
 
-  private DigitalInput distSensor;
   private DigitalInput irSensor;
 
   private boolean isHolding = true;
@@ -31,17 +30,15 @@ public class Transport extends SubsystemBase {
   public Transport() {
     feeder = new PearadoxSparkMax(ShooterConstants.FEEDER_ID, MotorType.kBrushless, IdleMode.kBrake, 50, true);
 
-    distSensor = new DigitalInput(0);
     irSensor = new DigitalInput(1);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Dist Sensor", getDistSensor());
     SmartDashboard.putBoolean("Ir Sensor", getIRSensor());
 
     if(isHolding){
-      if(getDistSensor() || getIRSensor()){
+      if(getIRSensor()){
         feederStop();
       }
       else{
@@ -51,7 +48,7 @@ public class Transport extends SubsystemBase {
   }
 
   public void feederHold(){
-    feeder.set(0.15);
+    feeder.set(0.2);
   }
 
   public void feederOut(double speed){
@@ -64,10 +61,6 @@ public class Transport extends SubsystemBase {
 
   public void feederShoot(){
     feeder.set(0.7);
-  }
-
-  public boolean getDistSensor(){
-    return !distSensor.get();
   }
 
   public boolean getIRSensor(){

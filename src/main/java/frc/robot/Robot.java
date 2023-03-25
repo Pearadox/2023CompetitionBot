@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     RobotContainer.pdh.setSwitchableChannel(false);
+    RobotContainer.ledStrip.setDefaultMode();
     PortForwarder.add(8888, "limelight.local", 5800);
     PortForwarder.add(8889, "limelight.local", 5801);
   }
@@ -56,12 +57,14 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    RobotContainer.drivetrain.setAllIdleMode(false);
+    RobotContainer.drivetrain.setAllIdleMode(true);
     RobotContainer.pdh.setSwitchableChannel(false);
+    RobotContainer.ledStrip.setDefaultMode();
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -73,6 +76,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
     RobotContainer.pdh.setSwitchableChannel(true);
+    RobotContainer.ledStrip.setCubeMode();
   }
 
   /** This function is called periodically during autonomous. */
@@ -90,8 +94,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     RobotContainer.drivetrain.resetAllEncoders();
-    RobotContainer.shooter.shooterOff();
     RobotContainer.pdh.setSwitchableChannel(true);
+    RobotContainer.ledStrip.setCubeMode();
   }
 
   /** This function is called periodically during operator control. */

@@ -22,7 +22,9 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder pivotEncoder;
   private SparkMaxPIDController intakeController;
 
+  private double intakeAdjust = 0;
   private boolean deployed = false;
+  private boolean zeroing = false;
 
   private static final Intake intake = new Intake();
 
@@ -41,11 +43,14 @@ public class Intake extends SubsystemBase {
   }
 
   public void intakeHold(){
-    if(deployed){
-      intakeController.setReference(IntakeConstants.DEPLOYED_ROT, CANSparkMax.ControlType.kPosition, 0);
+    if(zeroing){
+      pivot.set(-0.25);
+    }
+    else if(deployed){
+      intakeController.setReference(IntakeConstants.DEPLOYED_ROT + intakeAdjust, CANSparkMax.ControlType.kPosition, 0);
     }
     else{
-      intakeController.setReference(0, CANSparkMax.ControlType.kPosition, 0);
+      intakeController.setReference(0 + intakeAdjust, CANSparkMax.ControlType.kPosition, 0);
     }
   }
 
@@ -56,6 +61,18 @@ public class Intake extends SubsystemBase {
     else{
       deployed = false;
     }
+  }
+
+  public void intakeAdjustUp(){
+    intakeAdjust += 0.5;
+  }
+
+  public void intakeAdjustDown(){
+    intakeAdjust -= 0.5;
+  }
+
+  public void setZeroing(boolean zeroing){
+    this.zeroing = zeroing;
   }
 
   public boolean isDeployed(){

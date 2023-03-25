@@ -22,13 +22,14 @@ public class Outtake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.transport.feederOut(-0.25);
+    RobotContainer.transport.feederOut(-0.5);
     RobotContainer.intakeRollers.intakeOut();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    RobotContainer.transport.feederStop();
   }
 
   // Returns true when the command should end.

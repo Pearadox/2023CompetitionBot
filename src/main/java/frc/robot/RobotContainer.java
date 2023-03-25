@@ -59,7 +59,7 @@ public class RobotContainer {
   public static final Shooter shooter = Shooter.getInstance();
   public static final BigStick bigStick = BigStick.getInstance();
   public static final Transport transport = Transport.getInstance();  
-  public static final LEDStrip ledStrip = new LEDStrip  (110, 9); 
+  public static final LEDStrip ledStrip = new LEDStrip(110, 9);
 
   public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
@@ -71,7 +71,7 @@ public class RobotContainer {
 
   public static final XboxController driverController = new XboxController(IOConstants.DRIVER_CONTROLLER_PORT);
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController, XboxController.Button.kStart.value);
-  private final JoystickButton toggleIntake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton outtake_LB = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton shoot_RB = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
   private final JoystickButton armScore_B = new JoystickButton(driverController, XboxController.Button.kB.value);
   private final JoystickButton throwCone_Back = new JoystickButton(driverController, XboxController.Button.kBack.value);
@@ -101,14 +101,17 @@ public class RobotContainer {
 
   private final LaunchpadButton intakeToggle_3_6 = new LaunchpadButton(opController, 3, 6); //Intake buttons
   private final LaunchpadButton outtakeToggle_2_6 = new LaunchpadButton(opController, 2, 6); //Outake buttons
+  private final LaunchpadButton zeroIntake_1_6 = new LaunchpadButton(opController, 1, 6);
+  private final LaunchpadButton intakeAdjustUp_3_5 = new LaunchpadButton(opController, 3, 5);
+  private final LaunchpadButton intakeAdjustDown_2_5 = new LaunchpadButton(opController, 2, 5);
 
   public static final XboxController backupOpController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
   private final JoystickButton armUp_Y = new JoystickButton(backupOpController, XboxController.Button.kY.value);
   private final JoystickButton armDown_A = new JoystickButton(backupOpController, XboxController.Button.kA.value);
   private final JoystickButton armSubs_X = new JoystickButton(backupOpController, XboxController.Button.kX.value);
+  private final JoystickButton toggleIntake_LB = new JoystickButton(backupOpController, XboxController.Button.kLeftBumper.value);
   private final JoystickButton toggleBigStick_RB = new JoystickButton(backupOpController, XboxController.Button.kRightBumper.value);
 
-  //Tanush was here
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -137,14 +140,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
     //Driver controller
-    resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-    toggleIntake_LB.onTrue(new IntakeToggle());
-    shoot_RB.whileTrue(new Shoot()).onFalse(new InstantCommand(() -> transport.feederStop()));
-    armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
-    throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
     armGridDriveMode_A.whileTrue(new RunCommand(() -> drivetrain.setArmGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
+    armScore_B.whileTrue(new RunCommand(() -> arm.intakeOut())).onFalse(new InstantCommand(() -> arm.intakeIn()));
     shooterGridDriveMode_X.whileTrue(new RunCommand(() -> drivetrain.setShooterGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     subsDriveMode_Y.whileTrue(new RunCommand(() -> drivetrain.setSubsMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
+    resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+    throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
+    outtake_LB.whileTrue(new Outtake());
+    shoot_RB.whileTrue(new Shoot()).onFalse(new InstantCommand(() -> transport.feederStop()));
 
     //Launchpad
     armHigh_1_0.onTrue(new ArmToggle(3));
@@ -163,11 +166,15 @@ public class RobotContainer {
 
     toggleBigStick_4_6.onTrue(new BigStickToggle());
 
-    coneMode_4_3.onTrue(new InstantCommand(() -> ledStrip.setColor(255, 130, 0)));
-    cubeMode_4_4.onTrue(new InstantCommand(() -> ledStrip.setColor(128, 0, 128)));
+    coneMode_4_3.onTrue(new InstantCommand(() -> ledStrip.setConeMode()));
+    cubeMode_4_4.onTrue(new InstantCommand(() -> ledStrip.setCubeMode()));
 
     intakeToggle_3_6.onTrue(new IntakeToggle());
-    outtakeToggle_2_6.whileTrue(new Outtake()).onFalse(new InstantCommand(() -> transport.feederStop()));
+    outtakeToggle_2_6.whileTrue(new Outtake());
+    zeroIntake_1_6.whileTrue(new RunCommand(() -> intake.setZeroing(true))).onFalse(new InstantCommand(() -> intake.setZeroing(false))
+      .andThen(new InstantCommand(() -> intake.resetPivotEncoder())));
+    intakeAdjustUp_3_5.onTrue(new InstantCommand(() -> intake.intakeAdjustUp()));
+    intakeAdjustDown_2_5.onTrue(new InstantCommand(() -> intake.intakeAdjustDown()));
 
     gridButtons[0][0].onTrue(new InstantCommand(() -> shooter.setTargetNode(0, 0)));
     gridButtons[0][1].onTrue(new InstantCommand(() -> shooter.setTargetNode(0, 1)));
@@ -203,6 +210,7 @@ public class RobotContainer {
     armUp_Y.onTrue(new InstantCommand(() -> arm.armUp()));
     armDown_A.onTrue(new InstantCommand(() -> arm.armDown()));
     armSubs_X.onTrue(new InstantCommand(() -> arm.setSubsMode()));
+    toggleIntake_LB.onTrue(new IntakeToggle());
     toggleBigStick_RB.onTrue(new BigStickToggle());
   }
 
@@ -235,6 +243,13 @@ public class RobotContainer {
       return Autos.c2C0_NC_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
+          && autoStartingSideChooser.getSelected().equals("Cable")
+          && autoBalanceChooser.getSelected().equals("No Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c2C0_C();
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("2")
             && autoStartingSideChooser.getSelected().equals("Cable")
             && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
@@ -243,10 +258,24 @@ public class RobotContainer {
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
             && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c3C0_C();
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+            && autoStartingSideChooser.getSelected().equals("Cable")
             && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c3C0_C_Bal();
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c3C0_NC();
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
             && autoStartingSideChooser.getSelected().equals("Non Cable")
@@ -345,13 +374,28 @@ public class RobotContainer {
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
+            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("2")
               && autoStartingSideChooser.getSelected().equals("Cable")
               && autoBalanceChooser.getSelected().equals("Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
+            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
               && autoStartingSideChooser.getSelected().equals("Cable")
               && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
