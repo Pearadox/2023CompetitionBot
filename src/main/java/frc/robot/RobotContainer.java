@@ -160,7 +160,7 @@ public class RobotContainer {
     armAdjustUp_1_3.onTrue(new InstantCommand(() -> arm.armAdjustUp()));
     armAdjustDown_2_3.onTrue(new InstantCommand(() -> arm.armAdjustDown()));
 
-    shooterHigh_1_7.onTrue(new InstantCommand(() -> shooter.setHighMode()));
+    shooterHigh_1_7.onTrue(new InstantCommand(() -> shooter.setAutoMode()));
     shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));
     shooterCS_3_7.onTrue(new InstantCommand(() -> shooter.setCSMode()));
 

@@ -52,7 +52,7 @@ public class Shooter extends SubsystemBase {
   private enum ShooterMode{
     kAuto, kHigh, kMid, kCS
   }
-  private ShooterMode mode = ShooterMode.kHigh;
+  private ShooterMode mode = ShooterMode.kAuto;
 
   private static final Shooter shooter = new Shooter();
 
@@ -77,19 +77,19 @@ public class Shooter extends SubsystemBase {
 
     shooterLerp = new LerpTable();
 
-    //SHOOTER LOOKUP TABLE: (speed (rpm), distance (meters))
+    //SHOOTER LOOKUP TABLE: (distance, voltage)
     shooterLerp.addPoint(0, 0);
   }
 
   public void shooterHold(){
     if(mode == ShooterMode.kCS){
       topController.setReference(
-        target + 1.05,
+        target,
         CANSparkMax.ControlType.kVoltage,
         0);
   
       botController.setReference(
-        target - 1.25,
+        target,
         CANSparkMax.ControlType.kVoltage,
         0);
     }
@@ -126,6 +126,10 @@ public class Shooter extends SubsystemBase {
   //   }
   // }
 
+  public void setAutoMode(){
+    mode = ShooterMode.kAuto;
+  }
+
   public void setHighMode(){
     mode = ShooterMode.kHigh;
   }
@@ -160,8 +164,8 @@ public class Shooter extends SubsystemBase {
     setPipeline(c);
     if (llTable.getEntry("tv").getDouble(0) != 0 && mode == ShooterMode.kAuto) {
       cameraPose = llTable.getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
-      tz = cameraPose[2];
-      tx = cameraPose[0];
+      tz = -cameraPose[2];
+      tx = cameraPose[0] + 0.06;
       calculateTx(r, c); //adjust tx and tz based on target node
       calculateTz(r);
       dist = Math.hypot(Math.abs(tx), Math.abs(tz));
@@ -169,6 +173,8 @@ public class Shooter extends SubsystemBase {
       dist = distFilter.calculate(dist);
       target = shooterLerp.interpolate(dist);
       setTargetAngle();
+      SmartDashboard.putNumber("Shooter tx", tx);
+      SmartDashboard.putNumber("Shooter tz", tz);
     }
     else if(mode == ShooterMode.kHigh) {
       target = 2.27;

@@ -417,7 +417,7 @@ public final class Autos {
       new InstantCommand(() -> RobotContainer.shooter.setCSMode()),
       driveToCubes,
       driveOnCS,
-      new AutoBalance(),
+      //changed something here ------------ was the AutoBalance command thing
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules())
     );
   }

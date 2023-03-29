@@ -156,31 +156,6 @@
         "x": 5.417763520513516,
         "y": 2.02
       },
-      "nextControl": {
-        "x": 5.110653804693784,
-        "y": 2.02
-      },
-      "holonomicAngle": 0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 4.3,
-        "y": 2.02
-      },
-      "prevControl": {
-        "x": 4.609010015601924,
-        "y": 2.02
-      },
       "nextControl": null,
       "holonomicAngle": 0,
       "isReversal": false,
@@ -189,7 +164,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -326,12 +301,6 @@
       "position": 5.25,
       "names": [
         "intakeToggle"
-      ]
-    },
-    {
-      "position": 6.05,
-      "names": [
-        "shoot"
       ]
     }
   ]
