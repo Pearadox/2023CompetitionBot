@@ -10,10 +10,13 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.VisionConstants;
 
 public class Arm extends SubsystemBase {
   private PearadoxSparkMax driver;
@@ -35,6 +38,9 @@ public class Arm extends SubsystemBase {
   private IntakeMode intakeMode = IntakeMode.kIn;
   private double armAdjust = 0;
 
+  private NetworkTable llTable = NetworkTableInstance.getDefault().getTable(VisionConstants.ARM_LL_NAME);
+  private double[] cameraPose = new double[6];
+
   private static final Arm arm = new Arm();
 
   public static Arm getInstance(){
@@ -50,6 +56,8 @@ public class Arm extends SubsystemBase {
 
     armEncoder = pivot.getEncoder();
     armController = pivot.getPIDController();
+
+    llTable.getEntry("pipeline").setNumber(1);
   }
 
   public void armHold(){
@@ -168,9 +176,19 @@ public class Arm extends SubsystemBase {
     armAdjust -= 0.2;
   }
 
+  public double getTz(){
+    return cameraPose[2];
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(hasLLTarget()){
+      cameraPose = llTable.getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
+    }
+
+    SmartDashboard.putNumber("Arm Tz", getTz());
+
     SmartDashboard.putNumber("Arm Adjust", armAdjust);
 
     SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition());
@@ -220,5 +238,9 @@ public class Arm extends SubsystemBase {
 
   public ArmMode getSubsMode(){
     return ArmMode.kSubs;
+  }
+
+  public boolean hasLLTarget(){
+    return llTable.getEntry("tv").getDouble(0) != 0;
   }
 }

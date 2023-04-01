@@ -8,15 +8,18 @@ import java.text.DecimalFormat;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -66,7 +69,11 @@ public class Drivetrain extends SubsystemBase {
   private Pigeon2 gyro = new Pigeon2(SwerveConstants.PIGEON_ID);
   private double rates[] = new double[3];
 
-  private SwerveDriveOdometry odometry = new SwerveDriveOdometry(SwerveConstants.DRIVE_KINEMATICS, new Rotation2d(0), getModulePositions());
+  private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
+    SwerveConstants.DRIVE_KINEMATICS, 
+    getHeadingRotation2d(),
+    getModulePositions(), 
+    new Pose2d());
 
   private enum DriveMode{
     kNormal, kSubs, kArmGrid, kShooterGrid
@@ -94,7 +101,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    odometry.update(getHeadingRotation2d(), getModulePositions());
+    updateOdometry();
     gyro.getRawGyro(rates);
     SmartDashboard.putNumber("Robot Angle", getHeading());
     SmartDashboard.putNumber("Robot Pitch", getPitch());
@@ -133,10 +140,14 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void swerveDrive(double frontSpeed, double sideSpeed, double turnX, double turnY, 
-    boolean fieldOriented, Translation2d centerOfRotation, boolean deadband){ //Drive with rotational heading control w/ joystick
-    if(deadband){
+    boolean fieldOriented, Translation2d centerOfRotation, boolean deadbandX, boolean deadbandY, boolean deadbandTurn){ //Drive with rotational heading control w/ joystick
+    if(deadbandX){
       frontSpeed = Math.abs(frontSpeed) > 0.1 ? frontSpeed : 0;
+    }
+    if(deadbandY){
       sideSpeed = Math.abs(sideSpeed) > 0.1 ? sideSpeed : 0;
+    }
+    if(deadbandTurn){
       turnX = Math.abs(turnX) > 0.1 ? turnX : 0;
       turnY = Math.abs(turnY) > 0.1 ? turnY : 0;
     }
@@ -212,11 +223,28 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public Pose2d getPose(){
-    return odometry.getPoseMeters();
+    return poseEstimator.getEstimatedPosition();
   }
 
   public void resetOdometry(Pose2d pose){
-    odometry.resetPosition(getHeadingRotation2d(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getHeadingRotation2d(), getModulePositions(), pose);
+  }
+
+  public void updateOdometry() {
+    poseEstimator.update(getHeadingRotation2d(), getModulePositions());
+
+    if(RobotContainer.shooter.hasLLTarget()) {
+      double[] botpose = new double[7];
+      if(DriverStation.getAlliance().equals(Alliance.Blue)){
+        botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
+      }
+      else{
+        botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpired").getDoubleArray(new double[7]);
+      }
+      double latency = Timer.getFPGATimestamp() - (botpose[6]/1000.0);
+      SmartDashboard.putString("Vision Pose", new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])).toString());
+      poseEstimator.addVisionMeasurement(new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])), latency);
+    }
   }
 
   public void setAllIdleMode(boolean brake){

@@ -18,7 +18,9 @@ import frc.robot.commands.IntakeRollersHold;
 import frc.robot.commands.IntakeToggle;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShooterAutoAlign;
 import frc.robot.commands.ShooterHold;
+import frc.robot.commands.SubstationAlign;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.ThrowCone;
 import frc.robot.subsystems.Arm;
@@ -93,6 +95,7 @@ public class RobotContainer {
   private final LaunchpadButton shooterHigh_1_7 = new LaunchpadButton(opController, 1, 7); //Shooter mode buttons
   private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
   private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
+  private final LaunchpadButton shooterAuto_4_7 = new LaunchpadButton(opController, 4, 7);
 
   private final LaunchpadButton toggleBigStick_4_6 = new LaunchpadButton(opController, 4, 6); //Big stick buttons
 
@@ -138,6 +141,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
   private void configureBindings() {
     //Driver controller
     armGridDriveMode_A.whileTrue(new RunCommand(() -> drivetrain.setArmGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
@@ -145,9 +149,10 @@ public class RobotContainer {
     shooterGridDriveMode_X.whileTrue(new RunCommand(() -> drivetrain.setShooterGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     subsDriveMode_Y.whileTrue(new RunCommand(() -> drivetrain.setSubsMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-    throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
+    // throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
+    throwCone_Back.onTrue(new SubstationAlign()).onFalse(new SwerveDrive());
     outtake_LB.whileTrue(new Outtake());
-    shoot_RB.whileTrue(new Shoot()).onFalse(new InstantCommand(() -> transport.feederStop()));
+    shoot_RB.whileTrue(new ShooterAutoAlign().withTimeout(0.75).andThen(new Shoot())).onFalse(new SwerveDrive());
 
     //Launchpad
     armHigh_1_0.onTrue(new ArmToggle(3));
@@ -160,9 +165,10 @@ public class RobotContainer {
     armAdjustUp_1_3.onTrue(new InstantCommand(() -> arm.armAdjustUp()));
     armAdjustDown_2_3.onTrue(new InstantCommand(() -> arm.armAdjustDown()));
 
-    shooterHigh_1_7.onTrue(new InstantCommand(() -> shooter.setAutoMode()));
+    shooterHigh_1_7.onTrue(new InstantCommand(() -> shooter.setHighMode()));
     shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));
     shooterCS_3_7.onTrue(new InstantCommand(() -> shooter.setCSMode()));
+    shooterAuto_4_7.onTrue(new InstantCommand(() -> shooter.setAutoMode()));
 
     toggleBigStick_4_6.onTrue(new BigStickToggle());
 

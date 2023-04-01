@@ -28,9 +28,7 @@ public class ShooterAutoAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double hasTarget = RobotContainer.shooter.getLLTable().getEntry("tv").getDouble(0);
-
-    if(hasTarget != 0){
+    if(RobotContainer.shooter.hasLLTarget()){
       RobotContainer.drivetrain.turnToHeading(
         targetAngle, 
         new Translation2d(

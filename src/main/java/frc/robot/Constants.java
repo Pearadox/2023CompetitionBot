@@ -101,10 +101,10 @@ public final class Constants {
     public static final double PIVOT_kP = 0.15;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
-    public static final double PIVOT_MIN_OUTPUT = -0.4;
-    public static final double PIVOT_MAX_OUTPUT = 0.4;
+    public static final double PIVOT_MIN_OUTPUT = -0.35;
+    public static final double PIVOT_MAX_OUTPUT = 0.35;
 
-    public static final double DEPLOYED_ROT = 10.2;
+    public static final double DEPLOYED_ROT = 10.5;
   }
 
   public static final class ArmConstants{
@@ -121,7 +121,7 @@ public final class Constants {
     public static final double GROUND_CONE_MODE_ROT = 4.5;
     public static final double MID_MODE_ROT = 16.7;
     public static final double HIGH_MODE_ROT = 21;
-    public static final double SUBS_MODE_ROT = 20.1;
+    public static final double SUBS_MODE_ROT = 19.8;
   }
 
   public static final class ShooterConstants{

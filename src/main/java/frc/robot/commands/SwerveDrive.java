@@ -31,6 +31,8 @@ public class SwerveDrive extends CommandBase {
         0,
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
         new Translation2d(),
+        true,
+        true,
         true);
     }
     else if(RobotContainer.drivetrain.getDriveMode() == RobotContainer.drivetrain.getShooterGridMode()){
@@ -41,6 +43,8 @@ public class SwerveDrive extends CommandBase {
         1,
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
         new Translation2d(),
+        true,
+        true,
         true);
     }
     else if(RobotContainer.drivetrain.getDriveMode() == RobotContainer.drivetrain.getSubsMode()){
@@ -51,6 +55,8 @@ public class SwerveDrive extends CommandBase {
         0,
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
         new Translation2d(),
+        true,
+        true,
         true);
     }
     else{

@@ -79,17 +79,19 @@ public class Shooter extends SubsystemBase {
 
     //SHOOTER LOOKUP TABLE: (distance, voltage)
     shooterLerp.addPoint(0, 0);
+
+    llTable.getEntry("pipeline").setNumber(1);
   }
 
   public void shooterHold(){
     if(mode == ShooterMode.kCS){
       topController.setReference(
-        target,
+        target + 2,
         CANSparkMax.ControlType.kVoltage,
         0);
   
       botController.setReference(
-        target,
+        target - 2,
         CANSparkMax.ControlType.kVoltage,
         0);
     }
@@ -158,23 +160,25 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if(!SmartDashboard.containsKey("Shooter Voltage")){
-      SmartDashboard.putNumber("Shooter Voltage", 4.25);
+      SmartDashboard.putNumber("Shooter Voltage", 3.2);
     }
 
-    setPipeline(c);
-    if (llTable.getEntry("tv").getDouble(0) != 0 && mode == ShooterMode.kAuto) {
+    // setPipeline(c);
+    if (hasLLTarget() && mode == ShooterMode.kAuto) {
       cameraPose = llTable.getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
       tz = -cameraPose[2];
       tx = cameraPose[0] + 0.06;
       calculateTx(r, c); //adjust tx and tz based on target node
       calculateTz(r);
+      SmartDashboard.putNumber("Shooter tx", tx);
+      SmartDashboard.putNumber("Shooter tz", tz);
       dist = Math.hypot(Math.abs(tx), Math.abs(tz));
       
       dist = distFilter.calculate(dist);
       target = shooterLerp.interpolate(dist);
+
       setTargetAngle();
-      SmartDashboard.putNumber("Shooter tx", tx);
-      SmartDashboard.putNumber("Shooter tz", tz);
+      SmartDashboard.putNumber("Target Angle", targetAngle);
     }
     else if(mode == ShooterMode.kHigh) {
       target = 2.27;
@@ -183,11 +187,13 @@ public class Shooter extends SubsystemBase {
       target = 1.7;
     }
     else{
-      target = SmartDashboard.getNumber("Shooter Voltage", 4.25);
+      target = SmartDashboard.getNumber("Shooter Voltage", 3.2);
     }
 
     SmartDashboard.putNumber("Shooter Target", target);
     SmartDashboard.putString("Shooter Mode", mode.toString());
+    SmartDashboard.putNumber("Target Node R", r);
+    SmartDashboard.putNumber("Target Node C", c);
     SmartDashboard.putNumber("Top Shooter Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("Bot Shooter Velocity", botEncoder.getVelocity());
 
@@ -201,9 +207,13 @@ public class Shooter extends SubsystemBase {
       mode = ShooterMode.kCS;
     }
   }
-
-  public NetworkTable getLLTable(){
+  
+  public NetworkTable getLLTable(){                                                                                                    
     return llTable;
+  }
+
+  public boolean hasLLTarget(){
+    return llTable.getEntry("tv").getDouble(0) != 0;
   }
 
   public void changeLLPipeline(int pipeline){
@@ -276,6 +286,9 @@ public class Shooter extends SubsystemBase {
   public void setTargetAngle(){
     if(tz != 0){
       targetAngle = Math.toDegrees(Math.atan(tx/tz));
+    }
+    else{
+      targetAngle = 0;
     }
   }
 
