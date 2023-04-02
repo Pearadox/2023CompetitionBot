@@ -108,6 +108,8 @@ public class RobotContainer {
   private final LaunchpadButton intakeAdjustUp_3_5 = new LaunchpadButton(opController, 3, 5);
   private final LaunchpadButton intakeAdjustDown_2_5 = new LaunchpadButton(opController, 2, 5);
 
+  private final LaunchpadButton testButton_0_4 = new LaunchpadButton(opController, 0, 4);
+
   public static final XboxController backupOpController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
   private final JoystickButton armUp_Y = new JoystickButton(backupOpController, XboxController.Button.kY.value);
   private final JoystickButton armDown_A = new JoystickButton(backupOpController, XboxController.Button.kA.value);
@@ -152,9 +154,11 @@ public class RobotContainer {
     // throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
     throwCone_Back.onTrue(new SubstationAlign()).onFalse(new SwerveDrive());
     outtake_LB.whileTrue(new Outtake());
-    shoot_RB.whileTrue(new ShooterAutoAlign().withTimeout(0.75).andThen(new Shoot())).onFalse(new SwerveDrive());
+    shoot_RB.whileTrue(new Shoot()).onFalse(new SwerveDrive());
 
     //Launchpad
+    testButton_0_4.onTrue(transport.rumbleController());
+
     armHigh_1_0.onTrue(new ArmToggle(3));
     armMid_2_0.onTrue(new ArmToggle(2));
     armLow_3_0.onTrue(new ArmToggle(1));

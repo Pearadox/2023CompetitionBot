@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -101,14 +100,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(RobotContainer.arm.isDeployed() ? 
-        (RobotContainer.intake.isDeployed() || RobotContainer.bigStick.isDeployed()) : 
-        (RobotContainer.intake.isDeployed() && RobotContainer.bigStick.isDeployed())){
-      RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 1);
-    }
-    else{
-      RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0);
-    }
+    // if(RobotContainer.arm.isDeployed() ? 
+    //     (RobotContainer.intake.isDeployed() || RobotContainer.bigStick.isDeployed()) : 
+    //     (RobotContainer.intake.isDeployed() && RobotContainer.bigStick.isDeployed())){
+    //   RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 1);
+    // }
+    // else{
+    //   RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0);
+    // }
   }
 
   @Override

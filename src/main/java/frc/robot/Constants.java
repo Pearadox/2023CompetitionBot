@@ -119,9 +119,9 @@ public final class Constants {
 
     public static final double LOW_MODE_ROT = 3.5;
     public static final double GROUND_CONE_MODE_ROT = 4.5;
-    public static final double MID_MODE_ROT = 16.7;
-    public static final double HIGH_MODE_ROT = 21;
-    public static final double SUBS_MODE_ROT = 19.8;
+    public static final double MID_MODE_ROT = 17.7;
+    public static final double HIGH_MODE_ROT = 22.2;
+    public static final double SUBS_MODE_ROT = 20;
   }
 
   public static final class ShooterConstants{
@@ -160,7 +160,7 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -1.0;
     public static final double PIVOT_MAX_OUTPUT = 1.0;
 
-    public static final double DEPLOYED_ROT = 7.4;
+    public static final double DEPLOYED_ROT = 7.5;
   }
 
   public static final class FieldConstants{
@@ -178,9 +178,9 @@ public final class Constants {
 
     public static final Transform3d ROBOT_TO_SHOOTER_LL = new Transform3d(
       new Translation3d( 
-        -Units.inchesToMeters(0.1941),
+        -Units.inchesToMeters(0.1573),
         Units.inchesToMeters(5.8752),
-        Units.inchesToMeters(25.7158)
+        Units.inchesToMeters(27.9894)
       ), 
       new Rotation3d());
   }

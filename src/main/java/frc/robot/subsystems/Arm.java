@@ -12,9 +12,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.drivers.PearadoxSparkMax;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.VisionConstants;
 
@@ -22,7 +28,8 @@ public class Arm extends SubsystemBase {
   private PearadoxSparkMax driver;
   private PearadoxSparkMax pivot;
 
-  private RelativeEncoder armEncoder;
+  private RelativeEncoder driverEncoder;
+  private RelativeEncoder pivotEncoder;
 
   private SparkMaxPIDController armController;
 
@@ -37,6 +44,7 @@ public class Arm extends SubsystemBase {
   private ArmMode armMode = ArmMode.kZero;
   private IntakeMode intakeMode = IntakeMode.kIn;
   private double armAdjust = 0;
+  private boolean rumbled = false;
 
   private NetworkTable llTable = NetworkTableInstance.getDefault().getTable(VisionConstants.ARM_LL_NAME);
   private double[] cameraPose = new double[6];
@@ -49,12 +57,12 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    driver = new PearadoxSparkMax(ArmConstants.ARM_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 15, true);
+    driver = new PearadoxSparkMax(ArmConstants.ARM_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 25, true);
     pivot = new PearadoxSparkMax(ArmConstants.ARM_PIVOT_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true,
       ArmConstants.PIVOT_kP, ArmConstants.PIVOT_kI, ArmConstants.PIVOT_kD, 
       ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT);
 
-    armEncoder = pivot.getEncoder();
+    pivotEncoder = pivot.getEncoder();
     armController = pivot.getPIDController();
 
     llTable.getEntry("pipeline").setNumber(1);
@@ -115,10 +123,10 @@ public class Arm extends SubsystemBase {
         intakeStop();
       }
       else if(armMode == ArmMode.kSubs || armMode == ArmMode.kGroundCone){
-        driver.set(0.65);
+        driver.set(0.8);
       }
       else{
-        driver.set(0.15);
+        driver.set(0.25);
       }
     }
     else{
@@ -176,6 +184,10 @@ public class Arm extends SubsystemBase {
     armAdjust -= 0.2;
   }
 
+  // public boolean hasCone(){
+  //   return armMode == ArmMode.kSubs && Math.abs(driverEncoder.getVelocity()) < 0.1;
+  // }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -187,8 +199,16 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("Arm Adjust", armAdjust);
 
-    SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition());
+    SmartDashboard.putNumber("Arm Encoder", pivotEncoder.getPosition());
     SmartDashboard.putString("Arm Mode", armMode.toString());
+
+    // if(!rumbled && hasCone()){
+    //   CommandScheduler.getInstance().schedule(rumbleController());
+    //   rumbled = true;
+    // }
+    // if(rumbled && !hasCone()){
+    //   rumbled = false;
+    // }
   }
 
   public boolean hasLLTarget(){
@@ -197,5 +217,11 @@ public class Arm extends SubsystemBase {
 
   public double getTz(){
     return cameraPose[2];
+  }
+
+  public Command rumbleController(){
+    return new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 1))
+      .andThen(new WaitCommand(0.75))
+      .andThen(new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0)));
   }
 }

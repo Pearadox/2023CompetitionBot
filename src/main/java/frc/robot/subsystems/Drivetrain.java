@@ -233,18 +233,18 @@ public class Drivetrain extends SubsystemBase {
   public void updateOdometry() {
     poseEstimator.update(getHeadingRotation2d(), getModulePositions());
 
-    if(RobotContainer.shooter.hasLLTarget()) {
-      double[] botpose = new double[7];
-      if(DriverStation.getAlliance().equals(Alliance.Blue)){
-        botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
-      }
-      else{
-        botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpired").getDoubleArray(new double[7]);
-      }
-      double latency = Timer.getFPGATimestamp() - (botpose[6]/1000.0);
-      SmartDashboard.putString("Vision Pose", new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])).toString());
-      poseEstimator.addVisionMeasurement(new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])), latency);
-    }
+    // if(RobotContainer.shooter.hasLLTarget()) {
+    //   double[] botpose = new double[7];
+    //   if(DriverStation.getAlliance().equals(Alliance.Blue)){
+    //     botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
+    //   }
+    //   else{
+    //     botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpired").getDoubleArray(new double[7]);
+    //   }
+    //   double latency = Timer.getFPGATimestamp() - (botpose[6]/1000.0);
+    //   SmartDashboard.putString("Vision Pose", new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])).toString());
+    //   poseEstimator.addVisionMeasurement(new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])), latency);
+    // }
   }
 
   public void setAllIdleMode(boolean brake){

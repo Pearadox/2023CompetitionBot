@@ -52,7 +52,7 @@ public class Shooter extends SubsystemBase {
   private enum ShooterMode{
     kAuto, kHigh, kMid, kCS, kTest
   }
-  private ShooterMode mode = ShooterMode.kAuto;
+  private ShooterMode mode = ShooterMode.kHigh;
 
   private static final Shooter shooter = new Shooter();
 
@@ -113,7 +113,7 @@ public class Shooter extends SubsystemBase {
       0);
 
     botController.setReference(
-      target,
+      target + 0.5,
       CANSparkMax.ControlType.kVoltage,
       0);
     }
@@ -164,18 +164,18 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if(!SmartDashboard.containsKey("Shooter Voltage")){
-      SmartDashboard.putNumber("Shooter Voltage", 3.2);
+      SmartDashboard.putNumber("Shooter Voltage", 4);
     }
 
     // setPipeline(c);
     if (hasLLTarget() && mode == ShooterMode.kAuto) {
       cameraPose = llTable.getEntry("camerapose_targetspace").getDoubleArray(new double[6]);
       tz = -cameraPose[2];
-      tx = cameraPose[0] + 0.06;
-      calculateTx(r, c); //adjust tx and tz based on target node
-      calculateTz(r);
+      tx = cameraPose[0];
       SmartDashboard.putNumber("Shooter tx", tx);
       SmartDashboard.putNumber("Shooter tz", tz);
+      calculateTx(r, c); //adjust tx and tz based on target node
+      calculateTz(r);
       dist = Math.hypot(Math.abs(tx), Math.abs(tz));
       
       dist = distFilter.calculate(dist);
@@ -185,13 +185,13 @@ public class Shooter extends SubsystemBase {
       SmartDashboard.putNumber("Target Angle", targetAngle);
     }
     else if(mode == ShooterMode.kHigh) {
-      target = 2.27;
+      target = 2.1;
     }
     else if (mode == ShooterMode.kMid){
-      target = 1.7;
+      target = 1;
     }
     else{
-      target = SmartDashboard.getNumber("Shooter Voltage", 3.2);
+      target = SmartDashboard.getNumber("Shooter Voltage", 4);
     }
 
     SmartDashboard.putNumber("Shooter Target", target);

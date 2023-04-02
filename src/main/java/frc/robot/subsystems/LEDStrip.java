@@ -174,7 +174,7 @@ public class LEDStrip extends SubsystemBase {
   }
 
   public void ledHold() {
-    if(RobotContainer.transport.getIRSensor()){
+    if(RobotContainer.transport.hasCube()){
       setColor(200, 0, 0);
     }
     else{

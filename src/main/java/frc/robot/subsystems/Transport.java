@@ -8,9 +8,15 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.drivers.PearadoxSparkMax;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
 
 public class Transport extends SubsystemBase {
@@ -19,6 +25,7 @@ public class Transport extends SubsystemBase {
   private DigitalInput irSensor;
 
   private boolean isHolding = true;
+  private boolean rumbled = false;
 
   private static final Transport transport = new Transport();
 
@@ -35,20 +42,28 @@ public class Transport extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Ir Sensor", getIRSensor());
+    SmartDashboard.putBoolean("Ir Sensor", hasCube());
 
     if(isHolding){
-      if(getIRSensor()){
+      if(hasCube()){
         feederStop();
       }
       else{
         feederHold();
       }
     }
+
+    if(!rumbled && hasCube()){
+      CommandScheduler.getInstance().schedule(rumbleController());
+      rumbled = true;
+    }
+    if(rumbled && !hasCube()){
+      rumbled = false;
+    }
   }
 
   public void feederHold(){
-    feeder.set(0.2);
+    feeder.set(0.25);
   }
 
   public void feederOut(double speed){
@@ -63,11 +78,17 @@ public class Transport extends SubsystemBase {
     feeder.set(0.7);
   }
 
-  public boolean getIRSensor(){
+  public boolean hasCube(){
     return !irSensor.get();
   }
 
   public void setHolding(boolean isHolding){
     this.isHolding = isHolding;
+  }
+
+  public Command rumbleController(){
+    return new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 1))
+      .andThen(new WaitCommand(0.75))
+      .andThen(new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0)));
   }
 }
