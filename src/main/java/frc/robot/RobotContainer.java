@@ -22,7 +22,6 @@ import frc.robot.commands.ShooterAutoAlign;
 import frc.robot.commands.ShooterHold;
 import frc.robot.commands.SubstationAlign;
 import frc.robot.commands.SwerveDrive;
-import frc.robot.commands.ThrowCone;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BigStick;
 import frc.robot.subsystems.Drivetrain;
@@ -96,6 +95,7 @@ public class RobotContainer {
   private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
   private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
   private final LaunchpadButton shooterAuto_4_7 = new LaunchpadButton(opController, 4, 7);
+  private final LaunchpadButton shooterTest_1_8 = new LaunchpadButton(opController, 1, 8);
 
   private final LaunchpadButton toggleBigStick_4_6 = new LaunchpadButton(opController, 4, 6); //Big stick buttons
 
@@ -169,6 +169,7 @@ public class RobotContainer {
     shooterMid_2_7.onTrue(new InstantCommand(() -> shooter.setMidMode()));
     shooterCS_3_7.onTrue(new InstantCommand(() -> shooter.setCSMode()));
     shooterAuto_4_7.onTrue(new InstantCommand(() -> shooter.setAutoMode()));
+    shooterTest_1_8.onTrue(new InstantCommand(() -> shooter.setTestMode()));
 
     toggleBigStick_4_6.onTrue(new BigStickToggle());
 

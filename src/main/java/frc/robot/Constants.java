@@ -47,10 +47,10 @@ public final class Constants {
     public static final int PIGEON_ID = 15;
 
     //Drivetrain characteristics
-    public static final double LEFT_FRONT_OFFSET = 310.605; //change
-    public static final double RIGHT_FRONT_OFFSET = 354.462; //change
-    public static final double LEFT_BACK_OFFSET = 71.367; //change
-    public static final double RIGHT_BACK_OFFSET = 36; //change
+    public static final double LEFT_FRONT_OFFSET = 264.375; //change
+    public static final double RIGHT_FRONT_OFFSET = 162.773; //change
+    public static final double LEFT_BACK_OFFSET = 21.621; //change
+    public static final double RIGHT_BACK_OFFSET = 279.580; //change
 
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;

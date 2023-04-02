@@ -176,10 +176,6 @@ public class Arm extends SubsystemBase {
     armAdjust -= 0.2;
   }
 
-  public double getTz(){
-    return cameraPose[2];
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -192,55 +188,14 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Arm Adjust", armAdjust);
 
     SmartDashboard.putNumber("Arm Encoder", armEncoder.getPosition());
-    if(armMode == ArmMode.kZero){
-      SmartDashboard.putString("Arm Mode", "kZero");
-    }
-    else if(armMode == ArmMode.kLow){
-      SmartDashboard.putString("Arm Mode", "kLow");
-    }
-    else if(armMode == ArmMode.kGroundCone){
-      SmartDashboard.putString("Arm Mode", "kGroundCone");
-    }
-    else if(armMode == ArmMode.kMid){
-      SmartDashboard.putString("Arm Mode", "kMid");
-    }
-    else if(armMode == ArmMode.kHigh){
-      SmartDashboard.putString("Arm Mode", "kHigh");
-    }
-    else if(armMode == ArmMode.kSubs){
-      SmartDashboard.putString("Arm Mode", "kSubs");
-    }
-  }
-
-  public ArmMode getArmMode(){
-    return armMode;
-  }
-
-  public ArmMode getZeroMode(){
-    return ArmMode.kZero;
-  }
-
-  public ArmMode getGroundConeMode(){
-    return ArmMode.kGroundCone;
-  }
-
-  public ArmMode getLowMode(){
-    return ArmMode.kLow;
-  }
-
-  public ArmMode getMidMode(){
-    return ArmMode.kMid;
-  }
-
-  public ArmMode getHighMode(){
-    return ArmMode.kHigh;
-  }
-
-  public ArmMode getSubsMode(){
-    return ArmMode.kSubs;
+    SmartDashboard.putString("Arm Mode", armMode.toString());
   }
 
   public boolean hasLLTarget(){
     return llTable.getEntry("tv").getDouble(0) != 0;
+  }
+
+  public double getTz(){
+    return cameraPose[2];
   }
 }

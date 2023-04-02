@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
   private MedianFilter distFilter = new MedianFilter(5);
 
   private enum ShooterMode{
-    kAuto, kHigh, kMid, kCS
+    kAuto, kHigh, kMid, kCS, kTest
   }
   private ShooterMode mode = ShooterMode.kAuto;
 
@@ -144,6 +144,10 @@ public class Shooter extends SubsystemBase {
     mode = ShooterMode.kCS;
   }
 
+  public void setTestMode(){
+    mode = ShooterMode.kTest;
+  }
+
   public void shooterOff(){
     topController.setReference(
       0,
@@ -154,7 +158,7 @@ public class Shooter extends SubsystemBase {
       0,
       CANSparkMax.ControlType.kVoltage,
       0);
-    }
+  }
 
   @Override
   public void periodic() {
@@ -214,6 +218,10 @@ public class Shooter extends SubsystemBase {
 
   public boolean hasLLTarget(){
     return llTable.getEntry("tv").getDouble(0) != 0;
+  }
+
+  public double getTa(){
+    return llTable.getEntry("ta").getDouble(0);
   }
 
   public void changeLLPipeline(int pipeline){
