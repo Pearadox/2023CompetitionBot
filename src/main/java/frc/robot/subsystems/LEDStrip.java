@@ -192,7 +192,7 @@ public class LEDStrip extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(Timer.getFPGATimestamp() - lastShifted > 0.1){
+    if(Timer.getFPGATimestamp() - lastShifted > 0.05){
       shiftDefaultColors();
       lastShifted = Timer.getFPGATimestamp();
     }

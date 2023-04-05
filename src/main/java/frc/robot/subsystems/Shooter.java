@@ -79,6 +79,11 @@ public class Shooter extends SubsystemBase {
 
     //SHOOTER LOOKUP TABLE: (distance, voltage)
     shooterLerp.addPoint(0, 0);
+    // 2.0 0.75
+    // 2.2 0.918
+    // 2.45 1.179
+    // 2.9 1.348
+    // bottom spinning +0.5 V
 
     llTable.getEntry("pipeline").setNumber(1);
   }
@@ -91,7 +96,8 @@ public class Shooter extends SubsystemBase {
         0);
   
       botController.setReference(
-        target - 2,
+        //target-2,
+        0,
         CANSparkMax.ControlType.kVoltage,
         0);
     }

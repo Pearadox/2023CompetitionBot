@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
 public class AutoBalance extends CommandBase {
-  PIDController initPidController = new PIDController(0.027, 0, 0);
-  PIDController finalPidController = new PIDController(0.01, 0, 0.003);
+  PIDController initPidController = new PIDController(0.02, 0, 0);
+  PIDController finalPidController = new PIDController(0.0088, 0, 0.003);
 
   /** Creates a new AutoBalance. */
   public AutoBalance() {

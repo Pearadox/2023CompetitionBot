@@ -302,6 +302,27 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c4C0_NC();
     }
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+            && autoStartingSideChooser.getSelected().equals("Non Cable")
+            && autoBalanceChooser.getSelected().equals("Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c4C0_NC_Bal();
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c4C0_C_Bal();
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoBalanceChooser.getSelected().equals("No Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c4C0_C();
+    }
     else if(autoGamePiecesChooser.getSelected().equals("5")
             && autoStartingSideChooser.getSelected().equals("Non Cable")
             && autoBalanceChooser.getSelected().equals("No Balance")){
@@ -416,6 +437,21 @@ public class RobotContainer {
     }
     else if(autoGamePiecesChooser.getSelected().equals("4")
               && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("No Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+              && autoStartingSideChooser.getSelected().equals("Non Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("4")
+              && autoStartingSideChooser.getSelected().equals("Cable")
               && autoBalanceChooser.getSelected().equals("No Balance")){
       isValid = true;
     }

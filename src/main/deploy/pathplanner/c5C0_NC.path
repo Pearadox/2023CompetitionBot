@@ -178,12 +178,6 @@
       ]
     },
     {
-      "position": 0.5,
-      "names": [
-        "shooterHold"
-      ]
-    },
-    {
       "position": 2.15,
       "names": [
         "intakeToggle"
@@ -277,30 +271,6 @@
       "position": 5.32,
       "names": [
         "bigStickToggle"
-      ]
-    },
-    {
-      "position": 2.97,
-      "names": [
-        "feederStop"
-      ]
-    },
-    {
-      "position": 3.97,
-      "names": [
-        "feederStop"
-      ]
-    },
-    {
-      "position": 4.97,
-      "names": [
-        "feederStop"
-      ]
-    },
-    {
-      "position": 0.55,
-      "names": [
-        "feederStop"
       ]
     },
     {
