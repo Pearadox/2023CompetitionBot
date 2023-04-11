@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -42,6 +44,8 @@ public class BigStick extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Big Stick Position", bigStickEncoder.getPosition());
+
+    Logger.getInstance().recordOutput("Big Stick/Position", bigStickEncoder.getPosition());
   }
 
   public void bigStickHold(){

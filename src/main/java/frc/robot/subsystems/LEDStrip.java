@@ -6,10 +6,11 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
@@ -17,20 +18,21 @@ public class LEDStrip extends SubsystemBase {
   private AddressableLED led;
   private AddressableLEDBuffer ledBuffer;
   private final int numLEDs;
-
+  private int trail_size = 108;
   private ArrayList<String> defaultColors = new ArrayList<>();
-
+  private ArrayList<String> rainColors = new ArrayList<>();
+  private boolean rainbowOn = false;
   private double lastShifted;
 
-  private enum LEDMode{
-    kDefault, kCone, kCube
+  private enum LEDMode {
+    kDefault, kCone, kCube, kRainbow
   }
+
   private LEDMode mode = LEDMode.kDefault;
 
   public LEDStrip(int numberOfLeds, int port) {
     led = new AddressableLED(port);
     numLEDs = numberOfLeds;
-
     // Length is expensive to set, so only set it once, then just update data
     ledBuffer = new AddressableLEDBuffer(numLEDs);
     led.setLength(ledBuffer.getLength());
@@ -39,11 +41,12 @@ public class LEDStrip extends SubsystemBase {
 
     lastShifted = Timer.getFPGATimestamp();
     loadDefaultColors();
+    loadRainbowColors();
   }
 
-  public void loadDefaultColors(){
-    for (int i = 0; i < ledBuffer.getLength(); i+=10) {
-      if(i == 100){
+  public void loadDefaultColors() {
+    for (int i = 0; i < ledBuffer.getLength(); i += 10) {
+      if (i == 100) {
         defaultColors.add("Y1");
         defaultColors.add("Y1");
         defaultColors.add("Y2");
@@ -54,117 +57,188 @@ public class LEDStrip extends SubsystemBase {
         defaultColors.add("G2");
         defaultColors.add("G1");
         defaultColors.add("G1");
-      }
-      else if(i % 20 == 0){
-        if(i % 40 == 0){
-          for(int n = 0; n < 10; n++){
+      } else if (i % 20 == 0) {
+        if (i % 40 == 0) {
+          for (int n = 0; n < 10; n++) {
             defaultColors.add("G");
           }
-        }
-        else{
-          for(int n = 0; n < 10; n++){
+        } else {
+          for (int n = 0; n < 10; n++) {
             defaultColors.add("Y");
           }
         }
-      }
-      else{
-        if((i + 10) % 40 == 0){
-            defaultColors.add("Y1");
-            defaultColors.add("Y1");
-            defaultColors.add("Y2");
-            defaultColors.add("Y2");
-            defaultColors.add("M");
-            defaultColors.add("M");
-            defaultColors.add("G2");
-            defaultColors.add("G2");
-            defaultColors.add("G1");
-            defaultColors.add("G1");
+      } else {
+        if ((i + 10) % 40 == 0) {
+          defaultColors.add("Y1");
+          defaultColors.add("Y1");
+          defaultColors.add("Y2");
+          defaultColors.add("Y2");
+          defaultColors.add("M");
+          defaultColors.add("M");
+          defaultColors.add("G2");
+          defaultColors.add("G2");
+          defaultColors.add("G1");
+          defaultColors.add("G1");
+        } else {
+          defaultColors.add("G1");
+          defaultColors.add("G1");
+          defaultColors.add("G2");
+          defaultColors.add("G2");
+          defaultColors.add("M");
+          defaultColors.add("M");
+          defaultColors.add("Y2");
+          defaultColors.add("Y2");
+          defaultColors.add("Y1");
+          defaultColors.add("Y1");
         }
-        else{
-              defaultColors.add("G1");
-              defaultColors.add("G1");
-            defaultColors.add("G2");
-            defaultColors.add("G2");
-            defaultColors.add("M");
-            defaultColors.add("M");
-            defaultColors.add("Y2");
-            defaultColors.add("Y2");
-            defaultColors.add("Y1");
-            defaultColors.add("Y1");
-        }
-      // for(int n = 0; n < 5; n++){
-      //   defaultColors.add("O");
-      // }
+        // for(int n = 0; n < 5; n++){
+        // defaultColors.add("O");
+        // }
       }
     }
   }
 
-  public void shiftDefaultColors(){
-    String temp = defaultColors.get(defaultColors.size() - 1);
-    defaultColors.add(0, temp);
-    defaultColors.remove(defaultColors.size() - 1);
+  public void loadRainbowColors() {
+    int change = 0;
+    int color_size = trail_size / 6;
+    for (int i = 0; i <= trail_size; i += color_size) {
+      for (int j = 0; j < color_size; j++) {
+        switch (change) {
+          case 0:
+            rainColors.add("R");
+            break;
+          case 1:
+            rainColors.add("O");
+            break;
+          case 2:
+            rainColors.add("Y");
+            break;
+          case 3:
+            rainColors.add("G");
+            break;
+          case 4:
+            rainColors.add("B");
+            break;
+          case 5:
+            rainColors.add("P");
+            break;
+        }
+      }
+      change++;
+    }
+    for (int i = 0; i < ledBuffer.getLength()-rainColors.size()+1; i++) {
+      rainColors.add("P");
+    }
   }
 
-  public void animateDefault(){
-    for(int i = 0; i < ledBuffer.getLength(); i++){
-      switch(defaultColors.get(i)){
-        case "G":
-          ledBuffer.setRGB(i, 0, 255, 0);
+  public void shiftDefaultColors() {
+    if(!rainbowOn){
+      String temp = defaultColors.get(defaultColors.size() - 1);
+      defaultColors.add(0, temp);
+      defaultColors.remove(defaultColors.size() - 1);
+    }else{
+      String temp2 = rainColors.get(rainColors.size() - 1);
+      rainColors.add(0, temp2);
+      rainColors.remove(rainColors.size() - 1);
+    }
+  }
+
+  public void animateRainbow() {
+    String last = "ksaasda";
+    int inc = 0;
+    int color_size = trail_size / 6;
+    int color_inc = 127 / color_size;
+    for (int i = 0; i < ledBuffer.getLength(); i++) {
+      if (last == rainColors.get(i)){
+        inc++;
+      }else{
+        inc = 0;
+      }
+      switch (rainColors.get(i)) {
+        case "R":
+          ledBuffer.setRGB(i, 255, 0 + (inc * color_inc), 0);
+          last = "R";
+          break;
+        case "O":
+          ledBuffer.setRGB(i, 255, 127 + (inc * color_inc), 0);
+          last = "O";
           break;
         case "Y":
-          ledBuffer.setRGB(i, 255, 120, 0);
+          ledBuffer.setRGB(i, 255 - (inc * color_inc * 2), 255, 0);
+          last = "Y";
+          break;
+        case "G":
+          ledBuffer.setRGB(i, 0, 255 - (inc * color_inc * 2), 0 + (inc * color_inc * 2));
+          last = "G";
+          break;
+        case "B":
+          ledBuffer.setRGB(i, 0 + (inc * color_inc * 2), 0, 255);
+          last = "B";
+          break;
+        case "P":
+          ledBuffer.setRGB(i, 255, 0, 255 - (inc * color_inc * 2));
+          last = "P";
+          break;
+        case "N":
+          ledBuffer.setRGB(i, 1, 2, 3);
+        default:
+          ledBuffer.setRGB(i, 50, 50, 50);
+      }
+    }
+  }
+
+  public void animateDefault() {
+    for (int i = 0; i < ledBuffer.getLength(); i++) {
+      switch (defaultColors.get(i)) {
+        case "G":
+          ledBuffer.setRGB(i, 0, 215, 0);
+          break;
+        case "Y":
+          ledBuffer.setRGB(i, 215, 80, 0);
           break;
         case "G1":
-          ledBuffer.setRGB(i, 43, 232, 0);
+          ledBuffer.setRGB(i, 3, 192, 0);
           break;
         case "G2":
-          ledBuffer.setRGB(i, 85, 210, 0);
+          ledBuffer.setRGB(i, 45, 170, 0);
           break;
         case "M":
-          ledBuffer.setRGB(i, 128, 187, 0);
+          ledBuffer.setRGB(i, 88, 147, 0);
           break;
         case "Y2":
-          ledBuffer.setRGB(i, 170, 165, 0);
+          ledBuffer.setRGB(i, 130, 125, 0);
           break;
         case "Y1":
-          ledBuffer.setRGB(i, 213, 142, 0);
+          ledBuffer.setRGB(i, 173, 102, 0);
           break;
-        // case "O":
-        //   ledBuffer.setRGB(i, 0, 0, 0);
-        //   break;
         default:
           ledBuffer.setRGB(i, 0, 0, 0);
       }
     }
   }
 
-  // public void animateTest()
-  // {
-  //   int colorShifterCounter = 0;
-  //   boolean ifGreen = true;
-  //   for(int i = 0; i < ledBuffer.getLength(); i++)
-  //   {
-  //     if(defaultColors.get(i) == "G")
-  //     {
-
-  //     }
-  //   }
-  // }
-
-  public ArrayList<String> getDefaultColors(){
+  public ArrayList<String> getDefaultColors() {
     return defaultColors;
   }
 
-  public void setDefaultMode(){
+  public void setDefaultMode() {
     mode = LEDMode.kDefault;
   }
 
-  public void setConeMode(){
+  public void setConeMode() {
     mode = LEDMode.kCone;
   }
 
-  public void setCubeMode(){
+  public void setCubeMode() {
     mode = LEDMode.kCube;
+  }
+
+  public void setRainbowMode() {
+    mode = LEDMode.kRainbow;
+  }
+
+  public boolean isRainbowMode(){
+    return mode == LEDMode.kRainbow;
   }
 
   public void setColor(int r, int g, int b) {
@@ -174,30 +248,35 @@ public class LEDStrip extends SubsystemBase {
   }
 
   public void ledHold() {
-    if(RobotContainer.transport.hasCube()){
+    if (RobotContainer.transport.hasCube()) {
       setColor(200, 0, 0);
-    }
-    else{
-      if(mode == LEDMode.kCone){
+    } else {
+      if (mode == LEDMode.kCone) {
         setColor(255, 120, 0);
-      }
-      else if(mode == LEDMode.kCube){
+      } 
+      else if (mode == LEDMode.kCube) {
         setColor(100, 0, 127);
       }
-      else{
+      else if(mode == LEDMode.kRainbow){
+        animateRainbow();
+        rainbowOn = true;
+      }
+      else {
         animateDefault();
+        rainbowOn = false;
       }
     }
   }
 
   @Override
   public void periodic() {
-    if(Timer.getFPGATimestamp() - lastShifted > 0.05){
+    if (Timer.getFPGATimestamp() - lastShifted > 0.01) {
       shiftDefaultColors();
       lastShifted = Timer.getFPGATimestamp();
     }
     ledHold();
     led.setData(ledBuffer);
-    SmartDashboard.putString("Default Colors 1st", defaultColors.get(0));
+    
+    Logger.getInstance().recordOutput("LED/Mode", mode.toString());
   }
 }

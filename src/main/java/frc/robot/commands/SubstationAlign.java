@@ -25,7 +25,7 @@ public class SubstationAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = controller.calculate(RobotContainer.arm.getTz(), -1.1);
+    double speed = controller.calculate(RobotContainer.arm.getTz(), -1.016);
     RobotContainer.drivetrain.swerveDrive(speed, -RobotContainer.driverController.getLeftX(), -1, 0, true, new Translation2d(), false, true, true);
   }
 

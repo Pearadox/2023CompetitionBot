@@ -119,7 +119,7 @@ public final class Constants {
 
     public static final double LOW_MODE_ROT = 3.5;
     public static final double GROUND_CONE_MODE_ROT = 4.5;
-    public static final double MID_MODE_ROT = 17.6;
+    public static final double MID_MODE_ROT = 16.9;
     public static final double HIGH_MODE_ROT = 21.4;
     public static final double SUBS_MODE_ROT = 20;
   }

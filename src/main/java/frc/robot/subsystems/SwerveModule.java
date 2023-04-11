@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -111,6 +113,7 @@ public class SwerveModule extends SubsystemBase {
     setAngle(desiredState);
     setSpeed(desiredState);
     SmartDashboard.putString("Swerve [" + driveMotor.getDeviceId() + "] State", getState().toString());
+    Logger.getInstance().recordOutput("Drivetrain/Module " + driveMotor.getDeviceId() + " State", getState());
   }
 
   public void setSpeed(SwerveModuleState desiredState){

@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -108,6 +110,11 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Robot Roll", getRoll());
     SmartDashboard.putString("Pose", getPose().toString());
     SmartDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((rates[2] / 180)) + "pi rad/s");
+
+    Logger.getInstance().recordOutput("Drivetrain/Robot Angle", getHeading());
+    Logger.getInstance().recordOutput("Drivetrain/Pose", getPose());
+    Logger.getInstance().recordOutput("Drivetrain/Angular Speed", rates[2] / 180);
+    Logger.getInstance().recordOutput("Drivetrain/Module States", getModuleStates());
   }
 
   public void swerveDrive(double frontSpeed, double sideSpeed, double turnSpeed, 
@@ -118,9 +125,9 @@ public class Drivetrain extends SubsystemBase {
       turnSpeed = Math.abs(turnSpeed) > 0.1 ? turnSpeed : 0;
     }
 
-    frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.45 : frontSpeed;
-    sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? sideSpeed * 0.45 : sideSpeed;
-    turnSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? turnSpeed * 0.45 : turnSpeed;
+    frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.20 : frontSpeed;
+    sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? sideSpeed * 0.20 : sideSpeed;
+    turnSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? turnSpeed * 0.20 : turnSpeed;
 
     frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
     sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
@@ -294,10 +301,10 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void formX(){
-    leftFront.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    rightFront.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    leftBack.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    rightBack.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    leftFront.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(45)));
+    rightFront.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(-45)));
+    leftBack.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(-45)));
+    rightBack.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(45)));
   }
 
   public void stopModules(){
@@ -314,6 +321,15 @@ public class Drivetrain extends SubsystemBase {
     leftBack.setDesiredState(moduleStates[2]);
     rightBack.setDesiredState(moduleStates[3]);
   }
+
+  public SwerveModuleState[] getModuleStates(){
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    states[0] = leftFront.getState();
+    states[1] = rightFront.getState();
+    states[2] = leftBack.getState();
+    states[3] = rightBack.getState();
+    return states;
+  } 
 
   public SwerveModulePosition[] getModulePositions(){
     SwerveModulePosition[] positions = new SwerveModulePosition[4];

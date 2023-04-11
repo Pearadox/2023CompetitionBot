@@ -57,11 +57,13 @@ public class AutoBalance extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    RobotContainer.drivetrain.formX();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(RobotContainer.drivetrain.getRoll()) < 1 && Math.abs(RobotContainer.drivetrain.getPitch()) < 1;
   }
 }

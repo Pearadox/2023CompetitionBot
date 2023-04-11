@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +27,7 @@ public class Transport extends SubsystemBase {
   private PearadoxSparkMax feeder;
 
   private DigitalInput irSensor;
+  private Debouncer debouncer = new Debouncer(0.1, DebounceType.kFalling);
 
   private boolean isHolding = true;
   private boolean rumbled = false;
@@ -43,6 +48,7 @@ public class Transport extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Ir Sensor", hasCube());
+    Logger.getInstance().recordOutput("Transport/Distance Sensor", hasCube());
 
     if(isHolding){
       if(hasCube()){
@@ -63,7 +69,7 @@ public class Transport extends SubsystemBase {
   }
 
   public void feederHold(){
-    feeder.set(0.25);
+    feeder.set(0.4);
   }
 
   public void feederOut(double speed){
@@ -79,7 +85,7 @@ public class Transport extends SubsystemBase {
   }
 
   public boolean hasCube(){
-    return !irSensor.get();
+    return debouncer.calculate(!irSensor.get());
   }
 
   public void setHolding(boolean isHolding){

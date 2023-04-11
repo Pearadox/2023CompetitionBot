@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -180,15 +182,18 @@ public class Shooter extends SubsystemBase {
       tx = cameraPose[0];
       SmartDashboard.putNumber("Shooter tx", tx);
       SmartDashboard.putNumber("Shooter tz", tz);
+      Logger.getInstance().recordOutput("Shooter/tx", tx);
+      Logger.getInstance().recordOutput("Shooter/tz", tz);
       calculateTx(r, c); //adjust tx and tz based on target node
       calculateTz(r);
       dist = Math.hypot(Math.abs(tx), Math.abs(tz));
-      
+    
       dist = distFilter.calculate(dist);
       target = shooterLerp.interpolate(dist);
 
       setTargetAngle();
       SmartDashboard.putNumber("Target Angle", targetAngle);
+      Logger.getInstance().recordOutput("Shooter/Target Angle", targetAngle);
     }
     else if(mode == ShooterMode.kHigh) {
       target = 2.1;
@@ -198,6 +203,7 @@ public class Shooter extends SubsystemBase {
     }
     else{
       target = SmartDashboard.getNumber("Shooter Voltage", 4);
+      Logger.getInstance().recordOutput("Shooter/Shooter Voltage", SmartDashboard.getNumber("Shooter Voltage", 4));
     }
 
     SmartDashboard.putNumber("Shooter Target", target);
@@ -206,6 +212,13 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Target Node C", c);
     SmartDashboard.putNumber("Top Shooter Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("Bot Shooter Velocity", botEncoder.getVelocity());
+
+    Logger.getInstance().recordOutput("Shooter/Target Voltage", target);
+    Logger.getInstance().recordOutput("Shooter/Mode", mode.toString());
+    Logger.getInstance().recordOutput("Shooter/Target Node R", r);
+    Logger.getInstance().recordOutput("Shooter/Target Node C", c);
+    Logger.getInstance().recordOutput("Shooter/Top Velocity", topEncoder.getVelocity());
+    Logger.getInstance().recordOutput("Shooter/Bottom Velocity", botEncoder.getVelocity());
 
     if(RobotContainer.backupOpController.getPOV() == 0){
       mode = ShooterMode.kHigh;

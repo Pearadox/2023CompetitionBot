@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -89,5 +91,9 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
     SmartDashboard.putBoolean("Deployed", deployed);
     SmartDashboard.putNumber("Pivot Current", pivot.getOutputCurrent());
+
+    Logger.getInstance().recordOutput("Intake/Pivot Position", pivotEncoder.getPosition());
+    Logger.getInstance().recordOutput("Intake/Deployed", deployed);
+    Logger.getInstance().recordOutput("Intake/Pivot Current", pivot.getOutputCurrent());
   }
 }

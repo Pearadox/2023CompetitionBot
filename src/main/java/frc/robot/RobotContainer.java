@@ -18,7 +18,6 @@ import frc.robot.commands.IntakeRollersHold;
 import frc.robot.commands.IntakeToggle;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.ShooterAutoAlign;
 import frc.robot.commands.ShooterHold;
 import frc.robot.commands.SubstationAlign;
 import frc.robot.commands.SwerveDrive;
@@ -101,6 +100,7 @@ public class RobotContainer {
 
   private final LaunchpadButton coneMode_4_3 = new LaunchpadButton(opController, 4, 3); //LED buttons
   private final LaunchpadButton cubeMode_4_4 = new LaunchpadButton(opController, 4, 4);
+  private final LaunchpadButton rainbowMode_4_2 = new LaunchpadButton(opController, 4, 2);
 
   private final LaunchpadButton intakeToggle_3_6 = new LaunchpadButton(opController, 3, 6); //Intake buttons
   private final LaunchpadButton outtakeToggle_2_6 = new LaunchpadButton(opController, 2, 6); //Outake buttons
@@ -179,6 +179,7 @@ public class RobotContainer {
 
     coneMode_4_3.onTrue(new InstantCommand(() -> ledStrip.setConeMode()));
     cubeMode_4_4.onTrue(new InstantCommand(() -> ledStrip.setCubeMode()));
+    rainbowMode_4_2.onTrue(new InstantCommand(() -> ledStrip.setRainbowMode()));
 
     intakeToggle_3_6.onTrue(new IntakeToggle());
     outtakeToggle_2_6.whileTrue(new Outtake());
@@ -473,6 +474,18 @@ public class RobotContainer {
     }
 
     return isValid;
+  }
+
+  public String getAutoGamePieces(){
+    return autoGamePiecesChooser.getSelected();
+  }
+
+  public String getAutoStartingSide(){
+    return autoStartingSideChooser.getSelected();
+  }
+
+  public String getAutoBalance(){
+    return autoBalanceChooser.getSelected();
   }
 
   public void loadGridButtons(){

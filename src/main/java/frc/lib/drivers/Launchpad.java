@@ -4,6 +4,8 @@
 
 package frc.lib.drivers;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -64,6 +66,7 @@ public class Launchpad extends SubsystemBase{
             {
                 String key = i +":"+j;
                 btns[i][j] = table.getEntry(key).getBoolean(false);
+                Logger.getInstance().recordOutput("Launchpad/" + key, btns[i][j]);
             }
         }
         for(int i = 0; i < 9; i++)

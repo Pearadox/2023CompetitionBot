@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -62,6 +64,7 @@ public class Arm extends SubsystemBase {
       ArmConstants.PIVOT_kP, ArmConstants.PIVOT_kI, ArmConstants.PIVOT_kD, 
       ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT);
 
+    driverEncoder = driver.getEncoder();
     pivotEncoder = pivot.getEncoder();
     armController = pivot.getPIDController();
 
@@ -120,7 +123,7 @@ public class Arm extends SubsystemBase {
   public void intakeHold(){
     if(intakeMode == IntakeMode.kIn){
       if(armMode == ArmMode.kZero){
-        intakeStop();
+        driver.set(0.01);
       }
       else if(armMode == ArmMode.kSubs || armMode == ArmMode.kGroundCone){
         driver.set(0.9);
@@ -184,9 +187,9 @@ public class Arm extends SubsystemBase {
     armAdjust -= 0.2;
   }
 
-  // public boolean hasCone(){
-  //   return armMode == ArmMode.kSubs && Math.abs(driverEncoder.getVelocity()) < 0.1;
-  // }
+  public boolean hasCone(){
+    return armMode == ArmMode.kSubs && Math.abs(driverEncoder.getVelocity()) < 0.1;
+  }
 
   @Override
   public void periodic() {
@@ -196,19 +199,24 @@ public class Arm extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Arm Tz", getTz());
-
     SmartDashboard.putNumber("Arm Adjust", armAdjust);
-
-    SmartDashboard.putNumber("Arm Encoder", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Arm Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Arm Velocity", driverEncoder.getVelocity());
     SmartDashboard.putString("Arm Mode", armMode.toString());
+    
+    Logger.getInstance().recordOutput("Arm/Tz", getTz());
+    Logger.getInstance().recordOutput("Arm/Adjust", armAdjust);
+    Logger.getInstance().recordOutput("Arm/Pivot Position", pivotEncoder.getPosition());
+    Logger.getInstance().recordOutput("Arm/Driver Velocity", driverEncoder.getVelocity());
+    Logger.getInstance().recordOutput("Arm/Mode", armMode.toString());
 
-    // if(!rumbled && hasCone()){
-    //   CommandScheduler.getInstance().schedule(rumbleController());
-    //   rumbled = true;
-    // }
-    // if(rumbled && !hasCone()){
-    //   rumbled = false;
-    // }
+    if(!rumbled && hasCone()){
+      CommandScheduler.getInstance().schedule(rumbleController());
+      rumbled = true;
+    }
+    if(rumbled && !hasCone()){
+      rumbled = false;
+    }
   }
 
   public boolean hasLLTarget(){
