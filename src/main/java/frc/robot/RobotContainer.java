@@ -219,7 +219,7 @@ public class RobotContainer {
     gridButtons[2][7].onTrue(new InstantCommand(() -> shooter.setTargetNode(2, 7)));
     gridButtons[2][8].onTrue(new InstantCommand(() -> shooter.setTargetNode(2, 8)));
 
-    //operator controller
+    //Operator controller
     bigStickToggle_LB.onTrue(new BigStickToggle()).onFalse(new InstantCommand(() -> bigStick.stow()));
     
     armLow_X.onTrue(new ArmToggle(1));
