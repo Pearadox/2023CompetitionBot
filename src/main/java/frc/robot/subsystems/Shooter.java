@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.lib.util.LerpTable;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
@@ -218,6 +219,16 @@ public class Shooter extends SubsystemBase {
     Logger.getInstance().recordOutput("Shooter/Target Node C", c);
     Logger.getInstance().recordOutput("Shooter/Top Velocity", topEncoder.getVelocity());
     Logger.getInstance().recordOutput("Shooter/Bottom Velocity", botEncoder.getVelocity());
+
+    if(RobotContainer.opController.getPOV() == 0){
+      mode = ShooterMode.kHigh;
+    }
+    else if(RobotContainer.opController.getPOV() == 90){
+      mode = ShooterMode.kMid;
+    }
+    else if(RobotContainer.opController.getPOV() == 180){
+      mode = ShooterMode.kCS;
+    }
   }
   
   public NetworkTable getLLTable(){                                                                                                    
@@ -310,5 +321,17 @@ public class Shooter extends SubsystemBase {
 
   public double getTargetAngle(){
     return targetAngle;
+  }
+
+  public boolean isHighMode(){
+    return mode == ShooterMode.kHigh;
+  }
+
+  public boolean isMidMode(){
+    return mode == ShooterMode.kMid;
+  }
+
+  public boolean isCSMode(){
+    return mode == ShooterMode.kCS;
   }
 }

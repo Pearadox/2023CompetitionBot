@@ -117,6 +117,8 @@ public class RobotContainer {
   private final JoystickButton armMid_B = new JoystickButton(opController, XboxController.Button.kB.value);
   private final JoystickButton armLow_X = new JoystickButton(opController, XboxController.Button.kX.value);
   private final JoystickButton armZero_A = new JoystickButton(opController, XboxController.Button.kA.value);
+  private final JoystickButton coneMode_Back = new JoystickButton(opController, XboxController.Button.kBack.value);
+  private final JoystickButton cubeMode_Start = new JoystickButton(opController, XboxController.Button.kStart.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -227,6 +229,9 @@ public class RobotContainer {
     armMid_B.onTrue(new ArmToggle(2));
     armSubs_RB.onTrue(new ArmToggle(4));
     armZero_A.onTrue(new ArmToggle(0));
+
+    coneMode_Back.onTrue(new InstantCommand(() -> ledStrip.setConeMode()));
+    cubeMode_Start.onTrue(new InstantCommand(() -> ledStrip.setCubeMode()));
   }
 
   /**

@@ -187,7 +187,7 @@ public class LEDStrip extends SubsystemBase {
     }
   }
 
-  public void animateDefault() {
+  public void animateIdle() {
     for (int i = 0; i < ledBuffer.getLength(); i++) {
       switch (defaultColors.get(i)) {
         case "G":
@@ -241,30 +241,54 @@ public class LEDStrip extends SubsystemBase {
     return mode == LEDMode.kRainbow;
   }
 
-  public void setColor(int r, int g, int b) {
-    for (int i = 0; i < ledBuffer.getLength(); i++) {
+  public void setBottomColor(int r, int g, int b) {
+    for (int i = 0; i < 25; i++) {
+      ledBuffer.setRGB(i, r, g, b);
+    }
+    for(int i = 79; i < 110; i++){
       ledBuffer.setRGB(i, r, g, b);
     }
   }
 
+  public void setTopColor(int r, int g, int b){
+    for(int i = 25; i < 79; i++){
+      ledBuffer.setRGB(i,r, g, b);
+    }
+  }
+
+  public void setDefaultColors(){
+    if(RobotContainer.transport.hasCube()){
+      setTopColor(200, 0, 0);
+    }
+    else if(mode == LEDMode.kCube){
+      setTopColor(100, 0, 255);
+    }
+    else if(mode == LEDMode.kCone){
+      setTopColor(255, 120, 0);
+    }
+
+    if(RobotContainer.shooter.isHighMode()){
+      setBottomColor(0, 0, 255);
+    }
+    else if(RobotContainer.shooter.isMidMode()){
+      setBottomColor(0, 255, 0);
+    }
+    else if(RobotContainer.shooter.isCSMode()){
+      setBottomColor(255, 255, 255);
+    }
+  }
+
   public void ledHold() {
-    if (RobotContainer.transport.hasCube()) {
-      setColor(200, 0, 0);
-    } else {
-      if (mode == LEDMode.kCone) {
-        setColor(255, 120, 0);
-      } 
-      else if (mode == LEDMode.kCube) {
-        setColor(100, 0, 127);
-      }
-      else if(mode == LEDMode.kRainbow){
-        animateRainbow();
-        rainbowOn = true;
-      }
-      else {
-        animateDefault();
-        rainbowOn = false;
-      }
+    if (mode == LEDMode.kCone || mode == LEDMode.kCube) {
+      setDefaultColors();
+    }
+    else if(mode == LEDMode.kRainbow){
+      animateRainbow();
+      rainbowOn = true;
+    }
+    else {
+      animateIdle();
+      rainbowOn = false;
     }
   }
 
