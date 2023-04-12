@@ -203,7 +203,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Arm Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Arm Velocity", driverEncoder.getVelocity());
     SmartDashboard.putString("Arm Mode", armMode.toString());
-    
+
     Logger.getInstance().recordOutput("Arm/Tz", getTz());
     Logger.getInstance().recordOutput("Arm/Adjust", armAdjust);
     Logger.getInstance().recordOutput("Arm/Pivot Position", pivotEncoder.getPosition());
@@ -216,6 +216,16 @@ public class Arm extends SubsystemBase {
     }
     if(rumbled && !hasCone()){
       rumbled = false;
+    }
+
+    if(RobotContainer.opController.getRightTriggerAxis() > 0.85){
+      if(RobotContainer.intake.isDeployed()){
+        RobotContainer.intake.intakeToggle();
+      }
+      if(RobotContainer.bigStick.isDeployed()){
+        RobotContainer.bigStick.toggleDeploy();
+      }
+      armMode = ArmMode.kGroundCone;
     }
   }
 

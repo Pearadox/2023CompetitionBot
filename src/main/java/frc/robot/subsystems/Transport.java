@@ -27,7 +27,7 @@ public class Transport extends SubsystemBase {
   private PearadoxSparkMax feeder;
 
   private DigitalInput irSensor;
-  private Debouncer debouncer = new Debouncer(0.1, DebounceType.kFalling);
+  private Debouncer debouncer = new Debouncer(0.2, DebounceType.kFalling);
 
   private boolean isHolding = true;
   private boolean rumbled = false;

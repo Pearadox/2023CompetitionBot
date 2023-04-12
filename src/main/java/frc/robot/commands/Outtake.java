@@ -18,6 +18,9 @@ public class Outtake extends CommandBase {
   @Override
   public void initialize() {
     RobotContainer.transport.setHolding(false);
+    if(RobotContainer.intake.isDeployed()){
+      RobotContainer.intake.intakeToggle();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

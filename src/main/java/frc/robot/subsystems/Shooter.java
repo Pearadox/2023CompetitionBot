@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
 import frc.lib.util.LerpTable;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
@@ -219,16 +218,6 @@ public class Shooter extends SubsystemBase {
     Logger.getInstance().recordOutput("Shooter/Target Node C", c);
     Logger.getInstance().recordOutput("Shooter/Top Velocity", topEncoder.getVelocity());
     Logger.getInstance().recordOutput("Shooter/Bottom Velocity", botEncoder.getVelocity());
-
-    if(RobotContainer.backupOpController.getPOV() == 0){
-      mode = ShooterMode.kHigh;
-    }
-    else if(RobotContainer.backupOpController.getPOV() == 90){
-      mode = ShooterMode.kMid;
-    }
-    else if(RobotContainer.backupOpController.getPOV() == 180){
-      mode = ShooterMode.kCS;
-    }
   }
   
   public NetworkTable getLLTable(){                                                                                                    

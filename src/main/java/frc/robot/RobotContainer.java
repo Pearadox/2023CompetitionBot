@@ -79,43 +79,44 @@ public class RobotContainer {
   private final JoystickButton armGridDriveMode_A = new JoystickButton(driverController, XboxController.Button.kA.value);
   private final JoystickButton shooterGridDriveMode_X = new JoystickButton(driverController, XboxController.Button.kX.value);
   
-  public static final Launchpad opController = new Launchpad();
+  public static final Launchpad opLaunchpad = new Launchpad();
   private final LaunchpadButton[][] gridButtons = new LaunchpadButton[3][9];
-  private final LaunchpadButton armHigh_1_0 = new LaunchpadButton(opController, 1, 0); //Arm buttons
-  private final LaunchpadButton armMid_2_0 = new LaunchpadButton(opController, 2, 0);
-  private final LaunchpadButton armLow_3_0 = new LaunchpadButton(opController, 3, 0);
-  private final LaunchpadButton armZero_4_0 = new LaunchpadButton(opController, 4, 0);
-  private final LaunchpadButton armSubs_2_1 = new LaunchpadButton(opController, 2, 1);
-  private final LaunchpadButton armGroundCone_3_1 = new LaunchpadButton(opController, 3, 1);
-  private final LaunchpadButton armAdjustUp_1_3 = new LaunchpadButton(opController, 1, 3);
-  private final LaunchpadButton armAdjustDown_2_3 = new LaunchpadButton(opController, 2, 3);
+  private final LaunchpadButton armHigh_1_0 = new LaunchpadButton(opLaunchpad, 1, 0); //Arm buttons
+  private final LaunchpadButton armMid_2_0 = new LaunchpadButton(opLaunchpad, 2, 0);
+  private final LaunchpadButton armLow_3_0 = new LaunchpadButton(opLaunchpad, 3, 0);
+  private final LaunchpadButton armZero_4_0 = new LaunchpadButton(opLaunchpad, 4, 0);
+  private final LaunchpadButton armSubs_2_1 = new LaunchpadButton(opLaunchpad, 2, 1);
+  private final LaunchpadButton armGroundCone_3_1 = new LaunchpadButton(opLaunchpad, 3, 1);
+  private final LaunchpadButton armAdjustUp_1_3 = new LaunchpadButton(opLaunchpad, 1, 3);
+  private final LaunchpadButton armAdjustDown_2_3 = new LaunchpadButton(opLaunchpad, 2, 3);
 
-  private final LaunchpadButton shooterHigh_1_7 = new LaunchpadButton(opController, 1, 7); //Shooter mode buttons
-  private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opController, 2, 7);
-  private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opController, 3, 7);
-  private final LaunchpadButton shooterAuto_4_7 = new LaunchpadButton(opController, 4, 7);
-  private final LaunchpadButton shooterTest_1_8 = new LaunchpadButton(opController, 1, 8);
+  private final LaunchpadButton shooterHigh_1_7 = new LaunchpadButton(opLaunchpad, 1, 7); //Shooter mode buttons
+  private final LaunchpadButton shooterMid_2_7 = new LaunchpadButton(opLaunchpad, 2, 7);
+  private final LaunchpadButton shooterCS_3_7 = new LaunchpadButton(opLaunchpad, 3, 7);
+  private final LaunchpadButton shooterAuto_4_7 = new LaunchpadButton(opLaunchpad, 4, 7);
+  private final LaunchpadButton shooterTest_1_8 = new LaunchpadButton(opLaunchpad, 1, 8);
 
-  private final LaunchpadButton toggleBigStick_4_6 = new LaunchpadButton(opController, 4, 6); //Big stick buttons
+  private final LaunchpadButton toggleBigStick_4_6 = new LaunchpadButton(opLaunchpad, 4, 6); //Big stick buttons
 
-  private final LaunchpadButton coneMode_4_3 = new LaunchpadButton(opController, 4, 3); //LED buttons
-  private final LaunchpadButton cubeMode_4_4 = new LaunchpadButton(opController, 4, 4);
-  private final LaunchpadButton rainbowMode_4_2 = new LaunchpadButton(opController, 4, 2);
+  private final LaunchpadButton coneMode_4_3 = new LaunchpadButton(opLaunchpad, 4, 3); //LED buttons
+  private final LaunchpadButton cubeMode_4_4 = new LaunchpadButton(opLaunchpad, 4, 4);
+  private final LaunchpadButton rainbowMode_4_2 = new LaunchpadButton(opLaunchpad, 4, 2);
 
-  private final LaunchpadButton intakeToggle_3_6 = new LaunchpadButton(opController, 3, 6); //Intake buttons
-  private final LaunchpadButton outtakeToggle_2_6 = new LaunchpadButton(opController, 2, 6); //Outake buttons
-  private final LaunchpadButton zeroIntake_1_6 = new LaunchpadButton(opController, 1, 6);
-  private final LaunchpadButton intakeAdjustUp_3_5 = new LaunchpadButton(opController, 3, 5);
-  private final LaunchpadButton intakeAdjustDown_2_5 = new LaunchpadButton(opController, 2, 5);
+  private final LaunchpadButton intakeToggle_3_6 = new LaunchpadButton(opLaunchpad, 3, 6); //Intake buttons
+  private final LaunchpadButton outtakeToggle_2_6 = new LaunchpadButton(opLaunchpad, 2, 6); //Outake buttons
+  private final LaunchpadButton zeroIntake_1_6 = new LaunchpadButton(opLaunchpad, 1, 6);
+  private final LaunchpadButton intakeAdjustUp_3_5 = new LaunchpadButton(opLaunchpad, 3, 5);
+  private final LaunchpadButton intakeAdjustDown_2_5 = new LaunchpadButton(opLaunchpad, 2, 5);
 
-  private final LaunchpadButton testButton_0_4 = new LaunchpadButton(opController, 0, 4);
+  private final LaunchpadButton testButton_0_4 = new LaunchpadButton(opLaunchpad, 0, 4);
 
-  public static final XboxController backupOpController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
-  private final JoystickButton armUp_Y = new JoystickButton(backupOpController, XboxController.Button.kY.value);
-  private final JoystickButton armDown_A = new JoystickButton(backupOpController, XboxController.Button.kA.value);
-  private final JoystickButton armSubs_X = new JoystickButton(backupOpController, XboxController.Button.kX.value);
-  private final JoystickButton toggleIntake_LB = new JoystickButton(backupOpController, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton toggleBigStick_RB = new JoystickButton(backupOpController, XboxController.Button.kRightBumper.value);
+  public static final XboxController opController = new XboxController(IOConstants.OP_CONTROLLER_PORT);
+  private final JoystickButton bigStickToggle_LB = new JoystickButton(opController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton armSubs_RB = new JoystickButton(opController, XboxController.Button.kRightBumper.value);
+  private final JoystickButton armHigh_Y = new JoystickButton(opController, XboxController.Button.kY.value);
+  private final JoystickButton armMid_B = new JoystickButton(opController, XboxController.Button.kB.value);
+  private final JoystickButton armLow_X = new JoystickButton(opController, XboxController.Button.kX.value);
+  private final JoystickButton armZero_A = new JoystickButton(opController, XboxController.Button.kA.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -218,12 +219,14 @@ public class RobotContainer {
     gridButtons[2][7].onTrue(new InstantCommand(() -> shooter.setTargetNode(2, 7)));
     gridButtons[2][8].onTrue(new InstantCommand(() -> shooter.setTargetNode(2, 8)));
 
-    //Backup operator controller
-    armUp_Y.onTrue(new InstantCommand(() -> arm.armUp()));
-    armDown_A.onTrue(new InstantCommand(() -> arm.armDown()));
-    armSubs_X.onTrue(new InstantCommand(() -> arm.setSubsMode()));
-    toggleIntake_LB.onTrue(new IntakeToggle());
-    toggleBigStick_RB.onTrue(new BigStickToggle());
+    //operator controller
+    bigStickToggle_LB.onTrue(new BigStickToggle()).onFalse(new InstantCommand(() -> bigStick.stow()));
+    
+    armLow_X.onTrue(new ArmToggle(1));
+    armHigh_Y.onTrue(new ArmToggle(3));
+    armMid_B.onTrue(new ArmToggle(2));
+    armSubs_RB.onTrue(new ArmToggle(4));
+    armZero_A.onTrue(new ArmToggle(0));
   }
 
   /**
@@ -491,7 +494,7 @@ public class RobotContainer {
   public void loadGridButtons(){
     for(int r = 0; r < 3; r++){
       for(int c = 0; c < 9; c++){
-        gridButtons[r][c] = new LaunchpadButton(opController, r + 6, c);
+        gridButtons[r][c] = new LaunchpadButton(opLaunchpad, r + 6, c);
       }
     }
   }

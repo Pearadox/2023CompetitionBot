@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.PearadoxSparkMax;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
@@ -95,5 +96,18 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().recordOutput("Intake/Pivot Position", pivotEncoder.getPosition());
     Logger.getInstance().recordOutput("Intake/Deployed", deployed);
     Logger.getInstance().recordOutput("Intake/Pivot Current", pivot.getOutputCurrent());
+
+    if(RobotContainer.driverController.getLeftTriggerAxis() > 0.7 || RobotContainer.opController.getLeftTriggerAxis() > 0.7){
+      if(RobotContainer.bigStick.isDeployed()){
+        RobotContainer.bigStick.toggleDeploy();
+      }
+      if(RobotContainer.arm.isDeployed()){
+        RobotContainer.arm.setZeroMode();
+      }
+      deployed = true;
+    }
+    else{
+      deployed = false;
+    }
   }
 }
