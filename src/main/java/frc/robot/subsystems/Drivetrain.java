@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,6 +23,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.vision.PoseEstimation;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.SwerveConstants;
 
@@ -71,11 +71,7 @@ public class Drivetrain extends SubsystemBase {
   private Pigeon2 gyro = new Pigeon2(SwerveConstants.PIGEON_ID);
   private double rates[] = new double[3];
 
-  private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
-    SwerveConstants.DRIVE_KINEMATICS, 
-    getHeadingRotation2d(),
-    getModulePositions(), 
-    new Pose2d());
+  private PoseEstimation poseEstimator = new PoseEstimation();
 
   private enum DriveMode{
     kNormal, kSubs, kArmGrid, kShooterGrid
@@ -103,7 +99,9 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateOdometry();
+    poseEstimator.periodic();
+    poseEstimator.updateOdometry(getHeadingRotation2d(), getModulePositions());
+
     gyro.getRawGyro(rates);
     SmartDashboard.putNumber("Robot Angle", getHeading());
     SmartDashboard.putNumber("Robot Pitch", getPitch());
@@ -125,9 +123,9 @@ public class Drivetrain extends SubsystemBase {
       turnSpeed = Math.abs(turnSpeed) > 0.1 ? turnSpeed : 0;
     }
 
-    frontSpeed = RobotContainer.driverController.getRightTriggerAxis() > 0.9 ? frontSpeed * 0.20 : frontSpeed;
-    sideSpeed = RobotContainer.driverController.getRightTriggerAxis() > 0.9 ? sideSpeed * 0.20 : sideSpeed;
-    turnSpeed = RobotContainer.driverController.getRightTriggerAxis() > 0.9 ? turnSpeed * 0.20 : turnSpeed;
+    frontSpeed = RobotContainer.driverController.getRightTriggerAxis() > 0.5 ? frontSpeed * 0.20 : frontSpeed;
+    sideSpeed = RobotContainer.driverController.getRightTriggerAxis() > 0.5 ? sideSpeed * 0.20 : sideSpeed;
+    turnSpeed = RobotContainer.driverController.getRightTriggerAxis() > 0.5 ? turnSpeed * 0.20 : turnSpeed;
 
     frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
     sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
@@ -181,9 +179,9 @@ public class Drivetrain extends SubsystemBase {
       }
     }
 
-    frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? frontSpeed * 0.45 : frontSpeed;
-    sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? sideSpeed * 0.45 : sideSpeed;
-    turnSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.9 ? turnSpeed * 0.45 : turnSpeed;
+    frontSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.5 ? frontSpeed * 0.20 : frontSpeed;
+    sideSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.5 ? sideSpeed * 0.20 : sideSpeed;
+    turnSpeed = RobotContainer.driverController.getLeftTriggerAxis() > 0.5 ? turnSpeed * 0.20 : turnSpeed;
 
     frontSpeed = frontLimiter.calculate(frontSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
     sideSpeed = sideLimiter.calculate(sideSpeed) * SwerveConstants.TELE_DRIVE_MAX_SPEED;
@@ -230,28 +228,11 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public Pose2d getPose(){
-    return poseEstimator.getEstimatedPosition();
+    return poseEstimator.getEstimatedPose();
   }
 
   public void resetOdometry(Pose2d pose){
-    poseEstimator.resetPosition(getHeadingRotation2d(), getModulePositions(), pose);
-  }
-
-  public void updateOdometry() {
-    poseEstimator.update(getHeadingRotation2d(), getModulePositions());
-
-    // if(RobotContainer.shooter.hasLLTarget()) {
-    //   double[] botpose = new double[7];
-    //   if(DriverStation.getAlliance().equals(Alliance.Blue)){
-    //     botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
-    //   }
-    //   else{
-    //     botpose = RobotContainer.shooter.getLLTable().getEntry("botpose_wpired").getDoubleArray(new double[7]);
-    //   }
-    //   double latency = Timer.getFPGATimestamp() - (botpose[6]/1000.0);
-    //   SmartDashboard.putString("Vision Pose", new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])).toString());
-    //   poseEstimator.addVisionMeasurement(new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5])), latency);
-    // }
+    poseEstimator.resetPose(pose);
   }
 
   public void setAllIdleMode(boolean brake){

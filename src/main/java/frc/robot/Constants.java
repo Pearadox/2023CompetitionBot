@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.lib.util.vision.PhotonVisionBackend;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -92,6 +96,9 @@ public final class Constants {
 
     public static final double kS_PERCENT = 0.035;
     public static final double kP_PERCENT = 0.009;
+
+    //Odometry
+    public static final Vector<N3> ODOMETRY_STD_DEV = VecBuilder.fill(0.02, 0.02, 0.005);
   }
 
   public static final class IntakeConstants{
@@ -104,7 +111,7 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.35;
     public static final double PIVOT_MAX_OUTPUT = 0.35;
 
-    public static final double DEPLOYED_ROT = 10.5;
+    public static final double DEPLOYED_ROT = 11;
   }
 
   public static final class ArmConstants{
@@ -164,6 +171,9 @@ public final class Constants {
   }
 
   public static final class FieldConstants{
+    public static final double FIELD_LENGTH = 16.542;
+    public static final double FIELD_WIDTH = 8.0137;
+
     public static final double APRIL_TAG_TO_MID = Units.inchesToMeters(8.9375);
     public static final double APRIL_TAG_TO_HIGH = Units.inchesToMeters(26.3125);
     public static final double APRIL_TAG_TO_HYBRID = Units.inchesToMeters(6.875);
@@ -183,5 +193,20 @@ public final class Constants {
         Units.inchesToMeters(27.9894)
       ), 
       new Rotation3d());
+
+      public static final PhotonVisionBackend.StandardDeviation PHOTON_VISION_STD_DEV =
+      (distance, count) -> {
+          double distanceMultiplier = Math.pow(distance - ((count - 1) * 2), 2);
+          double translationalStdDev = (0.05 / (count)) * distanceMultiplier + 0.05;
+          double rotationalStdDev = 0.2 * distanceMultiplier + 0.1;
+          return VecBuilder.fill(
+                  translationalStdDev,
+                  translationalStdDev,
+                  rotationalStdDev
+          );
+      };
+
+      public static final double AMBIGUITY_FILTER = 0.3;
+      public static final double DISTANCE_FILTER = FieldConstants.FIELD_LENGTH / 2;
   }
 }

@@ -97,7 +97,7 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().recordOutput("Intake/Deployed", deployed);
     Logger.getInstance().recordOutput("Intake/Pivot Current", pivot.getOutputCurrent());
 
-    if(RobotContainer.driverController.getLeftTriggerAxis() > 0.7 || RobotContainer.opController.getLeftTriggerAxis() > 0.7){
+    if(RobotContainer.driverController.getLeftTriggerAxis() > 0.5 || RobotContainer.opController.getLeftTriggerAxis() > 0.7){
       if(RobotContainer.bigStick.isDeployed()){
         RobotContainer.bigStick.toggleDeploy();
       }
