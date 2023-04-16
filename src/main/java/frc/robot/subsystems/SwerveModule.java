@@ -116,6 +116,15 @@ public class SwerveModule extends SubsystemBase {
     Logger.getInstance().recordOutput("Drivetrain/Module " + driveMotor.getDeviceId() + " State", getState());
   }
 
+  public void setRawState(SwerveModuleState desiredState){
+    /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
+    desiredState = SwerveModuleState.optimize(desiredState, getState().angle); 
+    setRawAngle(desiredState);
+    setSpeed(desiredState);
+    SmartDashboard.putString("Swerve [" + driveMotor.getDeviceId() + "] State", getState().toString());
+    Logger.getInstance().recordOutput("Drivetrain/Module " + driveMotor.getDeviceId() + " State", getState());
+  }
+
   public void setSpeed(SwerveModuleState desiredState){
     driveMotor.set(desiredState.speedMetersPerSecond / SwerveConstants.DRIVETRAIN_MAX_SPEED);
 
@@ -129,6 +138,13 @@ public class SwerveModule extends SubsystemBase {
   public void setAngle(SwerveModuleState desiredState){
     Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (SwerveConstants.DRIVETRAIN_MAX_SPEED * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
     
+    turnMotor.set(turnPIDController.calculate(getTurnMotorPosition(), desiredState.angle.getRadians()));
+    lastAngle = angle;
+  }
+
+  public void setRawAngle(SwerveModuleState desiredState){
+    Rotation2d angle = desiredState.angle;
+
     turnMotor.set(turnPIDController.calculate(getTurnMotorPosition(), desiredState.angle.getRadians()));
     lastAngle = angle;
   }

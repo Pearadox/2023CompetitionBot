@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -22,7 +23,7 @@ public class LEDStrip extends SubsystemBase {
   private ArrayList<String> defaultColors = new ArrayList<>();
   private ArrayList<String> rainColors = new ArrayList<>();
   private boolean rainbowOn = false;
-  private double lastShifted;
+  private double lastShiftedDefault;
 
   private enum LEDMode {
     kDefault, kCone, kCube, kRainbow
@@ -39,7 +40,7 @@ public class LEDStrip extends SubsystemBase {
     led.setData(ledBuffer);
     led.start();
 
-    lastShifted = Timer.getFPGATimestamp();
+    lastShiftedDefault = Timer.getFPGATimestamp();
     loadDefaultColors();
     loadRainbowColors();
   }
@@ -279,7 +280,10 @@ public class LEDStrip extends SubsystemBase {
   }
 
   public void ledHold() {
-    if (mode == LEDMode.kCone || mode == LEDMode.kCube) {
+    if(DriverStation.getMatchTime() >= 28 && DriverStation.getMatchTime() <= 30){
+
+    }
+    if (mode == LEDMode.kCone || mode == LEDMode.kCube || RobotContainer.transport.hasCube()) {
       setDefaultColors();
     }
     else if(mode == LEDMode.kRainbow){
@@ -294,9 +298,9 @@ public class LEDStrip extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Timer.getFPGATimestamp() - lastShifted > 0.01) {
+    if (Timer.getFPGATimestamp() - lastShiftedDefault > 0.01) {
       shiftDefaultColors();
-      lastShifted = Timer.getFPGATimestamp();
+      lastShiftedDefault = Timer.getFPGATimestamp();
     }
     ledHold();
     led.setData(ledBuffer);

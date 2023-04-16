@@ -22,7 +22,7 @@ public class IntakeRollersHold extends CommandBase {
   @Override
   public void execute() {
     if(RobotContainer.intake.isDeployed()){
-      RobotContainer.intakeRollers.intakeIn(0.7);
+      RobotContainer.intakeRollers.intakeIn(0.9);
     }
     else{
       RobotContainer.intakeRollers.intakeIn(0.2);

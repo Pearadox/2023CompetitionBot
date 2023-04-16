@@ -21,7 +21,7 @@ public class ThrowCone extends SequentialCommandGroup {
       new InstantCommand(() -> RobotContainer.arm.setZeroMode()),
       new WaitCommand(0.25),
       new InstantCommand(() -> RobotContainer.arm.setHighMode()),
-      new WaitCommand(0.26),
+      new WaitCommand(0.21),
       new InstantCommand(() -> RobotContainer.arm.intakeOut())
     );
   }

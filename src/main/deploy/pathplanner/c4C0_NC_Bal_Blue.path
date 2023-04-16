@@ -3,11 +3,11 @@
     {
       "anchorPoint": {
         "x": 1.7772795640603167,
-        "y": 4.350865803869375
+        "y": 4.25
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2723452572795897,
+        "x": 2.0438533988706946,
         "y": 4.512714203575676
       },
       "holonomicAngle": 0,
@@ -24,16 +24,16 @@
     },
     {
       "anchorPoint": {
-        "x": 4.976165581784846,
-        "y": 4.512714203575676
+        "x": 4.0,
+        "y": 4.61
       },
       "prevControl": {
-        "x": 4.353091271420723,
-        "y": 4.535791029885458
+        "x": 3.3764984874531105,
+        "y": 4.61
       },
       "nextControl": {
-        "x": 5.233218922494853,
-        "y": 4.503193709475306
+        "x": 4.257229585736342,
+        "y": 4.61
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -50,46 +50,21 @@
     {
       "anchorPoint": {
         "x": 7.0,
-        "y": 4.3
+        "y": 4.61
       },
       "prevControl": {
-        "x": 6.366157720438957,
-        "y": 4.37702975667234
+        "x": 5.712529951990032,
+        "y": 4.61
       },
       "nextControl": {
-        "x": 6.366157720438957,
-        "y": 4.37702975667234
+        "x": 5.712529951990032,
+        "y": 4.61
       },
       "holonomicAngle": 0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 5.271300898896335,
-        "y": 3.8367591224493616
-      },
-      "prevControl": {
-        "x": 5.699828903624356,
-        "y": 3.8367591224493616
-      },
-      "nextControl": {
-        "x": 5.699828903624356,
-        "y": 3.8367591224493616
-      },
-      "holonomicAngle": 0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -100,15 +75,15 @@
     {
       "anchorPoint": {
         "x": 7.0,
-        "y": 3.0
+        "y": 3.2940909587282357
       },
       "prevControl": {
-        "x": 6.118529560121827,
-        "y": 3.0
+        "x": 5.214177934294112,
+        "y": 3.1988860177245297
       },
       "nextControl": {
-        "x": 6.118529560121827,
-        "y": 3.0
+        "x": 5.214177934294112,
+        "y": 3.1988860177245297
       },
       "holonomicAngle": 0,
       "isReversal": true,
@@ -124,19 +99,44 @@
     },
     {
       "anchorPoint": {
-        "x": 5.27,
-        "y": 3.84
+        "x": 6.984989836963047,
+        "y": 2.123070184382649
       },
       "prevControl": {
-        "x": 5.795786472002976,
-        "y": 3.84
+        "x": 5.8275203818816195,
+        "y": 2.14004603985455
       },
       "nextControl": {
-        "x": 5.795786472002976,
-        "y": 3.84
+        "x": 5.8275203818816195,
+        "y": 2.14004603985455
       },
       "holonomicAngle": 0,
       "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.28,
+        "y": 2.71
+      },
+      "prevControl": {
+        "x": 5.805786472002975,
+        "y": 2.71
+      },
+      "nextControl": {
+        "x": 4.754213527997026,
+        "y": 2.71
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": true,
@@ -149,62 +149,12 @@
     },
     {
       "anchorPoint": {
-        "x": 7.45,
-        "y": 2.14211117258339
+        "x": 4.3,
+        "y": 2.71
       },
       "prevControl": {
-        "x": 7.45,
-        "y": 3.4370383699311984
-      },
-      "nextControl": {
-        "x": 7.45,
-        "y": 3.4370383699311984
-      },
-      "holonomicAngle": -90.0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 5.27,
-        "y": 3.84
-      },
-      "prevControl": {
-        "x": 5.814897908949062,
-        "y": 3.84
-      },
-      "nextControl": {
-        "x": 5.814897908949062,
-        "y": 3.84
-      },
-      "holonomicAngle": 0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 7.489576024282692,
-        "y": 7.197493539880191
-      },
-      "prevControl": {
-        "x": 7.489576024282692,
-        "y": 6.787669719114669
+        "x": 4.569646005408775,
+        "y": 2.71
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -220,5 +170,84 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.25,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 2.15,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 2.35,
+      "names": [
+        "bigStickToggle"
+      ]
+    },
+    {
+      "position": 2.5,
+      "names": [
+        "shoot"
+      ]
+    },
+    {
+      "position": 2.65,
+      "names": [
+        "bigStickToggle"
+      ]
+    },
+    {
+      "position": 2.8,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 3.15,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 3.35,
+      "names": [
+        "bigStickToggle"
+      ]
+    },
+    {
+      "position": 3.4,
+      "names": [
+        "shoot"
+      ]
+    },
+    {
+      "position": 3.65,
+      "names": [
+        "bigStickToggle"
+      ]
+    },
+    {
+      "position": 3.8,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 4.25,
+      "names": [
+        "intakeToggle"
+      ]
+    },
+    {
+      "position": 5.05,
+      "names": [
+        "shoot"
+      ]
+    }
+  ]
 }

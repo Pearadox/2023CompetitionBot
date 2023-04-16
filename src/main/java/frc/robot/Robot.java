@@ -123,6 +123,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     RobotContainer.drivetrain.resetAllEncoders();
+    RobotContainer.drivetrain.setNormalMode();
     RobotContainer.pdh.setSwitchableChannel(true);
     RobotContainer.ledStrip.setCubeMode();
   }
@@ -138,6 +139,8 @@ public class Robot extends LoggedRobot {
     // else{
     //   RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0);
     // }
+
+    // RobotContainer.poseEstimator.periodic();
   }
 
   @Override

@@ -28,7 +28,7 @@ public class SwerveDrive extends CommandBase {
         -RobotContainer.driverController.getLeftY(), 
         -RobotContainer.driverController.getLeftX(), 
         1,
-        0,
+        0.09,
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
         new Translation2d(),
         true,
@@ -52,12 +52,15 @@ public class SwerveDrive extends CommandBase {
         -RobotContainer.driverController.getLeftY(), 
         -RobotContainer.driverController.getLeftX(), 
         -1,
-        0,
+        -0.09,
         !RobotContainer.driverController.getRawButton(XboxController.Button.kB.value),
         new Translation2d(),
         true,
         true,
         true);
+    }
+    else if(RobotContainer.drivetrain.getDriveMode() == RobotContainer.drivetrain.getXMode()){
+      RobotContainer.drivetrain.formX();
     }
     else{
       RobotContainer.drivetrain.swerveDrive(

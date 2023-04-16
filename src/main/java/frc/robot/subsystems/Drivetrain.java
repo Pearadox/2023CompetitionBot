@@ -18,12 +18,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.vision.PoseEstimation;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.SwerveConstants;
 
@@ -71,10 +67,8 @@ public class Drivetrain extends SubsystemBase {
   private Pigeon2 gyro = new Pigeon2(SwerveConstants.PIGEON_ID);
   private double rates[] = new double[3];
 
-  private PoseEstimation poseEstimator = new PoseEstimation();
-
   private enum DriveMode{
-    kNormal, kSubs, kArmGrid, kShooterGrid
+    kNormal, kSubs, kArmGrid, kShooterGrid, kX
   }
 
   DriveMode mode = DriveMode.kNormal;
@@ -99,8 +93,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    poseEstimator.periodic();
-    poseEstimator.updateOdometry(getHeadingRotation2d(), getModulePositions());
+    RobotContainer.poseEstimator.updateOdometry(getHeadingRotation2d(), getModulePositions());
 
     gyro.getRawGyro(rates);
     SmartDashboard.putNumber("Robot Angle", getHeading());
@@ -228,11 +221,11 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public Pose2d getPose(){
-    return poseEstimator.getEstimatedPose();
+    return RobotContainer.poseEstimator.getEstimatedPose();
   }
 
   public void resetOdometry(Pose2d pose){
-    poseEstimator.resetPose(pose);
+    RobotContainer.poseEstimator.resetPose(pose);
   }
 
   public void setAllIdleMode(boolean brake){
@@ -282,10 +275,10 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void formX(){
-    leftFront.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(45)));
-    rightFront.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(-45)));
-    leftBack.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(-45)));
-    rightBack.setDesiredState(new SwerveModuleState(0.05, Rotation2d.fromDegrees(45)));
+    leftFront.setRawState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    rightFront.setRawState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    leftBack.setRawState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    rightBack.setRawState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
   public void stopModules(){
@@ -354,6 +347,10 @@ public class Drivetrain extends SubsystemBase {
     return DriveMode.kShooterGrid;
   }
 
+  public DriveMode getXMode(){
+    return DriveMode.kX;
+  }
+
   public void setArmGridMode(){
     mode = DriveMode.kArmGrid;
   }
@@ -368,5 +365,9 @@ public class Drivetrain extends SubsystemBase {
 
   public void setNormalMode(){
     mode = DriveMode.kNormal;
+  }
+
+  public void setXMode(){
+    mode = DriveMode.kX;
   }
 }

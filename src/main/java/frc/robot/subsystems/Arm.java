@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,7 +60,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    driver = new PearadoxSparkMax(ArmConstants.ARM_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 30, true);
+    driver = new PearadoxSparkMax(ArmConstants.ARM_DRIVER_ID, MotorType.kBrushless, IdleMode.kBrake, 35, true);
     pivot = new PearadoxSparkMax(ArmConstants.ARM_PIVOT_ID, MotorType.kBrushless, IdleMode.kBrake, 40, true,
       ArmConstants.PIVOT_kP, ArmConstants.PIVOT_kI, ArmConstants.PIVOT_kD, 
       ArmConstants.PIVOT_MIN_OUTPUT, ArmConstants.PIVOT_MAX_OUTPUT);
@@ -126,10 +127,10 @@ public class Arm extends SubsystemBase {
         driver.set(0.01);
       }
       else if(armMode == ArmMode.kSubs || armMode == ArmMode.kGroundCone){
-        driver.set(0.9);
+        driver.set(1.0);
       }
       else{
-        driver.set(0.25);
+        driver.set(0.35);
       }
     }
     else{
@@ -203,6 +204,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Arm Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Arm Velocity", driverEncoder.getVelocity());
     SmartDashboard.putString("Arm Mode", armMode.toString());
+    SmartDashboard.putBoolean("Teleop Enabled", DriverStation.isTeleopEnabled());
 
     Logger.getInstance().recordOutput("Arm/Tz", getTz());
     Logger.getInstance().recordOutput("Arm/Adjust", armAdjust);
@@ -218,14 +220,16 @@ public class Arm extends SubsystemBase {
       rumbled = false;
     }
 
-    if(RobotContainer.opController.getRightTriggerAxis() > 0.85){
-      if(RobotContainer.intake.isDeployed()){
-        RobotContainer.intake.intakeToggle();
+    if(DriverStation.isTeleopEnabled()){
+      if(RobotContainer.opController.getRightTriggerAxis() > 0.85){
+        if(RobotContainer.intake.isDeployed()){
+          RobotContainer.intake.intakeToggle();
+        }
+        if(RobotContainer.bigStick.isDeployed()){
+          RobotContainer.bigStick.toggleDeploy();
+        }
+        armMode = ArmMode.kGroundCone;
       }
-      if(RobotContainer.bigStick.isDeployed()){
-        RobotContainer.bigStick.toggleDeploy();
-      }
-      armMode = ArmMode.kGroundCone;
     }
   }
 

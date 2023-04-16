@@ -7,6 +7,7 @@ package frc.robot;
 import frc.lib.drivers.EForwardableConnections;
 import frc.lib.drivers.Launchpad;
 import frc.lib.drivers.LaunchpadButton;
+import frc.lib.util.vision.PoseEstimation;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.ArmHold;
 import frc.robot.commands.ArmToggle;
@@ -19,8 +20,8 @@ import frc.robot.commands.IntakeToggle;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterHold;
-import frc.robot.commands.SubstationAlign;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.ThrowCone;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.BigStick;
 import frc.robot.subsystems.Drivetrain;
@@ -60,6 +61,8 @@ public class RobotContainer {
   public static final BigStick bigStick = BigStick.getInstance();
   public static final Transport transport = Transport.getInstance();  
   public static final LEDStrip ledStrip = new LEDStrip(110, 9);
+
+  public static final PoseEstimation poseEstimator = new PoseEstimation();
 
   public static final PowerDistribution pdh = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
@@ -154,8 +157,7 @@ public class RobotContainer {
     shooterGridDriveMode_X.whileTrue(new RunCommand(() -> drivetrain.setShooterGridMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     subsDriveMode_Y.whileTrue(new RunCommand(() -> drivetrain.setSubsMode())).onFalse(new InstantCommand(() -> drivetrain.setNormalMode()));
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-    // throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
-    throwCone_Back.onTrue(new SubstationAlign()).onFalse(new SwerveDrive());
+    throwCone_Back.onTrue(new ThrowCone()).onFalse(new InstantCommand(() -> arm.intakeIn()));
     outtake_LB.whileTrue(new Outtake());
     shoot_RB.whileTrue(new Shoot()).onFalse(new SwerveDrive());
 
@@ -248,6 +250,13 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c1C0_M_Bal();
     }
+    else if(autoGamePiecesChooser.getSelected().equals("2 Left")
+            && autoStartingSideChooser.getSelected().equals("Middle")
+            && autoBalanceChooser.getSelected().equals("Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c2RC0_M_Bal();
+    }
     else if(autoGamePiecesChooser.getSelected().equals("2")
             && autoStartingSideChooser.getSelected().equals("Non Cable")
             && autoBalanceChooser.getSelected().equals("No Balance")){
@@ -263,32 +272,39 @@ public class RobotContainer {
       return Autos.c2C0_NC_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
-          && autoStartingSideChooser.getSelected().equals("Cable")
+          && autoStartingSideChooser.getSelected().equals("Cable Far")
           && autoBalanceChooser.getSelected().equals("No Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c2C0_C();
+      return Autos.c2C0_CF();
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
-            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoStartingSideChooser.getSelected().equals("Cable Far")
             && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c2C0_C_Bal();
+      return Autos.c2C0_CF_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
-            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoStartingSideChooser.getSelected().equals("Cable Far")
             && autoBalanceChooser.getSelected().equals("No Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c3C0_C();
+      return Autos.c3C0_CF();
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
-            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoStartingSideChooser.getSelected().equals("Cable Far")
             && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c3C0_C_Bal();
+      return Autos.c3C0_CF_Bal();
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+            && autoStartingSideChooser.getSelected().equals("Cable Near")
+            && autoBalanceChooser.getSelected().equals("No Balance")){
+      drivetrain.resetAllEncoders();
+      drivetrain.setHeading(0);
+      return Autos.c3C0_CN();
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
             && autoStartingSideChooser.getSelected().equals("Non Cable")
@@ -319,18 +335,18 @@ public class RobotContainer {
       return Autos.c4C0_NC_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("4")
-              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoStartingSideChooser.getSelected().equals("Cable Far")
               && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c4C0_C_Bal();
+      return Autos.c4C0_CF_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("4")
-              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoStartingSideChooser.getSelected().equals("Cable Far")
               && autoBalanceChooser.getSelected().equals("No Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c4C0_C();
+      return Autos.c4C0_CF();
     }
     else if(autoGamePiecesChooser.getSelected().equals("5")
             && autoStartingSideChooser.getSelected().equals("Non Cable")
@@ -338,13 +354,6 @@ public class RobotContainer {
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
       return Autos.c5C0_NC();
-    }
-    else if(autoGamePiecesChooser.getSelected().equals("5")
-            && autoStartingSideChooser.getSelected().equals("Non Cable")
-            && autoBalanceChooser.getSelected().equals("Balance")){
-      drivetrain.resetAllEncoders();
-      drivetrain.setHeading(0);
-      return Autos.c5C0_NC_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("Nothing")){
       drivetrain.resetAllEncoders();
@@ -380,6 +389,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Game Pieces", autoGamePiecesChooser);
     autoGamePiecesChooser.setDefaultOption("1", "1");
     autoGamePiecesChooser.addOption("2", "2");
+    autoGamePiecesChooser.addOption("2 Right", "2 Right");
+    autoGamePiecesChooser.addOption("2 Left", "2 Left");
     autoGamePiecesChooser.addOption("3", "3");
     autoGamePiecesChooser.addOption("4", "4");
     autoGamePiecesChooser.addOption("5", "5");
@@ -388,7 +399,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auton Starting Side", autoStartingSideChooser);
     autoStartingSideChooser.setDefaultOption("Non Cable", "Non Cable");
-    autoStartingSideChooser.addOption("Cable", "Cable");
+    autoStartingSideChooser.addOption("Cable Far", "Cable Far");
+    autoStartingSideChooser.addOption("Cable Near", "Cable Near");
     autoStartingSideChooser.addOption("Middle", "Middle");
 
     SmartDashboard.putData("Auton Balance", autoBalanceChooser);
@@ -404,6 +416,11 @@ public class RobotContainer {
         && autoBalanceChooser.getSelected().equals("Balance")){
       isValid = true;
     }
+    else if(autoGamePiecesChooser.getSelected().equals("2 Left")
+        && autoStartingSideChooser.getSelected().equals("Middle")
+        && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
     else if(autoGamePiecesChooser.getSelected().equals("2")
               && autoStartingSideChooser.getSelected().equals("Non Cable")
               && autoBalanceChooser.getSelected().equals("No Balance")){
@@ -415,23 +432,28 @@ public class RobotContainer {
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
-            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoStartingSideChooser.getSelected().equals("Cable Far")
             && autoBalanceChooser.getSelected().equals("No Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
-              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoStartingSideChooser.getSelected().equals("Cable Far")
               && autoBalanceChooser.getSelected().equals("Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
-            && autoStartingSideChooser.getSelected().equals("Cable")
+            && autoStartingSideChooser.getSelected().equals("Cable Far")
             && autoBalanceChooser.getSelected().equals("No Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
-              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoStartingSideChooser.getSelected().equals("Cable Far")
               && autoBalanceChooser.getSelected().equals("Balance")){
+      isValid = true;
+    }
+    else if(autoGamePiecesChooser.getSelected().equals("3")
+              && autoStartingSideChooser.getSelected().equals("Cable Near")
+              && autoBalanceChooser.getSelected().equals("No Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("3")
@@ -455,23 +477,18 @@ public class RobotContainer {
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("4")
-              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoStartingSideChooser.getSelected().equals("Cable Far")
               && autoBalanceChooser.getSelected().equals("Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("4")
-              && autoStartingSideChooser.getSelected().equals("Cable")
+              && autoStartingSideChooser.getSelected().equals("Cable Far")
               && autoBalanceChooser.getSelected().equals("No Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("5")
               && autoStartingSideChooser.getSelected().equals("Non Cable")
               && autoBalanceChooser.getSelected().equals("No Balance")){
-      isValid = true;
-    }
-    else if(autoGamePiecesChooser.getSelected().equals("5")
-              && autoStartingSideChooser.getSelected().equals("Non Cable")
-              && autoBalanceChooser.getSelected().equals("Balance")){
       isValid = true;
     }
     else if(autoGamePiecesChooser.getSelected().equals("Nothing")){

@@ -87,7 +87,7 @@ public class Shooter extends SubsystemBase {
     // 2.9 1.348
     // bottom spinning +0.5 V
 
-    llTable.getEntry("pipeline").setNumber(1);
+    llTable.getEntry("pipeline").setNumber(0);
   }
 
   public void shooterHold(){

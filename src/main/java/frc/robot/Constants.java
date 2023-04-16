@@ -111,7 +111,7 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -0.35;
     public static final double PIVOT_MAX_OUTPUT = 0.35;
 
-    public static final double DEPLOYED_ROT = 11;
+    public static final double DEPLOYED_ROT = 10.4;
   }
 
   public static final class ArmConstants{
@@ -188,9 +188,9 @@ public final class Constants {
 
     public static final Transform3d ROBOT_TO_SHOOTER_LL = new Transform3d(
       new Translation3d( 
-        -Units.inchesToMeters(0.1573),
+        -Units.inchesToMeters(0.2732),
         Units.inchesToMeters(5.8752),
-        Units.inchesToMeters(27.9894)
+        Units.inchesToMeters(26.4144)
       ), 
       new Rotation3d());
 
@@ -206,6 +206,8 @@ public final class Constants {
           );
       };
 
+      public static final Vector<N3> LIMELIGHT_STD_DEV = VecBuilder.fill(0.9, 0.9, 0.9);
+      
       public static final double AMBIGUITY_FILTER = 0.3;
       public static final double DISTANCE_FILTER = FieldConstants.FIELD_LENGTH / 2;
   }
