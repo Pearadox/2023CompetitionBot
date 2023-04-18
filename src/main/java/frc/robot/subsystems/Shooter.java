@@ -199,7 +199,7 @@ public class Shooter extends SubsystemBase {
       target = 2.1;
     }
     else if (mode == ShooterMode.kMid){
-      target = 1;
+      target = 1.15;
     }
     else{
       target = SmartDashboard.getNumber("Shooter Voltage", 4);

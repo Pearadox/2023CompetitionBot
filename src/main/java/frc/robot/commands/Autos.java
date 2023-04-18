@@ -182,7 +182,7 @@ public final class Autos {
   public static CommandBase c2C0_CF_Bal() {
     List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c2C0_CF_Bal", 
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
-      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.25, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
 
     PPSwerveControllerCommand command = makeSwerveControllerCommand(pathGroup.get(0));
     PPSwerveControllerCommand driveOnCS = makeSwerveControllerCommand(pathGroup.get(1));
@@ -216,7 +216,7 @@ public final class Autos {
     List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c3C0_CF_Bal", 
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
-      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.25, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
 
     PPSwerveControllerCommand command = makeSwerveControllerCommand(pathGroup.get(0));
     PPSwerveControllerCommand command2 = makeSwerveControllerCommand(pathGroup.get(1));
@@ -371,7 +371,7 @@ public final class Autos {
       driveOverBump2,
       driveToGrid,
       new InstantCommand(() -> RobotContainer.drivetrain.stopModules()),
-      new Shoot().withTimeout(0.5)
+      new Shoot().withTimeout(1)
     );
   }
 
@@ -559,7 +559,7 @@ public final class Autos {
   public static CommandBase c4C0_CF_Bal() {
     List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c4C0_CF_Bal", 
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
-      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 2.25, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
 
     PPSwerveControllerCommand command = makeSwerveControllerCommand(pathGroup.get(0));
     PPSwerveControllerCommand command2 = makeSwerveControllerCommand(pathGroup.get(1));
