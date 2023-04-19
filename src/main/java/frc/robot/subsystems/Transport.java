@@ -93,7 +93,7 @@ public class Transport extends SubsystemBase {
   }
 
   public Command rumbleController(){
-    return new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 1))
+    return new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0.5))
       .andThen(new WaitCommand(0.75))
       .andThen(new InstantCommand(() -> RobotContainer.driverController.setRumble(RumbleType.kBothRumble, 0)));
   }

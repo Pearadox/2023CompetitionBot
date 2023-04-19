@@ -48,8 +48,8 @@ public final class Autos {
     );
   }
 
-  public static CommandBase c2RC0_M_Bal() {
-    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c2RC0_M_Bal", 
+  public static CommandBase c2LC0_M_Bal() {
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c2LC0_M_Bal_Red", 
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));

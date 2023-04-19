@@ -167,7 +167,7 @@ public final class Constants {
     public static final double PIVOT_MIN_OUTPUT = -1.0;
     public static final double PIVOT_MAX_OUTPUT = 1.0;
 
-    public static final double DEPLOYED_ROT = 7.5;
+    public static final double DEPLOYED_ROT = 6.5;
   }
 
   public static final class FieldConstants{

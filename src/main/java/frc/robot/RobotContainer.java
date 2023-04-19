@@ -255,7 +255,7 @@ public class RobotContainer {
             && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c2RC0_M_Bal();
+      return Autos.c2LC0_M_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
             && autoStartingSideChooser.getSelected().equals("Non Cable")

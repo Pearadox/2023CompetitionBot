@@ -84,7 +84,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void resetPivotEncoder(){
-    pivotEncoder.setPosition(0);
+    pivotEncoder.setPosition(-0.3);
   }
 
   @Override
