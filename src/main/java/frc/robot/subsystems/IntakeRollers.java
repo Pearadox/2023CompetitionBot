@@ -35,7 +35,7 @@ public class IntakeRollers extends SubsystemBase {
   }
 
   public void intakeOut(){
-    driver.set(-0.4);
+    driver.set(-0.33);
   }
 
   public void intakeStop(){

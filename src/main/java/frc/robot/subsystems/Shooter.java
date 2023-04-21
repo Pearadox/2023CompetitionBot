@@ -196,10 +196,10 @@ public class Shooter extends SubsystemBase {
       Logger.getInstance().recordOutput("Shooter/Target Angle", targetAngle);
     }
     else if(mode == ShooterMode.kHigh) {
-      target = 2.1;
+      target = 1.9;
     }
     else if (mode == ShooterMode.kMid){
-      target = 1.15;
+      target = 0.8;
     }
     else{
       target = SmartDashboard.getNumber("Shooter Voltage", 4);
