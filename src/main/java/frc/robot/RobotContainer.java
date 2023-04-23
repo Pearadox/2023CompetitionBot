@@ -250,12 +250,12 @@ public class RobotContainer {
       drivetrain.setHeading(0);
       return Autos.c1C0_M_Bal();
     }
-    else if(autoGamePiecesChooser.getSelected().equals("2 Left")
+    else if(autoGamePiecesChooser.getSelected().equals("2 Bump")
             && autoStartingSideChooser.getSelected().equals("Middle")
             && autoBalanceChooser.getSelected().equals("Balance")){
       drivetrain.resetAllEncoders();
       drivetrain.setHeading(0);
-      return Autos.c2LC0_M_Bal();
+      return Autos.c2BC0_M_Bal();
     }
     else if(autoGamePiecesChooser.getSelected().equals("2")
             && autoStartingSideChooser.getSelected().equals("Non Cable")
@@ -389,8 +389,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Game Pieces", autoGamePiecesChooser);
     autoGamePiecesChooser.setDefaultOption("1", "1");
     autoGamePiecesChooser.addOption("2", "2");
-    autoGamePiecesChooser.addOption("2 Right", "2 Right");
-    autoGamePiecesChooser.addOption("2 Left", "2 Left");
+    autoGamePiecesChooser.addOption("2 Bump", "2 Bump");
     autoGamePiecesChooser.addOption("3", "3");
     autoGamePiecesChooser.addOption("4", "4");
     autoGamePiecesChooser.addOption("5", "5");
@@ -416,7 +415,7 @@ public class RobotContainer {
         && autoBalanceChooser.getSelected().equals("Balance")){
       isValid = true;
     }
-    else if(autoGamePiecesChooser.getSelected().equals("2 Left")
+    else if(autoGamePiecesChooser.getSelected().equals("2 Bump")
         && autoStartingSideChooser.getSelected().equals("Middle")
         && autoBalanceChooser.getSelected().equals("Balance")){
       isValid = true;

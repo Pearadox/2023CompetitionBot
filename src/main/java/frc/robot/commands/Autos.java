@@ -48,8 +48,13 @@ public final class Autos {
     );
   }
 
-  public static CommandBase c2LC0_M_Bal() {
-    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("c2LC0_M_Bal_Red", 
+  public static CommandBase c2BC0_M_Bal() {
+    List<PathPlannerTrajectory> pathGroup = DriverStation.getAlliance().equals(Alliance.Red) ? 
+      PathPlanner.loadPathGroup("c2BC0_M_Bal_Red", 
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
+      new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION)) : 
+      PathPlanner.loadPathGroup("c2BC0_M_Bal_Blue", 
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION),
       new PathConstraints(SwerveConstants.AUTO_DRIVE_MAX_SPEED / 1.75, SwerveConstants.AUTO_DRIVE_MAX_ACCELERATION));
@@ -357,6 +362,7 @@ public final class Autos {
     return Commands.sequence(
       new InstantCommand(() -> RobotContainer.drivetrain.resetOdometry(getInitialPose(pathGroup.get(0)))),
       new InstantCommand(() -> RobotContainer.drivetrain.setAllIdleMode(true)),
+      new InstantCommand(() -> RobotContainer.transport.feederStop()),
       new InstantCommand(() -> RobotContainer.shooter.setHighMode()),
       new WaitCommand(0.75),
       new Shoot().withTimeout(0.5),
