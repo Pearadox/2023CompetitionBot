@@ -1,5 +1,5 @@
 ﻿# 2023CompetitionBot
- FRC Team 5414's code for the 2023 competition robot, Roosevelt. The code is written in Java and uses WPILib's Java command-based structure.
+ FRC Team 5414's code for the 2023 competition robot, Rooty ~~(or Roosevelt)~~. The code is written in Java and uses WPILib's Java command-based structure.
  
 ## Code Highlights
 - Field-Centric Swerve Drive
